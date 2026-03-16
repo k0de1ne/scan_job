@@ -1,12 +1,17 @@
 gem   # Scan Job - Flutter Core Architecture
 
-This project is a boilerplate optimized for Windows and modern library versions (2025-2026).
+This project is a boilerplate optimized for **multi-platform (Web, Desktop, Mobile)** and modern library versions (2025-2026).
 
 ## Environment and Constraints (Critical)
 
-- **OS**: Windows.
-- **Path Limit**: Be cautious with deep folder nesting.
-- **Mason/VGV**: Avoid using `very_good_cli` for module generation if it hangs. Create modules manually based on the existing architecture.
+- **OS**: Cross-platform (Web, macOS, Windows, Linux, Android, iOS).
+- **Windows-specific**: Be cautious with deep folder nesting due to path limits.
+
+## UI & Design System
+
+- **Primary UI Library**: `shadcn_ui` (v0.52.1+). 
+- **Goal**: Achieve a consistent, modern "SaaS-like" aesthetic across all platforms while maintaining native responsiveness.
+- **Custom Components**: Wrap complex `shadcn_ui` or Material components in `lib/widgets/` for better maintainability.
 
 ## Localization (L10n)
 
