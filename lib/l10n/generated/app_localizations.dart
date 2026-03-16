@@ -101,7 +101,7 @@ abstract class AppLocalizations {
   /// The title of the application
   ///
   /// In en, this message translates to:
-  /// **'Scan Job'**
+  /// **'Gemini'**
   String get appTitle;
 
   /// Message shown on the home page
@@ -109,6 +109,108 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Scan Job Application Started!'**
   String get homePageMessage;
+
+  /// The title of the chat screen
+  ///
+  /// In en, this message translates to:
+  /// **'Gemini'**
+  String get chatTitle;
+
+  /// The main greeting on the chat screen
+  ///
+  /// In en, this message translates to:
+  /// **'Gemini, your personal AI assistant'**
+  String get chatGreeting;
+
+  /// The welcome message in the chat
+  ///
+  /// In en, this message translates to:
+  /// **'Hello! How can I help you today?'**
+  String get chatWelcomeMessage;
+
+  /// The placeholder text in the chat input
+  ///
+  /// In en, this message translates to:
+  /// **'Ask Gemini'**
+  String get chatInputPlaceholder;
+
+  /// The tooltip for the chat send button
+  ///
+  /// In en, this message translates to:
+  /// **'Send'**
+  String get chatSendButtonTooltip;
+
+  /// No description provided for @chatActionWrite.
+  ///
+  /// In en, this message translates to:
+  /// **'Write text'**
+  String get chatActionWrite;
+
+  /// No description provided for @chatActionPlan.
+  ///
+  /// In en, this message translates to:
+  /// **'Plan'**
+  String get chatActionPlan;
+
+  /// No description provided for @chatActionExplore.
+  ///
+  /// In en, this message translates to:
+  /// **'Explore'**
+  String get chatActionExplore;
+
+  /// No description provided for @chatActionLearn.
+  ///
+  /// In en, this message translates to:
+  /// **'Learn'**
+  String get chatActionLearn;
+
+  /// No description provided for @chatTools.
+  ///
+  /// In en, this message translates to:
+  /// **'Tools'**
+  String get chatTools;
+
+  /// No description provided for @chatModelFast.
+  ///
+  /// In en, this message translates to:
+  /// **'Fast'**
+  String get chatModelFast;
+
+  /// No description provided for @chatSignIn.
+  ///
+  /// In en, this message translates to:
+  /// **'Sign in'**
+  String get chatSignIn;
+
+  /// No description provided for @chatNavAbout.
+  ///
+  /// In en, this message translates to:
+  /// **'About Gemini'**
+  String get chatNavAbout;
+
+  /// No description provided for @chatNavApp.
+  ///
+  /// In en, this message translates to:
+  /// **'Gemini App'**
+  String get chatNavApp;
+
+  /// No description provided for @chatNavSubs.
+  ///
+  /// In en, this message translates to:
+  /// **'Subscriptions'**
+  String get chatNavSubs;
+
+  /// No description provided for @chatNavBusiness.
+  ///
+  /// In en, this message translates to:
+  /// **'For Business'**
+  String get chatNavBusiness;
+
+  /// No description provided for @chatFooterTerms.
+  ///
+  /// In en, this message translates to:
+  /// **'Google Terms of Service and Privacy Policy apply. Gemini is an AI and may be inaccurate.'**
+  String get chatFooterTerms;
 }
 
 class _AppLocalizationsDelegate

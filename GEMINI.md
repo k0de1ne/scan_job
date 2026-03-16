@@ -36,13 +36,30 @@ The project follows Feature-Driven Design. Each feature resides in its own folde
 - `models/`: Feature-specific DTOs and domain models.
 
 ### Implementation Workflow:
-1. **Repository**: Define data and create a repository in `lib/repositories/` if needed.
+1. **Repository**: Define data layer in `lib/repositories/`. Create abstract class + impl.
 2. **Localization**: Add strings to `lib/l10n/arb/app_en.arb` and run `flutter gen-l10n`.
-3. **BLoC/Cubit**: Implement logic in `bloc/`. Use `emit` for state updates.
+3. **BLoC/Cubit**: Implement logic in `bloc/`. Use `emit` for state updates. Inject repository via constructor.
 4. **UI**:
    - `Page`: Provides `BlocProvider` and returns the `View`.
    - `View`: Uses `BlocBuilder`/`BlocListener` to build the interface.
-5. **Tests**: Create matching structure in `test/my_feature/` for Cubit and View tests.
+5. **Navigation**: Add routes in `lib/router/app_router.dart` using GoRouter.
+6. **Tests**: Create matching structure in `test/my_feature/` for Cubit and View tests.
+
+## Repository Layer (Required)
+
+All data fetching MUST go through repositories.
+
+- **Location**: `lib/repositories/`
+- **Structure**:
+  - Abstract class in `lib/repositories/chat_repository.dart`
+  - Implementation in `lib/repositories/chat_repository_impl.dart`
+- **Injection**: Pass repository via constructor to Cubit/BLoC
+
+## Navigation
+
+- **Library**: `go_router` (v15.x)
+- **Configuration**: `lib/router/app_router.dart`
+- **Usage**: Use `context.go('/path')` for navigation
 
 ## State Management
 
@@ -55,9 +72,9 @@ The project follows Feature-Driven Design. Each feature resides in its own folde
 - **Tools**: `bloc_test`, `mocktail`.
 - **Widget Tests**: Use `tester.pumpApp(Widget)` from `test/helpers/pump_app.dart` to include localization providers and base styles.
 - **L10n & UI Validation**: 
-  - All screens MUST be added to `pagesToTest` list in `test/app/view/app_test.dart`.
-  - This automatically validates each screen across ALL supported locales (`en`, `ru`, etc.).
-  - It checks for rendering errors and UI overflows on narrow screens (320x480).
+   - All screens MUST be added to `pagesToTest` list in `test/app/view/app_test.dart`.
+   - This automatically validates each screen across ALL supported locales (`en`, `ru`, etc.).
+   - It checks for rendering errors and UI overflows on narrow screens (320x480).
 
 ## Essential Commands
 

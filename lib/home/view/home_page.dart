@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:scan_job/home/widgets/dashboard_stub.dart';
 import 'package:scan_job/l10n/l10n.dart';
 
 class HomePage extends StatelessWidget {
@@ -9,8 +10,8 @@ class HomePage extends StatelessWidget {
     final l10n = context.l10n;
     return Scaffold(
       appBar: AppBar(title: Text(l10n.appTitle)),
-      body: Center(
-        child: Text(l10n.homePageMessage),
+      body: const Center(
+        child: DashboardStub(),
       ),
     );
   }

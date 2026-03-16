@@ -1,11 +1,43 @@
 {
     "@@locale": "ru",
-    "appTitle": "Сканирование",
+    "appTitle": "Gemini",
     "@appTitle": {
         "description": "Заголовок приложения"
     },
     "homePageMessage": "Приложение Scan Job запущено!",
     "@homePageMessage": {
         "description": "Сообщение, отображаемое на главной странице"
-    }
+    },
+    "chatTitle": "Gemini",
+    "@chatTitle": {
+        "description": "Заголовок экрана чата"
+    },
+    "chatGreeting": "Gemini, ваш персональный ИИ-помощник",
+    "@chatGreeting": {
+        "description": "Главное приветствие на экране чата"
+    },
+    "chatWelcomeMessage": "Привет! Чем я могу помочь вам сегодня?",
+    "@chatWelcomeMessage": {
+        "description": "Приветственное сообщение в чате"
+    },
+    "chatInputPlaceholder": "Спросите Gemini",
+    "@chatInputPlaceholder": {
+        "description": "Текст-заполнитель в поле ввода чата"
+    },
+    "chatSendButtonTooltip": "Отправить",
+    "@chatSendButtonTooltip": {
+        "description": "Подсказка для кнопки отправки в чате"
+    },
+    "chatActionWrite": "Напиши текст",
+    "chatActionPlan": "Планируйте",
+    "chatActionExplore": "Исследуйте",
+    "chatActionLearn": "Учитесь",
+    "chatTools": "Инструменты",
+    "chatModelFast": "Быстрая",
+    "chatSignIn": "Войти",
+    "chatNavAbout": "О Gemini",
+    "chatNavApp": "Приложение Gemini",
+    "chatNavSubs": "Подписки",
+    "chatNavBusiness": "Для бизнеса",
+    "chatFooterTerms": "Действуют Условия использования Google и Политика конфиденциальности Google. Gemini – это ИИ. Он может ошибаться."
 }

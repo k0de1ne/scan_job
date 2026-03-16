@@ -1,0 +1,240 @@
+import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:google_fonts/google_fonts.dart';
+import 'package:scan_job/chat/cubit/chat_cubit.dart';
+import 'package:scan_job/chat/cubit/chat_state.dart';
+import 'package:scan_job/chat/widgets/chat_input.dart';
+import 'package:scan_job/chat/widgets/chat_message_bubble.dart';
+import 'package:scan_job/chat/widgets/gemini_sparkle_icon.dart';
+import 'package:scan_job/l10n/l10n.dart';
+
+class ChatView extends StatelessWidget {
+  const ChatView({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    final l10n = context.l10n;
+    final colorScheme = Theme.of(context).colorScheme;
+    final isDesktop = MediaQuery.of(context).size.width > 900;
+    final isTablet = MediaQuery.of(context).size.width > 600;
+
+    return Scaffold(
+      backgroundColor: colorScheme.surface,
+      body: SafeArea(
+        child: Row(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            // Sidebar
+            if (isTablet)
+              Container(
+                width: 68,
+                padding: const EdgeInsets.symmetric(vertical: 12),
+                color: colorScheme.surfaceContainerLow,
+                child: Column(
+                  children: [
+                    IconButton(
+                      icon: Icon(
+                        Icons.menu,
+                        color: colorScheme.onSurfaceVariant,
+                      ),
+                      onPressed: () {},
+                      hoverColor: const Color(0xFF2C2D2D),
+                    ),
+                    const SizedBox(height: 12),
+                    IconButton(
+                      icon: Icon(
+                        Icons.add,
+                        color: colorScheme.onSurfaceVariant,
+                        size: 24,
+                      ),
+                      onPressed: () {},
+                      tooltip: 'Новый чат',
+                      hoverColor: const Color(0xFF2C2D2D),
+                    ),
+                    Expanded(
+                      child: Align(
+                        alignment: Alignment.bottomCenter,
+                        child: Column(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            IconButton(
+                              icon: Icon(
+                                Icons.help_outline,
+                                color: colorScheme.onSurfaceVariant,
+                                size: 20,
+                              ),
+                              onPressed: () {},
+                              hoverColor: const Color(0xFF2C2D2D),
+                            ),
+                            IconButton(
+                              icon: Icon(
+                                Icons.history,
+                                color: colorScheme.onSurfaceVariant,
+                                size: 20,
+                              ),
+                              onPressed: () {},
+                              hoverColor: const Color(0xFF2C2D2D),
+                            ),
+                            IconButton(
+                              icon: Icon(
+                                Icons.settings_outlined,
+                                color: colorScheme.onSurfaceVariant,
+                                size: 20,
+                              ),
+                              onPressed: () {},
+                              hoverColor: const Color(0xFF2C2D2D),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            // Main Content
+            Expanded(
+              child: Column(
+                children: [
+                  Expanded(
+                    child: BlocBuilder<ChatCubit, ChatState>(
+                      builder: (context, state) {
+                        if (state.messages.isEmpty) {
+                          return Center(
+                            child: SingleChildScrollView(
+                              child: Padding(
+                                padding: const EdgeInsets.symmetric(
+                                  horizontal: 24,
+                                ),
+                                child: Column(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    Row(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.center,
+                                      children: [
+                                        const GeminiSparkleIcon(size: 36),
+                                        const SizedBox(width: 16),
+                                        Flexible(
+                                          child: Text(
+                                            l10n.chatGreeting,
+                                            style: GoogleFonts.googleSans(
+                                              fontSize: isTablet ? 44 : 32,
+                                              fontWeight: FontWeight.w400,
+                                              color: colorScheme.onSurface,
+                                              letterSpacing: -0.5,
+                                            ),
+                                            textAlign: TextAlign.center,
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                    const SizedBox(height: 56),
+                                    const ChatInput(isCentered: true),
+                                    const SizedBox(height: 40),
+                                    const Wrap(
+                                      spacing: 12,
+                                      runSpacing: 12,
+                                      alignment: WrapAlignment.center,
+                                      children: [
+                                        _ActionChip(label: 'Написать'),
+                                        _ActionChip(label: 'Спланировать'),
+                                        _ActionChip(label: 'Исследовать'),
+                                        _ActionChip(label: 'Учиться'),
+                                      ],
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            ),
+                          );
+                        }
+                        return ListView.builder(
+                          padding: EdgeInsets.symmetric(
+                            horizontal: isDesktop ? 120 : (isTablet ? 48 : 16),
+                            vertical: 32,
+                          ),
+                          itemCount: state.messages.length,
+                          itemBuilder: (context, index) {
+                            final message = state.messages[index];
+                            return ChatMessageBubble(message: message);
+                          },
+                        );
+                      },
+                    ),
+                  ),
+                  // Footer
+                  BlocBuilder<ChatCubit, ChatState>(
+                    builder: (context, state) {
+                      return Column(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          if (state.messages.isNotEmpty) const ChatInput(),
+                          _Footer(l10n: l10n),
+                        ],
+                      );
+                    },
+                  ),
+                ],
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class _ActionChip extends StatelessWidget {
+  const _ActionChip({required this.label});
+
+  final String label;
+
+  @override
+  Widget build(BuildContext context) {
+    return Material(
+      color: const Color(0xFF0E0E0E), // Background (14, 14, 14)
+      borderRadius: BorderRadius.circular(30),
+      child: InkWell(
+        onTap: () {},
+        borderRadius: BorderRadius.circular(30),
+        splashColor: const Color(0x33FFFFFF),
+        highlightColor: const Color(0x22FFFFFF),
+        hoverColor: const Color(0x1AFFFFFF),
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
+          child: Text(
+            label,
+            style: const TextStyle(
+              color: Color(0xFFC4C7C5), // Text (196, 199, 197)
+              fontWeight: FontWeight.w400,
+              fontSize: 15,
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+class _Footer extends StatelessWidget {
+  const _Footer({required this.l10n});
+  final AppLocalizations l10n;
+
+  @override
+  Widget build(BuildContext context) {
+    final colorScheme = Theme.of(context).colorScheme;
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 12, top: 8),
+      child: Center(
+        child: Text(
+          l10n.chatFooterTerms,
+          style: TextStyle(
+            fontSize: 12,
+            color: colorScheme.onSurfaceVariant,
+          ),
+          textAlign: TextAlign.center,
+        ),
+      ),
+    );
+  }
+}

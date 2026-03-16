@@ -1,20 +1,20 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:scan_job/app/app.dart';
-import 'package:scan_job/home/view/home_page.dart';
+import 'package:scan_job/app/view/app.dart';
+import 'package:scan_job/chat/view/chat_page.dart';
 import 'package:scan_job/l10n/l10n.dart';
 
 void main() {
   group('App', () {
-    testWidgets('renders HomePage', (tester) async {
+    testWidgets('renders ChatPage', (tester) async {
       await tester.pumpWidget(const App());
-      expect(find.byType(HomePage), findsOneWidget);
+      expect(find.byType(ChatPage), findsOneWidget);
     });
 
     group('Scalable Localization & UI Tests', () {
       // Список страниц для проверки. Сюда добавляйте новые экраны по мере разработки.
       final pagesToTest = <Widget>[
-        const HomePage(),
+        const ChatPage(),
       ];
 
       for (final page in pagesToTest) {
@@ -27,7 +27,8 @@ void main() {
 
               await tester.pumpWidget(
                 MaterialApp(
-                  localizationsDelegates: AppLocalizations.localizationsDelegates,
+                  localizationsDelegates:
+                      AppLocalizations.localizationsDelegates,
                   supportedLocales: AppLocalizations.supportedLocales,
                   locale: locale,
                   home: page,

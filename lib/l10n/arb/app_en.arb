@@ -1,11 +1,43 @@
 {
     "@@locale": "en",
-    "appTitle": "Scan Job",
+    "appTitle": "Gemini",
     "@appTitle": {
         "description": "The title of the application"
     },
     "homePageMessage": "Scan Job Application Started!",
     "@homePageMessage": {
         "description": "Message shown on the home page"
-    }
+    },
+    "chatTitle": "Gemini",
+    "@chatTitle": {
+        "description": "The title of the chat screen"
+    },
+    "chatGreeting": "Gemini, your personal AI assistant",
+    "@chatGreeting": {
+        "description": "The main greeting on the chat screen"
+    },
+    "chatWelcomeMessage": "Hello! How can I help you today?",
+    "@chatWelcomeMessage": {
+        "description": "The welcome message in the chat"
+    },
+    "chatInputPlaceholder": "Ask Gemini",
+    "@chatInputPlaceholder": {
+        "description": "The placeholder text in the chat input"
+    },
+    "chatSendButtonTooltip": "Send",
+    "@chatSendButtonTooltip": {
+        "description": "The tooltip for the chat send button"
+    },
+    "chatActionWrite": "Write text",
+    "chatActionPlan": "Plan",
+    "chatActionExplore": "Explore",
+    "chatActionLearn": "Learn",
+    "chatTools": "Tools",
+    "chatModelFast": "Fast",
+    "chatSignIn": "Sign in",
+    "chatNavAbout": "About Gemini",
+    "chatNavApp": "Gemini App",
+    "chatNavSubs": "Subscriptions",
+    "chatNavBusiness": "For Business",
+    "chatFooterTerms": "Google Terms of Service and Privacy Policy apply. Gemini is an AI and may be inaccurate."
 }
