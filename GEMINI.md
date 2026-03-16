@@ -9,9 +9,11 @@ This project is a boilerplate optimized for **multi-platform (Web, Desktop, Mobi
 
 ## UI & Design System
 
-- **Primary UI Library**: `shadcn_ui` (v0.52.1+). 
-- **Goal**: Achieve a consistent, modern "SaaS-like" aesthetic across all platforms while maintaining native responsiveness.
-- **Custom Components**: Wrap complex `shadcn_ui` or Material components in `lib/widgets/` for better maintainability.
+- **Primary Stack**: Material 3 + `flex_color_scheme` + `google_fonts`.
+- **Theme**: Configured in `lib/app/view/app.dart` using `FlexScheme.greyLaw` for a professional SaaS-like aesthetic.
+- **Typography**: Primary font is **Inter** (via `google_fonts`).
+- **Aesthetics**: Modern look achieved by using a tight **8px border radius** for components (configured in global theme).
+- **Guidelines**: Use standard Flutter widgets. Access theme colors via `Theme.of(context).colorScheme`.
 
 ## Localization (L10n)
 
