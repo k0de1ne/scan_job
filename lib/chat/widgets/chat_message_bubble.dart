@@ -17,7 +17,7 @@ class ChatMessageBubble extends StatelessWidget {
       alignment: isUser ? Alignment.centerRight : Alignment.centerLeft,
       child: Container(
         margin: const EdgeInsets.symmetric(vertical: 8),
-        padding: isUser 
+        padding: isUser
             ? const EdgeInsets.symmetric(horizontal: 20, vertical: 12)
             : const EdgeInsets.symmetric(vertical: 12),
         decoration: BoxDecoration(

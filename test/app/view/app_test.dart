@@ -23,7 +23,10 @@ void main() {
             'Page ${page.runtimeType} renders correctly in $locale without overflow',
             (tester) async {
               // Устанавливаем узкий размер экрана для поиска переполнений (Overflow)
-              await tester.binding.setSurfaceSize(const Size(320, 480));
+              tester.view.physicalSize = const Size(320, 480);
+              tester.view.devicePixelRatio = 1.0;
+              addTearDown(tester.view.resetPhysicalSize);
+              addTearDown(tester.view.resetDevicePixelRatio);
 
               await tester.pumpWidget(
                 MaterialApp(
@@ -31,6 +34,7 @@ void main() {
                       AppLocalizations.localizationsDelegates,
                   supportedLocales: AppLocalizations.supportedLocales,
                   locale: locale,
+                  theme: ThemeData(useMaterial3: true),
                   home: page,
                 ),
               );

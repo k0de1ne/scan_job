@@ -101,10 +101,10 @@ class ChatView extends StatelessWidget {
                         if (state.messages.isEmpty) {
                           return Center(
                             child: SingleChildScrollView(
-                              child: Padding(
-                                padding: const EdgeInsets.symmetric(
-                                  horizontal: 24,
-                                ),
+                              padding: const EdgeInsets.all(24),
+                              child: ConstrainedBox(
+                                constraints:
+                                    const BoxConstraints(maxWidth: 800),
                                 child: Column(
                                   mainAxisAlignment: MainAxisAlignment.center,
                                   children: [
