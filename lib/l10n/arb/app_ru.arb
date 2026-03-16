@@ -1,0 +1,11 @@
+{
+    "@@locale": "ru",
+    "appTitle": "Сканирование",
+    "@appTitle": {
+        "description": "Заголовок приложения"
+    },
+    "homePageMessage": "Приложение Scan Job запущено!",
+    "@homePageMessage": {
+        "description": "Сообщение, отображаемое на главной странице"
+    }
+}

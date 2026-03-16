@@ -1,0 +1,11 @@
+{
+    "@@locale": "en",
+    "appTitle": "Scan Job",
+    "@appTitle": {
+        "description": "The title of the application"
+    },
+    "homePageMessage": "Scan Job Application Started!",
+    "@homePageMessage": {
+        "description": "Message shown on the home page"
+    }
+}
