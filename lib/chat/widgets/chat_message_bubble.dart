@@ -12,6 +12,7 @@ class ChatMessageBubble extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final isUser = message.role == MessageRole.user;
+    final colorScheme = Theme.of(context).colorScheme;
 
     return Align(
       alignment: isUser ? Alignment.centerRight : Alignment.centerLeft,
@@ -21,7 +22,7 @@ class ChatMessageBubble extends StatelessWidget {
             ? const EdgeInsets.symmetric(horizontal: 20, vertical: 12)
             : const EdgeInsets.symmetric(vertical: 12),
         decoration: BoxDecoration(
-          color: isUser ? const Color(0xFF1E1F20) : Colors.transparent,
+          color: isUser ? colorScheme.surfaceContainer : Colors.transparent,
           borderRadius: BorderRadius.circular(24),
         ),
         constraints: BoxConstraints(
@@ -30,7 +31,7 @@ class ChatMessageBubble extends StatelessWidget {
         child: Text(
           message.text,
           style: TextStyle(
-            color: isUser ? Colors.white : const Color(0xFFE3E3E3),
+            color: colorScheme.onSurface,
             fontSize: 16,
             height: 1.5,
           ),

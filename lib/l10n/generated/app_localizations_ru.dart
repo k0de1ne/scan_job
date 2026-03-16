@@ -9,60 +9,37 @@ class AppLocalizationsRu extends AppLocalizations {
   AppLocalizationsRu([String locale = 'ru']) : super(locale);
 
   @override
-  String get appTitle => 'Gemini';
+  String get appTitle => 'Scan Job';
 
   @override
-  String get homePageMessage => 'Приложение Scan Job запущено!';
+  String get dashboardTitle => 'Панель управления';
 
   @override
-  String get chatTitle => 'Gemini';
+  String get chatTitle => 'Scan Job';
 
   @override
-  String get chatGreeting => 'Gemini, ваш персональный ИИ-помощник';
+  String get chatGreeting =>
+      'Scan Job, ваш профессиональный помощник в карьере';
 
   @override
-  String get chatWelcomeMessage => 'Привет! Чем я могу помочь вам сегодня?';
+  String get chatInputPlaceholder => 'Чем я могу помочь?';
 
   @override
-  String get chatInputPlaceholder => 'Спросите Gemini';
+  String get chatNavHistory => 'История';
 
   @override
-  String get chatSendButtonTooltip => 'Отправить';
+  String get chatNavHelp => 'Помощь';
 
   @override
-  String get chatActionWrite => 'Напиши текст';
+  String get chatNavSettings => 'Настройки';
 
   @override
-  String get chatActionPlan => 'Планируйте';
+  String get chatNavAbout => 'О Scan Job';
 
   @override
-  String get chatActionExplore => 'Исследуйте';
-
-  @override
-  String get chatActionLearn => 'Учитесь';
-
-  @override
-  String get chatTools => 'Инструменты';
-
-  @override
-  String get chatModelFast => 'Быстрая';
-
-  @override
-  String get chatSignIn => 'Войти';
-
-  @override
-  String get chatNavAbout => 'О Gemini';
-
-  @override
-  String get chatNavApp => 'Приложение Gemini';
-
-  @override
-  String get chatNavSubs => 'Подписки';
-
-  @override
-  String get chatNavBusiness => 'Для бизнеса';
+  String get chatNavApp => 'Приложение Scan Job';
 
   @override
   String get chatFooterTerms =>
-      'Действуют Условия использования Google и Политика конфиденциальности Google. Gemini – это ИИ. Он может ошибаться.';
+      'Scan Job — это профессиональный инструмент на базе ИИ. Пожалуйста, проверяйте важную информацию.';
 }

@@ -1,43 +1,44 @@
 {
     "@@locale": "en",
-    "appTitle": "Gemini",
+    "appTitle": "Scan Job",
     "@appTitle": {
         "description": "The title of the application"
     },
-    "homePageMessage": "Scan Job Application Started!",
-    "@homePageMessage": {
-        "description": "Message shown on the home page"
+    "dashboardTitle": "Dashboard",
+    "@dashboardTitle": {
+        "description": "The title for the dashboard page"
     },
-    "chatTitle": "Gemini",
+    "chatTitle": "Scan Job",
     "@chatTitle": {
-        "description": "The title of the chat screen"
+        "description": "The title for the chat page"
     },
-    "chatGreeting": "Gemini, your personal AI assistant",
+    "chatGreeting": "Scan Job, your professional career assistant",
     "@chatGreeting": {
-        "description": "The main greeting on the chat screen"
+        "description": "Greeting message in chat"
     },
-    "chatWelcomeMessage": "Hello! How can I help you today?",
-    "@chatWelcomeMessage": {
-        "description": "The welcome message in the chat"
-    },
-    "chatInputPlaceholder": "Ask Gemini",
+    "chatInputPlaceholder": "How can I help you today?",
     "@chatInputPlaceholder": {
-        "description": "The placeholder text in the chat input"
+        "description": "Placeholder for the chat input field"
     },
-    "chatSendButtonTooltip": "Send",
-    "@chatSendButtonTooltip": {
-        "description": "The tooltip for the chat send button"
+    "chatNavHistory": "History",
+    "@chatNavHistory": {
+        "description": "Navigation history label"
     },
-    "chatActionWrite": "Write text",
-    "chatActionPlan": "Plan",
-    "chatActionExplore": "Explore",
-    "chatActionLearn": "Learn",
-    "chatTools": "Tools",
-    "chatModelFast": "Fast",
-    "chatSignIn": "Sign in",
-    "chatNavAbout": "About Gemini",
-    "chatNavApp": "Gemini App",
-    "chatNavSubs": "Subscriptions",
-    "chatNavBusiness": "For Business",
-    "chatFooterTerms": "Google Terms of Service and Privacy Policy apply. Gemini is an AI and may be inaccurate."
+    "chatNavHelp": "Help",
+    "@chatNavHelp": {
+        "description": "Navigation help label"
+    },
+    "chatNavSettings": "Settings",
+    "@chatNavSettings": {
+        "description": "Navigation settings label"
+    },
+    "chatNavAbout": "About Scan Job",
+    "@chatNavAbout": {
+        "description": "Navigation about label"
+    },
+    "chatNavApp": "Scan Job App",
+    "@chatNavApp": {
+        "description": "Navigation app label"
+    },
+    "chatFooterTerms": "Scan Job is an AI-powered professional tool. Please verify critical information."
 }

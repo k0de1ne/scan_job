@@ -1,43 +1,44 @@
 {
     "@@locale": "ru",
-    "appTitle": "Gemini",
+    "appTitle": "Scan Job",
     "@appTitle": {
-        "description": "Заголовок приложения"
+        "description": "The title of the application"
     },
-    "homePageMessage": "Приложение Scan Job запущено!",
-    "@homePageMessage": {
-        "description": "Сообщение, отображаемое на главной странице"
+    "dashboardTitle": "Панель управления",
+    "@dashboardTitle": {
+        "description": "The title for the dashboard page"
     },
-    "chatTitle": "Gemini",
+    "chatTitle": "Scan Job",
     "@chatTitle": {
-        "description": "Заголовок экрана чата"
+        "description": "The title for the chat page"
     },
-    "chatGreeting": "Gemini, ваш персональный ИИ-помощник",
+    "chatGreeting": "Scan Job, ваш профессиональный помощник в карьере",
     "@chatGreeting": {
-        "description": "Главное приветствие на экране чата"
+        "description": "Greeting message in chat"
     },
-    "chatWelcomeMessage": "Привет! Чем я могу помочь вам сегодня?",
-    "@chatWelcomeMessage": {
-        "description": "Приветственное сообщение в чате"
-    },
-    "chatInputPlaceholder": "Спросите Gemini",
+    "chatInputPlaceholder": "Чем я могу помочь?",
     "@chatInputPlaceholder": {
-        "description": "Текст-заполнитель в поле ввода чата"
+        "description": "Placeholder for the chat input field"
     },
-    "chatSendButtonTooltip": "Отправить",
-    "@chatSendButtonTooltip": {
-        "description": "Подсказка для кнопки отправки в чате"
+    "chatNavHistory": "История",
+    "@chatNavHistory": {
+        "description": "Navigation history label"
     },
-    "chatActionWrite": "Напиши текст",
-    "chatActionPlan": "Планируйте",
-    "chatActionExplore": "Исследуйте",
-    "chatActionLearn": "Учитесь",
-    "chatTools": "Инструменты",
-    "chatModelFast": "Быстрая",
-    "chatSignIn": "Войти",
-    "chatNavAbout": "О Gemini",
-    "chatNavApp": "Приложение Gemini",
-    "chatNavSubs": "Подписки",
-    "chatNavBusiness": "Для бизнеса",
-    "chatFooterTerms": "Действуют Условия использования Google и Политика конфиденциальности Google. Gemini – это ИИ. Он может ошибаться."
+    "chatNavHelp": "Помощь",
+    "@chatNavHelp": {
+        "description": "Navigation help label"
+    },
+    "chatNavSettings": "Настройки",
+    "@chatNavSettings": {
+        "description": "Navigation settings label"
+    },
+    "chatNavAbout": "О Scan Job",
+    "@chatNavAbout": {
+        "description": "Navigation about label"
+    },
+    "chatNavApp": "Приложение Scan Job",
+    "@chatNavApp": {
+        "description": "Navigation app label"
+    },
+    "chatFooterTerms": "Scan Job — это профессиональный инструмент на базе ИИ. Пожалуйста, проверяйте важную информацию."
 }

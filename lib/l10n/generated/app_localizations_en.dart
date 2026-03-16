@@ -9,60 +9,36 @@ class AppLocalizationsEn extends AppLocalizations {
   AppLocalizationsEn([String locale = 'en']) : super(locale);
 
   @override
-  String get appTitle => 'Gemini';
+  String get appTitle => 'Scan Job';
 
   @override
-  String get homePageMessage => 'Scan Job Application Started!';
+  String get dashboardTitle => 'Dashboard';
 
   @override
-  String get chatTitle => 'Gemini';
+  String get chatTitle => 'Scan Job';
 
   @override
-  String get chatGreeting => 'Gemini, your personal AI assistant';
+  String get chatGreeting => 'Scan Job, your professional career assistant';
 
   @override
-  String get chatWelcomeMessage => 'Hello! How can I help you today?';
+  String get chatInputPlaceholder => 'How can I help you today?';
 
   @override
-  String get chatInputPlaceholder => 'Ask Gemini';
+  String get chatNavHistory => 'History';
 
   @override
-  String get chatSendButtonTooltip => 'Send';
+  String get chatNavHelp => 'Help';
 
   @override
-  String get chatActionWrite => 'Write text';
+  String get chatNavSettings => 'Settings';
 
   @override
-  String get chatActionPlan => 'Plan';
+  String get chatNavAbout => 'About Scan Job';
 
   @override
-  String get chatActionExplore => 'Explore';
-
-  @override
-  String get chatActionLearn => 'Learn';
-
-  @override
-  String get chatTools => 'Tools';
-
-  @override
-  String get chatModelFast => 'Fast';
-
-  @override
-  String get chatSignIn => 'Sign in';
-
-  @override
-  String get chatNavAbout => 'About Gemini';
-
-  @override
-  String get chatNavApp => 'Gemini App';
-
-  @override
-  String get chatNavSubs => 'Subscriptions';
-
-  @override
-  String get chatNavBusiness => 'For Business';
+  String get chatNavApp => 'Scan Job App';
 
   @override
   String get chatFooterTerms =>
-      'Google Terms of Service and Privacy Policy apply. Gemini is an AI and may be inaccurate.';
+      'Scan Job is an AI-powered professional tool. Please verify critical information.';
 }

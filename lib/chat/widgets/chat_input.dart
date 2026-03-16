@@ -33,6 +33,7 @@ class _ChatInputState extends State<ChatInput> {
   @override
   Widget build(BuildContext context) {
     final l10n = context.l10n;
+    final colorScheme = Theme.of(context).colorScheme;
     final screenWidth = MediaQuery.of(context).size.width;
     final isDesktop = screenWidth > 900;
     final isTablet = screenWidth > 600;
@@ -48,7 +49,7 @@ class _ChatInputState extends State<ChatInput> {
                   vertical: 16,
                 ),
           decoration: BoxDecoration(
-            color: const Color(0xFF1E1F20), // 30, 31, 32
+            color: colorScheme.surfaceContainer,
             borderRadius: BorderRadius.circular(28),
           ),
           child: Material(
@@ -64,14 +65,13 @@ class _ChatInputState extends State<ChatInput> {
                     controller: _controller,
                     maxLines: null,
                     onChanged: (_) => setState(() {}),
-                    style:
-                        const TextStyle(fontSize: 16, color: Color(0xFFE3E3E3)),
+                    style: TextStyle(fontSize: 16, color: colorScheme.onSurface),
                     decoration: InputDecoration(
                       hintText: l10n.chatInputPlaceholder,
-                      hintStyle: const TextStyle(
-                        color: Color(0xFFC4C7C5),
+                      hintStyle: TextStyle(
+                        color: colorScheme.onSurfaceVariant,
                         fontSize: 16,
-                      ), // 196, 199, 197
+                      ),
                       border: InputBorder.none,
                       enabledBorder: InputBorder.none,
                       focusedBorder: InputBorder.none,
@@ -91,20 +91,18 @@ class _ChatInputState extends State<ChatInput> {
                         mainAxisSize: MainAxisSize.min,
                         children: [
                           IconButton(
-                            icon: const Icon(
+                            icon: Icon(
                               Icons.add,
-                              color: Color(0xFFC4C7C5),
-                            ), // 196, 199, 197
+                              color: colorScheme.onSurfaceVariant,
+                            ),
                             onPressed: () {},
                             padding: const EdgeInsets.all(8),
                             constraints: const BoxConstraints(),
-                            hoverColor: const Color(0xFF3C3D3E),
                           ),
                           SizedBox(width: isTablet ? 8 : 4),
                           InkWell(
                             onTap: () {},
                             borderRadius: BorderRadius.circular(20),
-                            hoverColor: const Color(0xFF3C3D3E),
                             child: Padding(
                               padding: const EdgeInsets.symmetric(
                                 horizontal: 12,
@@ -113,18 +111,17 @@ class _ChatInputState extends State<ChatInput> {
                               child: Row(
                                 mainAxisSize: MainAxisSize.min,
                                 children: [
-                                  const Icon(
+                                  Icon(
                                     Icons.tune,
                                     size: 20,
-                                    color: Color(0xFFC4C7C5),
-                                  ), // 196, 199, 197
+                                    color: colorScheme.onSurfaceVariant,
+                                  ),
                                   if (isTablet) ...[
                                     const SizedBox(width: 8),
-                                    const Text(
+                                    Text(
                                       'Инструменты',
                                       style: TextStyle(
-                                        color:
-                                            Color(0xFFC4C7C5), // 196, 199, 197
+                                        color: colorScheme.onSurfaceVariant,
                                         fontSize: 14,
                                         fontWeight: FontWeight.w500,
                                       ),
@@ -143,7 +140,6 @@ class _ChatInputState extends State<ChatInput> {
                           InkWell(
                             onTap: () {},
                             borderRadius: BorderRadius.circular(20),
-                            hoverColor: const Color(0xFF3C3D3E),
                             child: Padding(
                               padding: const EdgeInsets.symmetric(
                                 horizontal: 12,
@@ -153,19 +149,18 @@ class _ChatInputState extends State<ChatInput> {
                                 mainAxisSize: MainAxisSize.min,
                                 children: [
                                   if (isTablet)
-                                    const Text(
-                                      'Gemini 2.0 Flash',
+                                    Text(
+                                      'Scan Job AI',
                                       style: TextStyle(
-                                        color:
-                                            Color(0xFFC4C7C5), // 196, 199, 197
+                                        color: colorScheme.onSurfaceVariant,
                                         fontSize: 14,
                                         fontWeight: FontWeight.w500,
                                       ),
                                     ),
-                                  const Icon(
+                                  Icon(
                                     Icons.arrow_drop_down,
-                                    color: Color(0xFFC4C7C5),
-                                  ), // 196, 199, 197
+                                    color: colorScheme.onSurfaceVariant,
+                                  ),
                                 ],
                               ),
                             ),
@@ -173,25 +168,23 @@ class _ChatInputState extends State<ChatInput> {
                           SizedBox(width: isTablet ? 8 : 4),
                           if (_controller.text.isEmpty)
                             IconButton(
-                              icon: const Icon(
+                              icon: Icon(
                                 Icons.mic_none,
-                                color: Color(0xFFC4C7C5),
-                              ), // 196, 199, 197
-                              onPressed: () {}, // Changed from null to show hover
+                                color: colorScheme.onSurfaceVariant,
+                              ),
+                              onPressed: () {},
                               padding: const EdgeInsets.all(8),
                               constraints: const BoxConstraints(),
-                              hoverColor: const Color(0xFF3C3D3E),
                             )
                           else
                             IconButton(
-                              icon: const Icon(
+                              icon: Icon(
                                 Icons.send,
-                                color: Color(0xFFC4C7C5),
-                              ), // 196, 199, 197
+                                color: colorScheme.onSurfaceVariant,
+                              ),
                               onPressed: _sendMessage,
                               padding: const EdgeInsets.all(8),
                               constraints: const BoxConstraints(),
-                              hoverColor: const Color(0xFF3C3D3E),
                             ),
                         ],
                       ),

@@ -5,14 +5,19 @@ class DashboardStub extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const Column(
+    final colorScheme = Theme.of(context).colorScheme;
+    return Column(
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
-        Icon(Icons.dashboard_outlined, size: 64, color: Colors.grey),
-        SizedBox(height: 16),
+        Icon(
+          Icons.dashboard_outlined,
+          size: 64,
+          color: colorScheme.onSurfaceVariant,
+        ),
+        const SizedBox(height: 16),
         Text(
           'Dashboard coming soon',
-          style: TextStyle(fontSize: 18, color: Colors.grey),
+          style: TextStyle(fontSize: 18, color: colorScheme.onSurfaceVariant),
         ),
       ],
     );
