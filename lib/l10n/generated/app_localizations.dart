@@ -197,7 +197,7 @@ abstract class AppLocalizations {
   /// No description provided for @chatThinkingProcess.
   ///
   /// In en, this message translates to:
-  /// **'Thinking Process'**
+  /// **'Thinking'**
   String get chatThinkingProcess;
 
   /// No description provided for @chatPlan.
@@ -241,6 +241,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Active'**
   String get chatStepActive;
+
+  /// No description provided for @chatModelQuick.
+  ///
+  /// In en, this message translates to:
+  /// **'Quick'**
+  String get chatModelQuick;
 
   /// No description provided for @chatFooterTerms.
   ///

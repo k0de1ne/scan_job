@@ -46,7 +46,7 @@
         "description": "Navigation app label"
     },
     "chatNewChat": "New Chat",
-    "chatThinkingProcess": "Thinking Process",
+    "chatThinkingProcess": "Thinking",
     "chatPlan": "Action Plan",
     "chatToolCall": "Tool Call",
     "chatToolResult": "Result",
@@ -54,5 +54,6 @@
     "chatInputFooter": "Scan Job is an AI. It can make mistakes.",
     "chatStepCompleted": "Completed",
     "chatStepActive": "Active",
+    "chatModelQuick": "Quick",
     "chatFooterTerms": "Scan Job is an AI-powered professional tool. Please verify critical information."
 }

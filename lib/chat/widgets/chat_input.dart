@@ -41,11 +41,11 @@ class _ChatInputState extends State<ChatInput> {
         child: Container(
           margin: const EdgeInsets.symmetric(horizontal: 20),
           decoration: BoxDecoration(
-            color: Colors.white,
+            color: colorScheme.surfaceContainer,
             borderRadius: BorderRadius.circular(28),
             boxShadow: [
               BoxShadow(
-                color: Colors.black.withOpacity(0.05),
+                color: colorScheme.onSurface.withOpacity(0.05),
                 blurRadius: 6,
                 offset: const Offset(0, 2),
               ),
@@ -66,8 +66,8 @@ class _ChatInputState extends State<ChatInput> {
                     style: TextStyle(fontSize: 16, color: colorScheme.onSurface),
                     decoration: InputDecoration(
                       hintText: l10n.chatInputPlaceholder,
-                      hintStyle: const TextStyle(
-                        color: Color(0xFF474747),
+                      hintStyle: TextStyle(
+                        color: colorScheme.onSurfaceVariant,
                         fontSize: 16,
                       ),
                       border: InputBorder.none,
@@ -104,7 +104,7 @@ class _ChatInputState extends State<ChatInput> {
                         children: [
                           _ActionButton(
                             onTap: () {},
-                            label: 'Быстрая',
+                            label: l10n.chatModelQuick,
                             icon: Icons.expand_more,
                           ),
                           const SizedBox(width: 8),
@@ -146,6 +146,8 @@ class _ActionButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final colorScheme = Theme.of(context).colorScheme;
+
     return Material(
       color: backgroundColor ?? Colors.transparent,
       borderRadius: BorderRadius.circular(20),
@@ -162,10 +164,10 @@ class _ActionButton extends StatelessWidget {
               if (label != null) ...[
                 Text(
                   label!,
-                  style: const TextStyle(
+                  style: TextStyle(
                     fontSize: 14,
                     fontWeight: FontWeight.w500,
-                    color: Color(0xFF474747),
+                    color: colorScheme.onSurfaceVariant,
                   ),
                 ),
                 const SizedBox(width: 8),
@@ -174,7 +176,7 @@ class _ActionButton extends StatelessWidget {
                 Icon(
                   icon,
                   size: 20,
-                  color: const Color(0xFF474747),
+                  color: colorScheme.onSurfaceVariant,
                 ),
             ],
           ),

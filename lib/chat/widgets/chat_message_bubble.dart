@@ -32,13 +32,13 @@ class ChatMessageBubble extends StatelessWidget {
               padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
               decoration: BoxDecoration(
                 color: isUser
-                    ? const Color(0xFFD4E4FF)
+                    ? colorScheme.primaryContainer
                     : Colors.transparent,
                 borderRadius: BorderRadius.circular(24),
                 boxShadow: isUser
                     ? [
                         BoxShadow(
-                          color: Colors.black.withOpacity(0.08),
+                          color: colorScheme.onSurface.withOpacity(0.08),
                           blurRadius: 2,
                           offset: const Offset(0, 1),
                         )

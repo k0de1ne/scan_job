@@ -46,13 +46,14 @@
         "description": "Navigation app label"
     },
     "chatNewChat": "Новый чат",
-    "chatThinkingProcess": "Процесс размышления",
+    "chatThinkingProcess": "Размышление",
     "chatPlan": "План действий",
     "chatToolCall": "Вызов инструмента",
     "chatToolResult": "Результат",
-    "chatInputHero": "Ваш личный ИИ-ассистент по карьере",
+    "chatInputHero": "Ваш личный карьерный ИИ-ассистент",
     "chatInputFooter": "Scan Job – это ИИ. Он может ошибаться.",
     "chatStepCompleted": "Выполнено",
     "chatStepActive": "В процессе",
+    "chatModelQuick": "Быстрая",
     "chatFooterTerms": "Scan Job — это профессиональный инструмент на базе ИИ. Пожалуйста, проверяйте важную информацию."
 }

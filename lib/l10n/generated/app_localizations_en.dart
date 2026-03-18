@@ -57,7 +57,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get chatNewChat => 'New Chat';
 
   @override
-  String get chatThinkingProcess => 'Thinking Process';
+  String get chatThinkingProcess => 'Thinking';
 
   @override
   String get chatPlan => 'Action Plan';
@@ -79,6 +79,9 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get chatStepActive => 'Active';
+
+  @override
+  String get chatModelQuick => 'Quick';
 
   @override
   String get chatFooterTerms =>

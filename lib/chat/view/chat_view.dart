@@ -256,6 +256,8 @@ class _InputArea extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final colorScheme = Theme.of(context).colorScheme;
+
     return Column(
       mainAxisSize: MainAxisSize.min,
       children: [
@@ -264,9 +266,9 @@ class _InputArea extends StatelessWidget {
           padding: const EdgeInsets.only(bottom: 12, top: 8),
           child: Text(
             l10n.chatInputFooter,
-            style: const TextStyle(
+            style: TextStyle(
               fontSize: 11,
-              color: Color(0xFF9AA0A6),
+              color: colorScheme.onSurfaceVariant.withOpacity(0.6),
             ),
           ),
         ),

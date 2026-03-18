@@ -26,6 +26,12 @@ abstract final class AppTheme {
       surfaceContainer: const Color(0xFFFFFFFF),
       primary: const Color(0xFF1A73E8),
     ),
+    extensions: [
+      const AppColors(
+        success: Color(0xFF28A745),
+        onSuccess: Color(0xFFFFFFFF),
+      ),
+    ],
     hoverColor: const Color(0xFFE9EEF6),
     highlightColor: const Color(0xFFE9EEF6),
     splashColor: const Color(0xFFE9EEF6),
@@ -71,6 +77,12 @@ abstract final class AppTheme {
       outline: const Color(0xFF444746),
       outlineVariant: const Color(0xFF444746),
     ),
+    extensions: [
+      const AppColors(
+        success: Color(0xFF48C76F),
+        onSuccess: Color(0xFF000000),
+      ),
+    ],
   );
 
   static ThemeData getTheme(ThemeMode mode) {
@@ -80,4 +92,38 @@ abstract final class AppTheme {
       ThemeMode.system => light,
     };
   }
+}
+
+class AppColors extends ThemeExtension<AppColors> {
+  const AppColors({
+    required this.success,
+    required this.onSuccess,
+  });
+
+  final Color success;
+  final Color onSuccess;
+
+  @override
+  AppColors copyWith({
+    Color? success,
+    Color? onSuccess,
+  }) {
+    return AppColors(
+      success: success ?? this.success,
+      onSuccess: onSuccess ?? this.onSuccess,
+    );
+  }
+
+  @override
+  AppColors lerp(ThemeExtension<AppColors>? other, double t) {
+    if (other is! AppColors) return this;
+    return AppColors(
+      success: Color.lerp(success, other.success, t)!,
+      onSuccess: Color.lerp(onSuccess, other.onSuccess, t)!,
+    );
+  }
+}
+
+extension AppThemeX on BuildContext {
+  AppColors get appColors => Theme.of(this).extension<AppColors>()!;
 }

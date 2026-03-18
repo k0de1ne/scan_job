@@ -4,6 +4,8 @@ import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:scan_job/app/cubit/app_cubit.dart';
 import 'package:scan_job/app/cubit/app_state.dart';
 import 'package:scan_job/l10n/l10n.dart';
+import 'package:scan_job/repositories/chat_repository.dart';
+import 'package:scan_job/repositories/chat_repository_impl.dart';
 import 'package:scan_job/router/app_router.dart';
 import 'package:scan_job/theme/app_theme.dart';
 
@@ -12,9 +14,16 @@ class App extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BlocProvider(
-      create: (_) => AppCubit(),
-      child: const AppView(),
+    return MultiRepositoryProvider(
+      providers: [
+        RepositoryProvider<ChatRepository>(
+          create: (context) => ChatRepositoryImpl(),
+        ),
+      ],
+      child: BlocProvider(
+        create: (_) => AppCubit(),
+        child: const AppView(),
+      ),
     );
   }
 }

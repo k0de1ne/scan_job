@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:scan_job/chat/models/chat_message.dart';
 import 'package:scan_job/l10n/l10n.dart';
+import 'package:scan_job/theme/app_theme.dart';
 
 class ThinkingProcess extends StatefulWidget {
   const ThinkingProcess({required this.metadata, super.key});
@@ -28,7 +29,7 @@ class _ThinkingProcessState extends State<ThinkingProcess> {
         boxShadow: _isExpanded
             ? [
                 BoxShadow(
-                  color: Colors.black.withOpacity(0.05),
+                  color: colorScheme.onSurface.withOpacity(0.05),
                   blurRadius: 12,
                   offset: const Offset(0, 4),
                 )
@@ -45,6 +46,7 @@ class _ThinkingProcessState extends State<ThinkingProcess> {
             child: Padding(
               padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
               child: Row(
+                mainAxisSize: MainAxisSize.min,
                 children: [
                   Icon(
                     Icons.psychology_outlined,
@@ -60,9 +62,9 @@ class _ThinkingProcessState extends State<ThinkingProcess> {
                       color: colorScheme.onSurfaceVariant,
                     ),
                   ),
-                  const Spacer(),
                   if (widget.metadata.inputTokens != null &&
-                      widget.metadata.outputTokens != null)
+                      widget.metadata.outputTokens != null) ...[
+                    const SizedBox(width: 16),
                     Container(
                       padding: const EdgeInsets.symmetric(
                           horizontal: 12, vertical: 4),
@@ -75,6 +77,7 @@ class _ThinkingProcessState extends State<ThinkingProcess> {
                         style: const TextStyle(fontSize: 11),
                       ),
                     ),
+                  ],
                   const SizedBox(width: 8),
                   AnimatedRotation(
                     turns: _isExpanded ? 0.5 : 0,
@@ -94,7 +97,7 @@ class _ThinkingProcessState extends State<ThinkingProcess> {
               padding: const EdgeInsets.fromLTRB(8, 0, 8, 8),
               child: Container(
                 decoration: BoxDecoration(
-                  color: Colors.white.withOpacity(0.5),
+                  color: colorScheme.surface.withOpacity(0.5),
                   borderRadius: BorderRadius.circular(20),
                 ),
                 child: Column(
@@ -118,6 +121,7 @@ class _ThoughtStepWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final colorScheme = Theme.of(context).colorScheme;
+    final appColors = context.appColors;
 
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 12),
@@ -134,10 +138,10 @@ class _ThoughtStepWidget extends StatelessWidget {
                   margin: const EdgeInsets.only(top: 6),
                   decoration: BoxDecoration(
                     shape: BoxShape.circle,
-                    color: _getStatusColor(colorScheme),
+                    color: _getStatusColor(colorScheme, appColors),
                     boxShadow: [
                       BoxShadow(
-                        color: _getStatusColor(colorScheme),
+                        color: _getStatusColor(colorScheme, appColors),
                         spreadRadius: 1,
                         blurRadius: 0,
                       ),
@@ -154,7 +158,7 @@ class _ThoughtStepWidget extends StatelessWidget {
               ],
             ),
             const SizedBox(width: 16),
-            Expanded(
+            Flexible(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
@@ -195,9 +199,9 @@ class _ThoughtStepWidget extends StatelessWidget {
     );
   }
 
-  Color _getStatusColor(ColorScheme colorScheme) {
+  Color _getStatusColor(ColorScheme colorScheme, AppColors appColors) {
     return switch (step.status) {
-      StepStatus.completed => Colors.green,
+      StepStatus.completed => appColors.success,
       StepStatus.active => colorScheme.primary,
       StepStatus.pending => colorScheme.outline,
     };
@@ -212,6 +216,7 @@ class _PlanWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final colorScheme = Theme.of(context).colorScheme;
+    final appColors = context.appColors;
     final l10n = context.l10n;
 
     return Container(
@@ -225,7 +230,8 @@ class _PlanWidget extends StatelessWidget {
         children: [
           Row(
             children: [
-              Icon(Icons.assignment_outlined, size: 14, color: colorScheme.onSurfaceVariant),
+              Icon(Icons.assignment_outlined,
+                  size: 14, color: colorScheme.onSurfaceVariant),
               const SizedBox(width: 8),
               Text(
                 l10n.chatPlan.toUpperCase(),
@@ -246,19 +252,21 @@ class _PlanWidget extends StatelessWidget {
                       width: 18,
                       height: 18,
                       decoration: BoxDecoration(
-                        color: item.done ? Colors.green : Colors.transparent,
+                        color: item.done ? appColors.success : Colors.transparent,
                         border: Border.all(
-                          color: item.done ? Colors.green : colorScheme.outline,
+                          color:
+                              item.done ? appColors.success : colorScheme.outline,
                           width: 1.5,
                         ),
                         borderRadius: BorderRadius.circular(2),
                       ),
                       child: item.done
-                          ? const Icon(Icons.check, size: 14, color: Colors.white)
+                          ? Icon(Icons.check,
+                              size: 14, color: appColors.onSuccess)
                           : null,
                     ),
                     const SizedBox(width: 10),
-                    Expanded(
+                    Flexible(
                       child: Text(
                         item.task,
                         style: TextStyle(
@@ -296,11 +304,12 @@ class _ToolCallWidgetState extends State<_ToolCallWidget> {
   @override
   Widget build(BuildContext context) {
     final colorScheme = Theme.of(context).colorScheme;
+    final appColors = context.appColors;
     final l10n = context.l10n;
 
     return Container(
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: colorScheme.surface,
         borderRadius: BorderRadius.circular(16),
         border: Border.all(color: colorScheme.outlineVariant),
       ),
@@ -315,7 +324,7 @@ class _ToolCallWidgetState extends State<_ToolCallWidget> {
               children: [
                 Icon(Icons.terminal, size: 14, color: colorScheme.primary),
                 const SizedBox(width: 8),
-                Expanded(
+                Flexible(
                   child: Text(
                     widget.tool,
                     style: TextStyle(
@@ -336,7 +345,8 @@ class _ToolCallWidgetState extends State<_ToolCallWidget> {
                 children: [
                   if (widget.output!.length > 100)
                     InkWell(
-                      onTap: () => setState(() => _isOutputExpanded = !_isOutputExpanded),
+                      onTap: () =>
+                          setState(() => _isOutputExpanded = !_isOutputExpanded),
                       child: Row(
                         children: [
                           Text(
@@ -348,7 +358,9 @@ class _ToolCallWidgetState extends State<_ToolCallWidget> {
                             ),
                           ),
                           Icon(
-                            _isOutputExpanded ? Icons.expand_less : Icons.expand_more,
+                            _isOutputExpanded
+                                ? Icons.expand_less
+                                : Icons.expand_more,
                             size: 16,
                             color: colorScheme.primary,
                           ),
@@ -369,10 +381,10 @@ class _ToolCallWidgetState extends State<_ToolCallWidget> {
                       padding: const EdgeInsets.only(top: 8),
                       child: Text(
                         widget.output!,
-                        style: const TextStyle(
+                        style: TextStyle(
                           fontFamily: 'monospace',
                           fontSize: 11,
-                          color: Colors.green,
+                          color: appColors.success,
                         ),
                       ),
                     ),

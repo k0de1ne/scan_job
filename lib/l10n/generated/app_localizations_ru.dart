@@ -58,7 +58,7 @@ class AppLocalizationsRu extends AppLocalizations {
   String get chatNewChat => 'Новый чат';
 
   @override
-  String get chatThinkingProcess => 'Процесс размышления';
+  String get chatThinkingProcess => 'Размышление';
 
   @override
   String get chatPlan => 'План действий';
@@ -70,7 +70,7 @@ class AppLocalizationsRu extends AppLocalizations {
   String get chatToolResult => 'Результат';
 
   @override
-  String get chatInputHero => 'Ваш личный ИИ-ассистент по карьере';
+  String get chatInputHero => 'Ваш личный карьерный ИИ-ассистент';
 
   @override
   String get chatInputFooter => 'Scan Job – это ИИ. Он может ошибаться.';
@@ -80,6 +80,9 @@ class AppLocalizationsRu extends AppLocalizations {
 
   @override
   String get chatStepActive => 'В процессе';
+
+  @override
+  String get chatModelQuick => 'Быстрая';
 
   @override
   String get chatFooterTerms =>
