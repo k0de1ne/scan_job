@@ -32,6 +32,11 @@
     "@chatNavSettings": {
         "description": "Navigation settings label"
     },
+    "settingsTitle": "Настройки",
+    "settingsThemeTitle": "Внешний вид",
+    "settingsThemeLight": "Светлая",
+    "settingsThemeDark": "Темная",
+    "settingsThemeSystem": "Системная",
     "chatNavAbout": "О Scan Job",
     "@chatNavAbout": {
         "description": "Navigation about label"

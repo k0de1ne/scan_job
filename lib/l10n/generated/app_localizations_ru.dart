@@ -34,6 +34,21 @@ class AppLocalizationsRu extends AppLocalizations {
   String get chatNavSettings => 'Настройки';
 
   @override
+  String get settingsTitle => 'Настройки';
+
+  @override
+  String get settingsThemeTitle => 'Внешний вид';
+
+  @override
+  String get settingsThemeLight => 'Светлая';
+
+  @override
+  String get settingsThemeDark => 'Темная';
+
+  @override
+  String get settingsThemeSystem => 'Системная';
+
+  @override
   String get chatNavAbout => 'О Scan Job';
 
   @override

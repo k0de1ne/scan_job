@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:scan_job/chat/cubit/chat_cubit.dart';
 import 'package:scan_job/l10n/l10n.dart';
+import 'package:scan_job/widgets/settings_dialog.dart';
 
 class ChatSidebar extends StatelessWidget {
   const ChatSidebar({super.key});
@@ -38,7 +39,10 @@ class ChatSidebar extends StatelessWidget {
               _SideButton(
                 icon: Icons.settings_outlined,
                 label: l10n.chatNavSettings,
-                onTap: () {},
+                onTap: () {
+                  Navigator.of(context).maybePop();
+                  SettingsDialog.show(context);
+                },
               ),
             ],
           ),

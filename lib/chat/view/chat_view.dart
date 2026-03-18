@@ -7,6 +7,7 @@ import 'package:scan_job/chat/widgets/chat_input.dart';
 import 'package:scan_job/chat/widgets/chat_message_bubble.dart';
 import 'package:scan_job/chat/widgets/sidebar.dart';
 import 'package:scan_job/l10n/l10n.dart';
+import 'package:scan_job/widgets/settings_dialog.dart';
 
 class ChatView extends StatefulWidget {
   const ChatView({super.key});
@@ -110,7 +111,7 @@ class _DesktopSidebar extends StatelessWidget {
           _SideButton(
             icon: Icons.settings_outlined,
             label: isExpanded ? l10n.chatNavSettings : null,
-            onTap: () {},
+            onTap: () => SettingsDialog.show(context),
           ),
         ],
       ),

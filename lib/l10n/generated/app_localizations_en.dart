@@ -33,6 +33,21 @@ class AppLocalizationsEn extends AppLocalizations {
   String get chatNavSettings => 'Settings';
 
   @override
+  String get settingsTitle => 'Settings';
+
+  @override
+  String get settingsThemeTitle => 'Appearance';
+
+  @override
+  String get settingsThemeLight => 'Light';
+
+  @override
+  String get settingsThemeDark => 'Dark';
+
+  @override
+  String get settingsThemeSystem => 'System Default';
+
+  @override
   String get chatNavAbout => 'About Scan Job';
 
   @override
