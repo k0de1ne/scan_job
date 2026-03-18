@@ -40,5 +40,14 @@
     "@chatNavApp": {
         "description": "Navigation app label"
     },
+    "chatNewChat": "Новый чат",
+    "chatThinkingProcess": "Процесс размышления",
+    "chatPlan": "План действий",
+    "chatToolCall": "Вызов инструмента",
+    "chatToolResult": "Результат",
+    "chatInputHero": "Ваш личный ИИ-ассистент по карьере",
+    "chatInputFooter": "Scan Job – это ИИ. Он может ошибаться.",
+    "chatStepCompleted": "Выполнено",
+    "chatStepActive": "В процессе",
     "chatFooterTerms": "Scan Job — это профессиональный инструмент на базе ИИ. Пожалуйста, проверяйте важную информацию."
 }

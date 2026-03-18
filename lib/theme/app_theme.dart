@@ -2,23 +2,34 @@ import 'package:flex_color_scheme/flex_color_scheme.dart';
 import 'package:flutter/material.dart';
 
 abstract final class AppTheme {
-  static ThemeData light =
-      FlexThemeData.light(
-        scheme: FlexScheme.blackWhite,
-        subThemesData: const FlexSubThemesData(
-          tintedDisabledControls: true,
-          useM2StyleDividerInM3: true,
-          inputDecoratorIsFilled: true,
-          inputDecoratorBorderType: FlexInputBorderType.outline,
-          alignedDropdown: true,
-          navigationRailUseIndicator: true,
-          defaultRadius: 8,
-        ),
-      ).copyWith(
-        hoverColor: const Color(0xFF2C2D2D),
-        highlightColor: const Color(0xFF2C2D2D),
-        splashColor: const Color(0xFF2C2D2D),
-      );
+  static ThemeData light = FlexThemeData.light(
+    scheme: FlexScheme.blackWhite,
+    surface: const Color(0xFFF0F4F9),
+    scaffoldBackground: const Color(0xFFF0F4F9),
+    subThemesData: const FlexSubThemesData(
+      tintedDisabledControls: true,
+      useM2StyleDividerInM3: true,
+      inputDecoratorIsFilled: true,
+      inputDecoratorBorderType: FlexInputBorderType.outline,
+      alignedDropdown: true,
+      navigationRailUseIndicator: true,
+      defaultRadius: 8,
+    ),
+  ).copyWith(
+    colorScheme: ColorScheme.fromSeed(
+      seedColor: const Color(0xFF1A73E8),
+      brightness: Brightness.light,
+      surface: const Color(0xFFF0F4F9),
+      onSurface: const Color(0xFF1F1F1F),
+      onSurfaceVariant: const Color(0xFF474747),
+      surfaceContainerLow: const Color(0xFFE9EEF6),
+      surfaceContainer: const Color(0xFFFFFFFF),
+      primary: const Color(0xFF1A73E8),
+    ),
+    hoverColor: const Color(0xFFE9EEF6),
+    highlightColor: const Color(0xFFE9EEF6),
+    splashColor: const Color(0xFFE9EEF6),
+  );
 
   static ThemeData dark = FlexThemeData.dark(
     colors: const FlexSchemeColor(

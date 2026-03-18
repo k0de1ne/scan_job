@@ -40,5 +40,14 @@
     "@chatNavApp": {
         "description": "Navigation app label"
     },
+    "chatNewChat": "New Chat",
+    "chatThinkingProcess": "Thinking Process",
+    "chatPlan": "Action Plan",
+    "chatToolCall": "Tool Call",
+    "chatToolResult": "Result",
+    "chatInputHero": "Your personal AI career assistant",
+    "chatInputFooter": "Scan Job is an AI. It can make mistakes.",
+    "chatStepCompleted": "Completed",
+    "chatStepActive": "Active",
     "chatFooterTerms": "Scan Job is an AI-powered professional tool. Please verify critical information."
 }

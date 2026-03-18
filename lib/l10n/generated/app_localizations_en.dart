@@ -39,6 +39,33 @@ class AppLocalizationsEn extends AppLocalizations {
   String get chatNavApp => 'Scan Job App';
 
   @override
+  String get chatNewChat => 'New Chat';
+
+  @override
+  String get chatThinkingProcess => 'Thinking Process';
+
+  @override
+  String get chatPlan => 'Action Plan';
+
+  @override
+  String get chatToolCall => 'Tool Call';
+
+  @override
+  String get chatToolResult => 'Result';
+
+  @override
+  String get chatInputHero => 'Your personal AI career assistant';
+
+  @override
+  String get chatInputFooter => 'Scan Job is an AI. It can make mistakes.';
+
+  @override
+  String get chatStepCompleted => 'Completed';
+
+  @override
+  String get chatStepActive => 'Active';
+
+  @override
   String get chatFooterTerms =>
       'Scan Job is an AI-powered professional tool. Please verify critical information.';
 }

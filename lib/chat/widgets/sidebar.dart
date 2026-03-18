@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:scan_job/chat/cubit/chat_cubit.dart';
 import 'package:scan_job/l10n/l10n.dart';
 
 class ChatSidebar extends StatelessWidget {
@@ -12,136 +13,86 @@ class ChatSidebar extends StatelessWidget {
 
     return Drawer(
       backgroundColor: colorScheme.surfaceContainerLow,
-      shape: const RoundedRectangleBorder(), // Прямоугольный край, как вы просили
+      width: 280,
+      shape: const RoundedRectangleBorder(),
       child: SafeArea(
-        child: Column(
-          children: [
-            // Header
-            Container(
-              height: 64,
-              padding: const EdgeInsets.symmetric(horizontal: 16),
-              child: Row(
-                children: [
-                  Text(
-                    l10n.appTitle,
-                    style: GoogleFonts.googleSans(
-                      fontWeight: FontWeight.w600,
-                      fontSize: 18,
-                      color: colorScheme.onSurface,
-                    ),
-                  ),
-                ],
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 16),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              _SideButton(
+                icon: Icons.menu,
+                onTap: () => Navigator.of(context).maybePop(),
               ),
-            ),
-            const SizedBox(height: 8),
-            // Items
-            Expanded(
-              child: ListView(
-                padding: const EdgeInsets.symmetric(horizontal: 12),
-                children: [
-                  _SidebarTile(
-                    icon: Icons.add,
-                    label: 'Новый чат',
-                    onTap: () => Navigator.pop(context),
-                    isSelected: true,
-                  ),
-                  const SizedBox(height: 24),
-                  Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 12),
-                    child: Text(
-                      'Недавние',
-                      style: TextStyle(
-                        fontSize: 12,
-                        fontWeight: FontWeight.w600,
-                        color: colorScheme.onSurfaceVariant,
-                      ),
-                    ),
-                  ),
-                  const SizedBox(height: 8),
-                  // Здесь потом будет список истории
-                ],
+              const SizedBox(height: 12),
+              _SideButton(
+                icon: Icons.edit_square,
+                label: l10n.chatNewChat,
+                onTap: () {
+                  context.read<ChatCubit>().clearChat();
+                  Navigator.of(context).maybePop();
+                },
               ),
-            ),
-            // Bottom Section
-            const Divider(height: 1, indent: 16, endIndent: 16),
-            Padding(
-              padding: const EdgeInsets.all(12),
-              child: Column(
-                children: [
-                  _SidebarTile(
-                    icon: Icons.help_outline,
-                    label: l10n.chatNavHelp,
-                    onTap: () => Navigator.pop(context),
-                  ),
-                  _SidebarTile(
-                    icon: Icons.history,
-                    label: l10n.chatNavHistory,
-                    onTap: () => Navigator.pop(context),
-                  ),
-                  _SidebarTile(
-                    icon: Icons.settings_outlined,
-                    label: l10n.chatNavSettings,
-                    onTap: () => Navigator.pop(context),
-                  ),
-                ],
+              const Spacer(),
+              _SideButton(
+                icon: Icons.settings_outlined,
+                label: l10n.chatNavSettings,
+                onTap: () {},
               ),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );
   }
 }
 
-class _SidebarTile extends StatelessWidget {
-  const _SidebarTile({
-    required this.icon,
-    required this.label,
+class _SideButton extends StatelessWidget {
+  const _SideButton({
     required this.onTap,
-    this.isSelected = false,
+    super.key,
+    this.icon,
+    this.label,
   });
 
-  final IconData icon;
-  final String label;
   final VoidCallback onTap;
-  final bool isSelected;
+  final IconData? icon;
+  final String? label;
 
   @override
   Widget build(BuildContext context) {
     final colorScheme = Theme.of(context).colorScheme;
 
-    return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 2),
-      child: Material(
-        color: isSelected ? colorScheme.secondaryContainer : Colors.transparent,
-        borderRadius: BorderRadius.circular(12),
-        child: InkWell(
-          onTap: onTap,
-          borderRadius: BorderRadius.circular(12),
-          child: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 12),
-            child: Row(
-              children: [
-                Icon(
-                  icon,
-                  color: isSelected ? colorScheme.onSecondaryContainer : colorScheme.onSurfaceVariant,
-                  size: 22,
-                ),
+    return Material(
+      color: Colors.transparent,
+      borderRadius: BorderRadius.circular(20),
+      child: InkWell(
+        onTap: onTap,
+        borderRadius: BorderRadius.circular(20),
+        child: Container(
+          height: 40,
+          padding: const EdgeInsets.symmetric(horizontal: 8),
+          child: Row(
+            children: [
+              if (icon != null)
+                Icon(icon, color: colorScheme.onSurfaceVariant, size: 24),
+              if (label != null) ...[
                 const SizedBox(width: 12),
                 Expanded(
                   child: Text(
-                    label,
+                    label!,
                     style: TextStyle(
-                      color: isSelected ? colorScheme.onSecondaryContainer : colorScheme.onSurface,
                       fontSize: 14,
-                      fontWeight: isSelected ? FontWeight.w600 : FontWeight.w500,
+                      fontWeight: FontWeight.w500,
+                      color: colorScheme.onSurfaceVariant,
                     ),
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
                   ),
                 ),
               ],
-            ),
+            ],
           ),
         ),
       ),

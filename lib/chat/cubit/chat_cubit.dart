@@ -5,10 +5,7 @@ import 'package:scan_job/repositories/chat_repository.dart';
 
 class ChatCubit extends Cubit<ChatState> {
   ChatCubit({required ChatRepository chatRepository})
-    : _chatRepository = chatRepository,
-      super(const ChatState());
-
-  final ChatRepository _chatRepository;
+    : super(const ChatState());
 
   Future<void> sendMessage(String text) async {
     if (text.trim().isEmpty) return;
@@ -19,30 +16,60 @@ class ChatCubit extends Cubit<ChatState> {
       timestamp: DateTime.now(),
     );
 
-    final updatedMessages = List<ChatMessage>.from(state.messages)
-      ..add(userMessage);
-
     emit(
       state.copyWith(
-        messages: updatedMessages,
+        messages: [...state.messages, userMessage],
         status: ChatStatus.loading,
       ),
     );
 
-    final response = await _chatRepository.sendMessage(text);
+    // Simulated response with metadata matching the HTML reference
+    await Future<void>.delayed(const Duration(milliseconds: 600));
+    
     final aiMessage = ChatMessage(
-      text: response,
+      text: 'Я провел анализ и выполнил необходимые действия.',
       role: MessageRole.ai,
       timestamp: DateTime.now(),
+      metadata: const ChatMetadata(
+        inputTokens: 1240,
+        outputTokens: 450,
+        steps: [
+          ThoughtStep(
+            status: StepStatus.completed,
+            title: 'Планирование',
+            content: 'Формирую шаги реализации.',
+            plan: [
+              PlanItem(task: 'Поиск в базе', done: true),
+              PlanItem(task: 'Обновление данных', done: false),
+            ],
+          ),
+          ThoughtStep(
+            status: StepStatus.completed,
+            title: 'Вызов инструмента',
+            content: 'Ищу информацию...',
+            tool: 'grep_search({ pattern: "api_key" })',
+            output: 'Found 1 match in .env',
+          ),
+          ThoughtStep(
+            status: StepStatus.active,
+            title: 'Sub-agent',
+            content: 'Делегирую задачу специалисту...',
+            tool: 'codebase_investigator(...)',
+            output: '> Исследование начато...\n> Найдено 3 зависимости.',
+          ),
+        ],
+      ),
     );
 
-    final finalMessages = List<ChatMessage>.from(state.messages)
-      ..add(aiMessage);
     emit(
       state.copyWith(
-        messages: finalMessages,
+        messages: [...state.messages, aiMessage],
         status: ChatStatus.success,
       ),
     );
+  }
+
+  void clearChat() {
+    emit(const ChatState());
   }
 }

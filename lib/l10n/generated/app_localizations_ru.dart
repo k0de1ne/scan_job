@@ -40,6 +40,33 @@ class AppLocalizationsRu extends AppLocalizations {
   String get chatNavApp => 'Приложение Scan Job';
 
   @override
+  String get chatNewChat => 'Новый чат';
+
+  @override
+  String get chatThinkingProcess => 'Процесс размышления';
+
+  @override
+  String get chatPlan => 'План действий';
+
+  @override
+  String get chatToolCall => 'Вызов инструмента';
+
+  @override
+  String get chatToolResult => 'Результат';
+
+  @override
+  String get chatInputHero => 'Ваш личный ИИ-ассистент по карьере';
+
+  @override
+  String get chatInputFooter => 'Scan Job – это ИИ. Он может ошибаться.';
+
+  @override
+  String get chatStepCompleted => 'Выполнено';
+
+  @override
+  String get chatStepActive => 'В процессе';
+
+  @override
   String get chatFooterTerms =>
       'Scan Job — это профессиональный инструмент на базе ИИ. Пожалуйста, проверяйте важную информацию.';
 }

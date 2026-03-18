@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:scan_job/chat/models/chat_message.dart';
+import 'package:scan_job/chat/widgets/thinking_process.dart';
 
 class ChatMessageBubble extends StatelessWidget {
   const ChatMessageBubble({
@@ -18,23 +19,42 @@ class ChatMessageBubble extends StatelessWidget {
       alignment: isUser ? Alignment.centerRight : Alignment.centerLeft,
       child: Container(
         margin: const EdgeInsets.symmetric(vertical: 8),
-        padding: isUser
-            ? const EdgeInsets.symmetric(horizontal: 20, vertical: 12)
-            : const EdgeInsets.symmetric(vertical: 12),
-        decoration: BoxDecoration(
-          color: isUser ? colorScheme.surfaceContainer : Colors.transparent,
-          borderRadius: BorderRadius.circular(24),
-        ),
         constraints: BoxConstraints(
-          maxWidth: MediaQuery.of(context).size.width * 0.8,
+          maxWidth: MediaQuery.of(context).size.width * 0.85,
         ),
-        child: Text(
-          message.text,
-          style: TextStyle(
-            color: colorScheme.onSurface,
-            fontSize: 16,
-            height: 1.5,
-          ),
+        child: Column(
+          crossAxisAlignment:
+              isUser ? CrossAxisAlignment.end : CrossAxisAlignment.start,
+          children: [
+            if (!isUser && message.metadata != null)
+              ThinkingProcess(metadata: message.metadata!),
+            Container(
+              padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
+              decoration: BoxDecoration(
+                color: isUser
+                    ? const Color(0xFFD4E4FF)
+                    : Colors.transparent,
+                borderRadius: BorderRadius.circular(24),
+                boxShadow: isUser
+                    ? [
+                        BoxShadow(
+                          color: Colors.black.withOpacity(0.08),
+                          blurRadius: 2,
+                          offset: const Offset(0, 1),
+                        )
+                      ]
+                    : null,
+              ),
+              child: SelectableText(
+                message.text,
+                style: TextStyle(
+                  color: colorScheme.onSurface,
+                  fontSize: 16,
+                  height: 1.6,
+                ),
+              ),
+            ),
+          ],
         ),
       ),
     );

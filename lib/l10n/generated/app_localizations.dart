@@ -158,6 +158,60 @@ abstract class AppLocalizations {
   /// **'Scan Job App'**
   String get chatNavApp;
 
+  /// No description provided for @chatNewChat.
+  ///
+  /// In en, this message translates to:
+  /// **'New Chat'**
+  String get chatNewChat;
+
+  /// No description provided for @chatThinkingProcess.
+  ///
+  /// In en, this message translates to:
+  /// **'Thinking Process'**
+  String get chatThinkingProcess;
+
+  /// No description provided for @chatPlan.
+  ///
+  /// In en, this message translates to:
+  /// **'Action Plan'**
+  String get chatPlan;
+
+  /// No description provided for @chatToolCall.
+  ///
+  /// In en, this message translates to:
+  /// **'Tool Call'**
+  String get chatToolCall;
+
+  /// No description provided for @chatToolResult.
+  ///
+  /// In en, this message translates to:
+  /// **'Result'**
+  String get chatToolResult;
+
+  /// No description provided for @chatInputHero.
+  ///
+  /// In en, this message translates to:
+  /// **'Your personal AI career assistant'**
+  String get chatInputHero;
+
+  /// No description provided for @chatInputFooter.
+  ///
+  /// In en, this message translates to:
+  /// **'Scan Job is an AI. It can make mistakes.'**
+  String get chatInputFooter;
+
+  /// No description provided for @chatStepCompleted.
+  ///
+  /// In en, this message translates to:
+  /// **'Completed'**
+  String get chatStepCompleted;
+
+  /// No description provided for @chatStepActive.
+  ///
+  /// In en, this message translates to:
+  /// **'Active'**
+  String get chatStepActive;
+
   /// No description provided for @chatFooterTerms.
   ///
   /// In en, this message translates to:

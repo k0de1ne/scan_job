@@ -34,29 +34,27 @@ class _ChatInputState extends State<ChatInput> {
   Widget build(BuildContext context) {
     final l10n = context.l10n;
     final colorScheme = Theme.of(context).colorScheme;
-    final screenWidth = MediaQuery.of(context).size.width;
-    final isDesktop = screenWidth > 900;
-    final isTablet = screenWidth > 600;
 
     return Center(
       child: ConstrainedBox(
-        constraints: const BoxConstraints(maxWidth: 800),
+        constraints: const BoxConstraints(maxWidth: 840),
         child: Container(
-          margin: widget.isCentered
-              ? const EdgeInsets.symmetric(horizontal: 16)
-              : EdgeInsets.symmetric(
-                  horizontal: isDesktop ? 120 : (isTablet ? 48 : 16),
-                  vertical: 16,
-                ),
+          margin: const EdgeInsets.symmetric(horizontal: 20),
           decoration: BoxDecoration(
-            color: colorScheme.surfaceContainer,
+            color: Colors.white,
             borderRadius: BorderRadius.circular(28),
+            boxShadow: [
+              BoxShadow(
+                color: Colors.black.withOpacity(0.05),
+                blurRadius: 6,
+                offset: const Offset(0, 2),
+              ),
+            ],
           ),
           child: Material(
             color: Colors.transparent,
             child: Column(
               mainAxisSize: MainAxisSize.min,
-              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Padding(
                   padding:
@@ -68,8 +66,8 @@ class _ChatInputState extends State<ChatInput> {
                     style: TextStyle(fontSize: 16, color: colorScheme.onSurface),
                     decoration: InputDecoration(
                       hintText: l10n.chatInputPlaceholder,
-                      hintStyle: TextStyle(
-                        color: colorScheme.onSurfaceVariant,
+                      hintStyle: const TextStyle(
+                        color: Color(0xFF474747),
                         fontSize: 16,
                       ),
                       border: InputBorder.none,
@@ -86,106 +84,36 @@ class _ChatInputState extends State<ChatInput> {
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      // Left group
                       Row(
                         mainAxisSize: MainAxisSize.min,
                         children: [
-                          IconButton(
-                            icon: Icon(
-                              Icons.add,
-                              color: colorScheme.onSurfaceVariant,
-                            ),
-                            onPressed: () {},
-                            padding: const EdgeInsets.all(8),
-                            constraints: const BoxConstraints(),
-                          ),
-                          SizedBox(width: isTablet ? 8 : 4),
-                          InkWell(
+                          _ActionButton(
                             onTap: () {},
-                            borderRadius: BorderRadius.circular(20),
-                            child: Padding(
-                              padding: const EdgeInsets.symmetric(
-                                horizontal: 12,
-                                vertical: 8,
-                              ),
-                              child: Row(
-                                mainAxisSize: MainAxisSize.min,
-                                children: [
-                                  Icon(
-                                    Icons.tune,
-                                    size: 20,
-                                    color: colorScheme.onSurfaceVariant,
-                                  ),
-                                  if (isTablet) ...[
-                                    const SizedBox(width: 8),
-                                    Text(
-                                      'Инструменты',
-                                      style: TextStyle(
-                                        color: colorScheme.onSurfaceVariant,
-                                        fontSize: 14,
-                                        fontWeight: FontWeight.w500,
-                                      ),
-                                    ),
-                                  ],
-                                ],
-                              ),
-                            ),
+                            icon: Icons.add,
+                            isIconOnly: true,
+                          ),
+                          const SizedBox(width: 4),
+                          _ActionButton(
+                            onTap: () {},
+                            icon: Icons.tune,
                           ),
                         ],
                       ),
-                      // Right group
                       Row(
                         mainAxisSize: MainAxisSize.min,
                         children: [
-                          InkWell(
+                          _ActionButton(
                             onTap: () {},
-                            borderRadius: BorderRadius.circular(20),
-                            child: Padding(
-                              padding: const EdgeInsets.symmetric(
-                                horizontal: 12,
-                                vertical: 8,
-                              ),
-                              child: Row(
-                                mainAxisSize: MainAxisSize.min,
-                                children: [
-                                  if (isTablet)
-                                    Text(
-                                      'Scan Job AI',
-                                      style: TextStyle(
-                                        color: colorScheme.onSurfaceVariant,
-                                        fontSize: 14,
-                                        fontWeight: FontWeight.w500,
-                                      ),
-                                    ),
-                                  Icon(
-                                    Icons.arrow_drop_down,
-                                    color: colorScheme.onSurfaceVariant,
-                                  ),
-                                ],
-                              ),
-                            ),
+                            label: 'Быстрая',
+                            icon: Icons.expand_more,
                           ),
-                          SizedBox(width: isTablet ? 8 : 4),
-                          if (_controller.text.isEmpty)
-                            IconButton(
-                              icon: Icon(
-                                Icons.mic_none,
-                                color: colorScheme.onSurfaceVariant,
-                              ),
-                              onPressed: () {},
-                              padding: const EdgeInsets.all(8),
-                              constraints: const BoxConstraints(),
-                            )
-                          else
-                            IconButton(
-                              icon: Icon(
-                                Icons.send,
-                                color: colorScheme.onSurfaceVariant,
-                              ),
-                              onPressed: _sendMessage,
-                              padding: const EdgeInsets.all(8),
-                              constraints: const BoxConstraints(),
-                            ),
+                          const SizedBox(width: 8),
+                          _ActionButton(
+                            onTap: _sendMessage,
+                            icon: Icons.send,
+                            isIconOnly: true,
+                            backgroundColor: Colors.transparent,
+                          ),
                         ],
                       ),
                     ],
@@ -193,6 +121,62 @@ class _ChatInputState extends State<ChatInput> {
                 ),
               ],
             ),
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+class _ActionButton extends StatelessWidget {
+  const _ActionButton({
+    required this.onTap,
+    super.key,
+    this.icon,
+    this.label,
+    this.isIconOnly = false,
+    this.backgroundColor,
+  });
+
+  final VoidCallback onTap;
+  final IconData? icon;
+  final String? label;
+  final bool isIconOnly;
+  final Color? backgroundColor;
+
+  @override
+  Widget build(BuildContext context) {
+    return Material(
+      color: backgroundColor ?? Colors.transparent,
+      borderRadius: BorderRadius.circular(20),
+      child: InkWell(
+        onTap: onTap,
+        borderRadius: BorderRadius.circular(20),
+        child: Container(
+          height: 40,
+          padding: EdgeInsets.symmetric(horizontal: isIconOnly ? 0 : 12),
+          width: isIconOnly ? 40 : null,
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              if (label != null) ...[
+                Text(
+                  label!,
+                  style: const TextStyle(
+                    fontSize: 14,
+                    fontWeight: FontWeight.w500,
+                    color: Color(0xFF474747),
+                  ),
+                ),
+                const SizedBox(width: 8),
+              ],
+              if (icon != null)
+                Icon(
+                  icon,
+                  size: 20,
+                  color: const Color(0xFF474747),
+                ),
+            ],
           ),
         ),
       ),
