@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:scan_job/chat/cubit/chat_cubit.dart';
+import 'package:scan_job/chat/cubit/chat_state.dart';
 import 'package:scan_job/l10n/l10n.dart';
 import 'package:scan_job/theme/app_theme.dart';
 
@@ -25,10 +26,17 @@ class _ChatInputState extends State<ChatInput> {
   Future<void> _sendMessage() async {
     final text = _controller.text;
     if (text.isNotEmpty) {
+      final cubit = context.read<ChatCubit>();
+      if (cubit.state.status == ChatStatus.loading) return;
+
       _controller.clear();
       setState(() {});
-      await context.read<ChatCubit>().sendMessage(text);
+      await cubit.sendMessage(text);
     }
+  }
+
+  void _stopMessage() {
+    context.read<ChatCubit>().stopMessage();
   }
 
   @override
@@ -48,82 +56,102 @@ class _ChatInputState extends State<ChatInput> {
           ),
           child: Material(
             color: context.appColors.transparent,
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                Padding(
-                  padding: EdgeInsets.symmetric(
-                    horizontal: context.spacing.xl,
-                    vertical: context.spacing.sm,
-                  ),
-                  child: TextField(
-                    controller: _controller,
-                    maxLines: null,
-                    onChanged: (_) => setState(() {}),
-                    style: TextStyle(fontSize: 16, color: colorScheme.onSurface),
-                    decoration: InputDecoration(
-                      hintText: l10n.chatInputPlaceholder,
-                      hintStyle: TextStyle(
-                        color: colorScheme.onSurfaceVariant,
-                        fontSize: 16,
+            child: BlocBuilder<ChatCubit, ChatState>(
+              builder: (context, state) {
+                final isLoading = state.status == ChatStatus.loading;
+
+                return Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Padding(
+                      padding: EdgeInsets.symmetric(
+                        horizontal: context.spacing.xl,
+                        vertical: context.spacing.sm,
                       ),
-                      border: InputBorder.none,
-                      enabledBorder: InputBorder.none,
-                      focusedBorder: InputBorder.none,
-                      contentPadding:
-                          EdgeInsets.symmetric(vertical: context.spacing.md),
-                      filled: false,
+                      child: TextField(
+                        controller: _controller,
+                        maxLines: null,
+                        enabled: !isLoading,
+                        onChanged: (_) => setState(() {}),
+                        style: TextStyle(
+                          fontSize: 16,
+                          color: colorScheme.onSurface,
+                        ),
+                        decoration: InputDecoration(
+                          hintText: l10n.chatInputPlaceholder,
+                          hintStyle: TextStyle(
+                            color: colorScheme.onSurfaceVariant,
+                            fontSize: 16,
+                          ),
+                          border: InputBorder.none,
+                          enabledBorder: InputBorder.none,
+                          focusedBorder: InputBorder.none,
+                          contentPadding: EdgeInsets.symmetric(
+                            vertical: context.spacing.md,
+                          ),
+                          filled: false,
+                        ),
+                        onSubmitted: (_) {
+                          _sendMessage();
+                        },
+                      ),
                     ),
-                    onSubmitted: (_) => _sendMessage(),
-                  ),
-                ),
-                Padding(
-                  padding: EdgeInsets.fromLTRB(
-                    context.spacing.lg,
-                    0,
-                    context.spacing.lg,
-                    context.spacing.md,
-                  ),
-                  child: Wrap(
-                    alignment: WrapAlignment.spaceBetween,
-                    crossAxisAlignment: WrapCrossAlignment.center,
-                    runSpacing: context.spacing.sm,
-                    children: [
-                      Row(
-                        mainAxisSize: MainAxisSize.min,
+                    Padding(
+                      padding: EdgeInsets.fromLTRB(
+                        context.spacing.lg,
+                        0,
+                        context.spacing.lg,
+                        context.spacing.md,
+                      ),
+                      child: Wrap(
+                        alignment: WrapAlignment.spaceBetween,
+                        crossAxisAlignment: WrapCrossAlignment.center,
+                        runSpacing: context.spacing.sm,
                         children: [
-                          _ActionButton(
-                            onTap: () {},
-                            icon: Icons.add,
-                            isIconOnly: true,
+                          Row(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              _ActionButton(
+                                onTap: isLoading ? null : () {},
+                                icon: Icons.add,
+                                isIconOnly: true,
+                              ),
+                              SizedBox(width: context.spacing.xs),
+                              _ActionButton(
+                                onTap: isLoading ? null : () {},
+                                icon: Icons.tune,
+                              ),
+                            ],
                           ),
-                          SizedBox(width: context.spacing.xs),
-                          _ActionButton(
-                            onTap: () {},
-                            icon: Icons.tune,
+                          Row(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              _ActionButton(
+                                onTap: isLoading ? null : () {},
+                                label: l10n.chatModelQuick,
+                                icon: Icons.expand_more,
+                              ),
+                              SizedBox(width: context.spacing.sm),
+                              if (isLoading)
+                                _ActionButton(
+                                  onTap: _stopMessage,
+                                  icon: Icons.stop,
+                                  isIconOnly: true,
+                                )
+                              else
+                                _ActionButton(
+                                  onTap: _sendMessage,
+                                  icon: Icons.send,
+                                  isIconOnly: true,
+                                ),
+                            ],
                           ),
                         ],
                       ),
-                      Row(
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          _ActionButton(
-                            onTap: () {},
-                            label: l10n.chatModelQuick,
-                            icon: Icons.expand_more,
-                          ),
-                          SizedBox(width: context.spacing.sm),
-                          _ActionButton(
-                            onTap: _sendMessage,
-                            icon: Icons.send,
-                            isIconOnly: true,
-                          ),
-                        ],
-                      ),
-                    ],
-                  ),
-                ),
-              ],
+                    ),
+                  ],
+                );
+              },
             ),
           ),
         ),
@@ -134,13 +162,14 @@ class _ChatInputState extends State<ChatInput> {
 
 class _ActionButton extends StatelessWidget {
   const _ActionButton({
-    required this.onTap,
+    this.onTap,
     this.icon,
     this.label,
     this.isIconOnly = false,
+    super.key,
   });
 
-  final VoidCallback onTap;
+  final VoidCallback? onTap;
   final IconData? icon;
   final String? label;
   final bool isIconOnly;
