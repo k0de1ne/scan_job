@@ -37,6 +37,11 @@
     "settingsThemeLight": "Light",
     "settingsThemeDark": "Dark",
     "settingsThemeSystem": "System Default",
+    "settingsLlmTitle": "LLM Configuration",
+    "settingsLlmBaseUrl": "Base URL",
+    "settingsLlmApiKey": "API Key",
+    "settingsLlmModelName": "Model Name",
+    "settingsLlmHelp": "Configure your local (LM Studio) or remote OpenAI-compatible API.",
     "chatNavAbout": "About Scan Job",
     "@chatNavAbout": {
         "description": "Navigation about label"

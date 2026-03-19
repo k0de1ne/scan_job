@@ -33,22 +33,35 @@ class AppView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<AppCubit, AppState>(
-      builder: (context, state) {
-        return MaterialApp.router(
-          theme: AppTheme.light,
-          darkTheme: AppTheme.dark,
-          themeMode: state.themeMode,
-          localizationsDelegates: const [
-            AppLocalizations.delegate,
-            GlobalMaterialLocalizations.delegate,
-            GlobalWidgetsLocalizations.delegate,
-            GlobalCupertinoLocalizations.delegate,
-          ],
-          supportedLocales: AppLocalizations.supportedLocales,
-          routerConfig: AppRouter.router,
+    return BlocListener<AppCubit, AppState>(
+      listenWhen: (previous, current) =>
+          previous.llmBaseUrl != current.llmBaseUrl ||
+          previous.llmApiKey != current.llmApiKey ||
+          previous.llmModelName != current.llmModelName,
+      listener: (context, state) {
+        context.read<ChatRepository>().updateConfig(
+          baseUrl: state.llmBaseUrl,
+          apiKey: state.llmApiKey,
+          modelName: state.llmModelName,
         );
       },
+      child: BlocBuilder<AppCubit, AppState>(
+        builder: (context, state) {
+          return MaterialApp.router(
+            theme: AppTheme.light,
+            darkTheme: AppTheme.dark,
+            themeMode: state.themeMode,
+            localizationsDelegates: const [
+              AppLocalizations.delegate,
+              GlobalMaterialLocalizations.delegate,
+              GlobalWidgetsLocalizations.delegate,
+              GlobalCupertinoLocalizations.delegate,
+            ],
+            supportedLocales: AppLocalizations.supportedLocales,
+            routerConfig: AppRouter.router,
+          );
+        },
+      ),
     );
   }
 }

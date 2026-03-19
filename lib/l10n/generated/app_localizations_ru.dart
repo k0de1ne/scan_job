@@ -49,6 +49,22 @@ class AppLocalizationsRu extends AppLocalizations {
   String get settingsThemeSystem => 'Системная';
 
   @override
+  String get settingsLlmTitle => 'Конфигурация LLM';
+
+  @override
+  String get settingsLlmBaseUrl => 'Base URL';
+
+  @override
+  String get settingsLlmApiKey => 'API Key';
+
+  @override
+  String get settingsLlmModelName => 'Model Name';
+
+  @override
+  String get settingsLlmHelp =>
+      'Настройте ваш локальный (LM Studio) или удаленный OpenAI-совместимый API.';
+
+  @override
   String get chatNavAbout => 'О Scan Job';
 
   @override

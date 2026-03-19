@@ -48,6 +48,22 @@ class AppLocalizationsEn extends AppLocalizations {
   String get settingsThemeSystem => 'System Default';
 
   @override
+  String get settingsLlmTitle => 'LLM Configuration';
+
+  @override
+  String get settingsLlmBaseUrl => 'Base URL';
+
+  @override
+  String get settingsLlmApiKey => 'API Key';
+
+  @override
+  String get settingsLlmModelName => 'Model Name';
+
+  @override
+  String get settingsLlmHelp =>
+      'Configure your local (LM Studio) or remote OpenAI-compatible API.';
+
+  @override
   String get chatNavAbout => 'About Scan Job';
 
   @override

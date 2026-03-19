@@ -18,7 +18,6 @@ abstract final class AppTheme {
   ).copyWith(
     colorScheme: ColorScheme.fromSeed(
       seedColor: const Color(0xFF1A73E8),
-      brightness: Brightness.light,
       surface: const Color(0xFFF0F4F9),
       onSurface: const Color(0xFF1F1F1F),
       onSurfaceVariant: const Color(0xFF474747),

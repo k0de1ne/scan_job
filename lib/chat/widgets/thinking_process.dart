@@ -25,11 +25,11 @@ class _ThinkingProcessState extends State<ThinkingProcess> {
       decoration: BoxDecoration(
         color: colorScheme.surfaceContainerLow,
         borderRadius: BorderRadius.circular(24),
-        border: Border.all(color: colorScheme.outlineVariant.withOpacity(0.1)),
+        border: Border.all(color: colorScheme.outlineVariant.withValues(alpha: 0.1)),
         boxShadow: _isExpanded
             ? [
                 BoxShadow(
-                  color: colorScheme.onSurface.withOpacity(0.05),
+                  color: colorScheme.onSurface.withValues(alpha: 0.05),
                   blurRadius: 12,
                   offset: const Offset(0, 4),
                 )
@@ -69,7 +69,7 @@ class _ThinkingProcessState extends State<ThinkingProcess> {
                       padding: const EdgeInsets.symmetric(
                           horizontal: 12, vertical: 4),
                       decoration: BoxDecoration(
-                        color: colorScheme.onSurface.withOpacity(0.06),
+                        color: colorScheme.onSurface.withValues(alpha: 0.06),
                         borderRadius: BorderRadius.circular(12),
                       ),
                       child: Text(
@@ -97,7 +97,7 @@ class _ThinkingProcessState extends State<ThinkingProcess> {
               padding: const EdgeInsets.fromLTRB(8, 0, 8, 8),
               child: Container(
                 decoration: BoxDecoration(
-                  color: colorScheme.surface.withOpacity(0.5),
+                  color: colorScheme.surface.withValues(alpha: 0.5),
                   borderRadius: BorderRadius.circular(20),
                 ),
                 child: Column(
@@ -143,7 +143,6 @@ class _ThoughtStepWidget extends StatelessWidget {
                       BoxShadow(
                         color: _getStatusColor(colorScheme, appColors),
                         spreadRadius: 1,
-                        blurRadius: 0,
                       ),
                     ],
                   ),

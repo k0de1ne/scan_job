@@ -45,7 +45,7 @@ class _ChatInputState extends State<ChatInput> {
             borderRadius: BorderRadius.circular(28),
             boxShadow: [
               BoxShadow(
-                color: colorScheme.onSurface.withOpacity(0.05),
+                color: colorScheme.onSurface.withValues(alpha: 0.05),
                 blurRadius: 6,
                 offset: const Offset(0, 2),
               ),
@@ -131,7 +131,6 @@ class _ChatInputState extends State<ChatInput> {
 class _ActionButton extends StatelessWidget {
   const _ActionButton({
     required this.onTap,
-    super.key,
     this.icon,
     this.label,
     this.isIconOnly = false,

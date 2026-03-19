@@ -122,8 +122,7 @@ class _DesktopSidebar extends StatelessWidget {
 class _SideButton extends StatelessWidget {
   const _SideButton({
     required this.icon,
-    this.label,
-    required this.onTap,
+    required this.onTap, this.label,
   });
 
   final IconData icon;
@@ -268,7 +267,7 @@ class _InputArea extends StatelessWidget {
             l10n.chatInputFooter,
             style: TextStyle(
               fontSize: 11,
-              color: colorScheme.onSurfaceVariant.withOpacity(0.6),
+              color: colorScheme.onSurfaceVariant.withValues(alpha: 0.6),
             ),
           ),
         ),

@@ -24,24 +24,25 @@ class ChatSidebar extends StatelessWidget {
             children: [
               _SideButton(
                 icon: Icons.menu,
-                onTap: () => Navigator.of(context).maybePop(),
+                onTap: () async => Navigator.of(context).maybePop(),
               ),
               const SizedBox(height: 12),
               _SideButton(
                 icon: Icons.edit_square,
                 label: l10n.chatNewChat,
-                onTap: () {
+                onTap: () async {
                   context.read<ChatCubit>().clearChat();
-                  Navigator.of(context).maybePop();
+                  await Navigator.of(context).maybePop();
                 },
               ),
               const Spacer(),
               _SideButton(
                 icon: Icons.settings_outlined,
                 label: l10n.chatNavSettings,
-                onTap: () {
-                  Navigator.of(context).maybePop();
-                  SettingsDialog.show(context);
+                onTap: () async {
+                  await Navigator.of(context).maybePop();
+                  if (!context.mounted) return;
+                  await SettingsDialog.show(context);
                 },
               ),
             ],
@@ -55,7 +56,6 @@ class ChatSidebar extends StatelessWidget {
 class _SideButton extends StatelessWidget {
   const _SideButton({
     required this.onTap,
-    super.key,
     this.icon,
     this.label,
   });

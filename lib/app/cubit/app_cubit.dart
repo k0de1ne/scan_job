@@ -8,4 +8,16 @@ class AppCubit extends Cubit<AppState> {
   void setThemeMode(ThemeMode themeMode) {
     emit(state.copyWith(themeMode: themeMode));
   }
+
+  void setLlmBaseUrl(String baseUrl) {
+    emit(state.copyWith(llmBaseUrl: baseUrl));
+  }
+
+  void setLlmApiKey(String apiKey) {
+    emit(state.copyWith(llmApiKey: apiKey));
+  }
+
+  void setLlmModelName(String modelName) {
+    emit(state.copyWith(llmModelName: modelName));
+  }
 }

@@ -176,6 +176,36 @@ abstract class AppLocalizations {
   /// **'System Default'**
   String get settingsThemeSystem;
 
+  /// No description provided for @settingsLlmTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'LLM Configuration'**
+  String get settingsLlmTitle;
+
+  /// No description provided for @settingsLlmBaseUrl.
+  ///
+  /// In en, this message translates to:
+  /// **'Base URL'**
+  String get settingsLlmBaseUrl;
+
+  /// No description provided for @settingsLlmApiKey.
+  ///
+  /// In en, this message translates to:
+  /// **'API Key'**
+  String get settingsLlmApiKey;
+
+  /// No description provided for @settingsLlmModelName.
+  ///
+  /// In en, this message translates to:
+  /// **'Model Name'**
+  String get settingsLlmModelName;
+
+  /// No description provided for @settingsLlmHelp.
+  ///
+  /// In en, this message translates to:
+  /// **'Configure your local (LM Studio) or remote OpenAI-compatible API.'**
+  String get settingsLlmHelp;
+
   /// Navigation about label
   ///
   /// In en, this message translates to:

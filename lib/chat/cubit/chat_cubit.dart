@@ -5,7 +5,10 @@ import 'package:scan_job/repositories/chat_repository.dart';
 
 class ChatCubit extends Cubit<ChatState> {
   ChatCubit({required ChatRepository chatRepository})
-    : super(const ChatState());
+    : _chatRepository = chatRepository,
+      super(const ChatState());
+
+  final ChatRepository _chatRepository;
 
   Future<void> sendMessage(String text) async {
     if (text.trim().isEmpty) return;
@@ -16,6 +19,8 @@ class ChatCubit extends Cubit<ChatState> {
       timestamp: DateTime.now(),
     );
 
+    final history = state.messages;
+
     emit(
       state.copyWith(
         messages: [...state.messages, userMessage],
@@ -23,50 +28,34 @@ class ChatCubit extends Cubit<ChatState> {
       ),
     );
 
-    // Simulated response with metadata matching the HTML reference
-    await Future<void>.delayed(const Duration(milliseconds: 600));
-    
-    final aiMessage = ChatMessage(
-      text: 'Я провел анализ и выполнил необходимые действия.',
-      role: MessageRole.ai,
-      timestamp: DateTime.now(),
-      metadata: const ChatMetadata(
-        inputTokens: 1240,
-        outputTokens: 450,
-        steps: [
-          ThoughtStep(
-            status: StepStatus.completed,
-            title: 'Планирование',
-            content: 'Формирую шаги реализации.',
-            plan: [
-              PlanItem(task: 'Поиск в базе', done: true),
-              PlanItem(task: 'Обновление данных', done: false),
-            ],
-          ),
-          ThoughtStep(
-            status: StepStatus.completed,
-            title: 'Вызов инструмента',
-            content: 'Ищу информацию...',
-            tool: 'grep_search({ pattern: "api_key" })',
-            output: 'Found 1 match in .env',
-          ),
-          ThoughtStep(
-            status: StepStatus.active,
-            title: 'Sub-agent',
-            content: 'Делегирую задачу специалисту...',
-            tool: 'codebase_investigator(...)',
-            output: '> Исследование начато...\n> Найдено 3 зависимости.',
-          ),
-        ],
-      ),
-    );
+    try {
+      final stream = _chatRepository.sendMessage(
+        text: text,
+        history: history,
+      );
 
-    emit(
-      state.copyWith(
-        messages: [...state.messages, aiMessage],
-        status: ChatStatus.success,
-      ),
-    );
+      ChatMessage? lastAiMessage;
+
+      await for (final message in stream) {
+        if (lastAiMessage == null) {
+          emit(
+            state.copyWith(
+              messages: [...state.messages, message],
+              status: ChatStatus.loading,
+            ),
+          );
+        } else {
+          final updatedMessages = List<ChatMessage>.from(state.messages);
+          updatedMessages[updatedMessages.length - 1] = message;
+          emit(state.copyWith(messages: updatedMessages));
+        }
+        lastAiMessage = message;
+      }
+
+      emit(state.copyWith(status: ChatStatus.success));
+    } on Exception catch (_) {
+      emit(state.copyWith(status: ChatStatus.failure));
+    }
   }
 
   void clearChat() {
