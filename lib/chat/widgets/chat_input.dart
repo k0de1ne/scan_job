@@ -40,17 +40,11 @@ class _ChatInputState extends State<ChatInput> {
       child: ConstrainedBox(
         constraints: const BoxConstraints(maxWidth: 840),
         child: Container(
-          margin: const EdgeInsets.symmetric(horizontal: 20),
+          margin: EdgeInsets.symmetric(horizontal: context.spacing.mdLarge),
           decoration: BoxDecoration(
             color: colorScheme.surfaceContainer,
-            borderRadius: BorderRadius.circular(28),
-            boxShadow: [
-              BoxShadow(
-                color: colorScheme.onSurface.withValues(alpha: 0.05),
-                blurRadius: 6,
-                offset: const Offset(0, 2),
-              ),
-            ],
+            borderRadius: BorderRadius.circular(context.radius.xxl),
+            boxShadow: context.shadows.medium,
           ),
           child: Material(
             color: context.appColors.transparent,
@@ -58,8 +52,10 @@ class _ChatInputState extends State<ChatInput> {
               mainAxisSize: MainAxisSize.min,
               children: [
                 Padding(
-                  padding:
-                      const EdgeInsets.symmetric(horizontal: 24, vertical: 8),
+                  padding: EdgeInsets.symmetric(
+                    horizontal: context.spacing.xl,
+                    vertical: context.spacing.sm,
+                  ),
                   child: TextField(
                     controller: _controller,
                     maxLines: null,
@@ -74,18 +70,24 @@ class _ChatInputState extends State<ChatInput> {
                       border: InputBorder.none,
                       enabledBorder: InputBorder.none,
                       focusedBorder: InputBorder.none,
-                      contentPadding: const EdgeInsets.symmetric(vertical: 12),
+                      contentPadding:
+                          EdgeInsets.symmetric(vertical: context.spacing.md),
                       filled: false,
                     ),
                     onSubmitted: (_) => _sendMessage(),
                   ),
                 ),
                 Padding(
-                  padding: const EdgeInsets.fromLTRB(16, 0, 16, 12),
+                  padding: EdgeInsets.fromLTRB(
+                    context.spacing.lg,
+                    0,
+                    context.spacing.lg,
+                    context.spacing.md,
+                  ),
                   child: Wrap(
                     alignment: WrapAlignment.spaceBetween,
                     crossAxisAlignment: WrapCrossAlignment.center,
-                    runSpacing: 8,
+                    runSpacing: context.spacing.sm,
                     children: [
                       Row(
                         mainAxisSize: MainAxisSize.min,
@@ -95,7 +97,7 @@ class _ChatInputState extends State<ChatInput> {
                             icon: Icons.add,
                             isIconOnly: true,
                           ),
-                          const SizedBox(width: 4),
+                          SizedBox(width: context.spacing.xs),
                           _ActionButton(
                             onTap: () {},
                             icon: Icons.tune,
@@ -110,7 +112,7 @@ class _ChatInputState extends State<ChatInput> {
                             label: l10n.chatModelQuick,
                             icon: Icons.expand_more,
                           ),
-                          const SizedBox(width: 8),
+                          SizedBox(width: context.spacing.sm),
                           _ActionButton(
                             onTap: _sendMessage,
                             icon: Icons.send,
@@ -149,13 +151,15 @@ class _ActionButton extends StatelessWidget {
 
     return Material(
       color: context.appColors.transparent,
-      borderRadius: BorderRadius.circular(8),
+      borderRadius: BorderRadius.circular(context.radius.sm),
       child: InkWell(
         onTap: onTap,
-        borderRadius: BorderRadius.circular(8),
+        borderRadius: BorderRadius.circular(context.radius.sm),
         child: Container(
           height: 40,
-          padding: EdgeInsets.symmetric(horizontal: isIconOnly ? 0 : 12),
+          padding: EdgeInsets.symmetric(
+            horizontal: isIconOnly ? 0 : context.spacing.md,
+          ),
           width: isIconOnly ? 40 : null,
           child: Row(
             mainAxisAlignment: MainAxisAlignment.center,
@@ -169,7 +173,7 @@ class _ActionButton extends StatelessWidget {
                     color: colorScheme.onSurfaceVariant,
                   ),
                 ),
-                const SizedBox(width: 8),
+                SizedBox(width: context.spacing.sm),
               ],
               if (icon != null)
                 Icon(

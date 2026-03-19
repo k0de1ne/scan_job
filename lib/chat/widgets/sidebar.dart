@@ -19,7 +19,10 @@ class ChatSidebar extends StatelessWidget {
       shape: const RoundedRectangleBorder(),
       child: SafeArea(
         child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 16),
+          padding: EdgeInsets.symmetric(
+            horizontal: context.spacing.md,
+            vertical: context.spacing.lg,
+          ),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
@@ -27,7 +30,7 @@ class ChatSidebar extends StatelessWidget {
                 icon: Icons.menu,
                 onTap: () async => Navigator.of(context).maybePop(),
               ),
-              const SizedBox(height: 12),
+              SizedBox(height: context.spacing.md),
               _SideButton(
                 icon: Icons.edit_square,
                 label: l10n.chatNewChat,
@@ -71,19 +74,19 @@ class _SideButton extends StatelessWidget {
 
     return Material(
       color: context.appColors.transparent,
-      borderRadius: BorderRadius.circular(8),
+      borderRadius: BorderRadius.circular(context.radius.sm),
       child: InkWell(
         onTap: onTap,
-        borderRadius: BorderRadius.circular(8),
+        borderRadius: BorderRadius.circular(context.radius.sm),
         child: Container(
           height: 40,
-          padding: const EdgeInsets.symmetric(horizontal: 8),
+          padding: EdgeInsets.symmetric(horizontal: context.spacing.sm),
           child: Row(
             children: [
               if (icon != null)
                 Icon(icon, color: colorScheme.onSurfaceVariant, size: 24),
               if (label != null) ...[
-                const SizedBox(width: 12),
+                SizedBox(width: context.spacing.md),
                 Expanded(
                   child: Text(
                     label!,

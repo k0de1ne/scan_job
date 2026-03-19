@@ -28,12 +28,12 @@ class SettingsDialog extends StatelessWidget {
       backgroundColor: colorScheme.surface,
       surfaceTintColor: context.appColors.transparent,
       shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(8),
+        borderRadius: BorderRadius.circular(context.radius.sm),
       ),
       child: SingleChildScrollView(
         child: Container(
           width: 400,
-          padding: const EdgeInsets.all(24),
+          padding: EdgeInsets.all(context.spacing.xl),
           child: Column(
             mainAxisSize: MainAxisSize.min,
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -58,7 +58,7 @@ class SettingsDialog extends StatelessWidget {
                   ),
                 ],
               ),
-              const SizedBox(height: 24),
+              SizedBox(height: context.spacing.xl),
               Text(
                 l10n.settingsThemeTitle,
                 style: TextStyle(
@@ -67,9 +67,9 @@ class SettingsDialog extends StatelessWidget {
                   color: colorScheme.onSurfaceVariant,
                 ),
               ),
-              const SizedBox(height: 12),
+              SizedBox(height: context.spacing.md),
               const _ThemeSelector(),
-              const SizedBox(height: 24),
+              SizedBox(height: context.spacing.xl),
               Text(
                 l10n.settingsLlmTitle,
                 style: TextStyle(
@@ -78,7 +78,7 @@ class SettingsDialog extends StatelessWidget {
                   color: colorScheme.onSurfaceVariant,
                 ),
               ),
-              const SizedBox(height: 8),
+              SizedBox(height: context.spacing.sm),
               Text(
                 l10n.settingsLlmHelp,
                 style: TextStyle(
@@ -86,7 +86,7 @@ class SettingsDialog extends StatelessWidget {
                   color: colorScheme.onSurfaceVariant,
                 ),
               ),
-              const SizedBox(height: 16),
+              SizedBox(height: context.spacing.lg),
               const _LlmSettings(),
             ],
           ),
@@ -113,14 +113,14 @@ class _LlmSettings extends StatelessWidget {
               initialValue: state.llmBaseUrl,
               onChanged: cubit.setLlmBaseUrl,
             ),
-            const SizedBox(height: 12),
+            SizedBox(height: context.spacing.md),
             _SettingsTextField(
               label: l10n.settingsLlmApiKey,
               initialValue: state.llmApiKey,
               onChanged: cubit.setLlmApiKey,
               isPassword: true,
             ),
-            const SizedBox(height: 12),
+            SizedBox(height: context.spacing.md),
             _SettingsTextField(
               label: l10n.settingsLlmModelName,
               initialValue: state.llmModelName,
@@ -180,7 +180,7 @@ class _SettingsTextFieldState extends State<_SettingsTextField> {
             color: colorScheme.onSurfaceVariant,
           ),
         ),
-        const SizedBox(height: 6),
+        SizedBox(height: context.spacing.xs),
         TextField(
           controller: _controller,
           obscureText: widget.isPassword,
@@ -191,20 +191,20 @@ class _SettingsTextFieldState extends State<_SettingsTextField> {
           ),
           decoration: InputDecoration(
             isDense: true,
-            contentPadding: const EdgeInsets.symmetric(
-              horizontal: 12,
-              vertical: 12,
+            contentPadding: EdgeInsets.symmetric(
+              horizontal: context.spacing.md,
+              vertical: context.spacing.md,
             ),
             border: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(8),
+              borderRadius: BorderRadius.circular(context.radius.sm),
               borderSide: BorderSide(color: colorScheme.outlineVariant),
             ),
             enabledBorder: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(8),
+              borderRadius: BorderRadius.circular(context.radius.sm),
               borderSide: BorderSide(color: colorScheme.outlineVariant),
             ),
             focusedBorder: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(8),
+              borderRadius: BorderRadius.circular(context.radius.sm),
               borderSide: BorderSide(color: colorScheme.primary),
             ),
           ),
@@ -228,21 +228,24 @@ class _ThemeSelector extends StatelessWidget {
             _ThemeOption(
               label: l10n.settingsThemeSystem,
               isSelected: state.themeMode == ThemeMode.system,
-              onTap: () => context.read<AppCubit>().setThemeMode(ThemeMode.system),
+              onTap: () =>
+                  context.read<AppCubit>().setThemeMode(ThemeMode.system),
               icon: Icons.brightness_auto_outlined,
             ),
-            const SizedBox(height: 4),
+            SizedBox(height: context.spacing.xs),
             _ThemeOption(
               label: l10n.settingsThemeLight,
               isSelected: state.themeMode == ThemeMode.light,
-              onTap: () => context.read<AppCubit>().setThemeMode(ThemeMode.light),
+              onTap: () =>
+                  context.read<AppCubit>().setThemeMode(ThemeMode.light),
               icon: Icons.light_mode_outlined,
             ),
-            const SizedBox(height: 4),
+            SizedBox(height: context.spacing.xs),
             _ThemeOption(
               label: l10n.settingsThemeDark,
               isSelected: state.themeMode == ThemeMode.dark,
-              onTap: () => context.read<AppCubit>().setThemeMode(ThemeMode.dark),
+              onTap: () =>
+                  context.read<AppCubit>().setThemeMode(ThemeMode.dark),
               icon: Icons.dark_mode_outlined,
             ),
           ],
@@ -270,29 +273,35 @@ class _ThemeOption extends StatelessWidget {
     final colorScheme = Theme.of(context).colorScheme;
 
     return Material(
-      color: isSelected ? colorScheme.surfaceContainer : context.appColors.transparent,
-      borderRadius: BorderRadius.circular(8),
+      color: isSelected
+          ? colorScheme.surfaceContainer
+          : context.appColors.transparent,
+      borderRadius: BorderRadius.circular(context.radius.sm),
       child: InkWell(
         onTap: onTap,
-        borderRadius: BorderRadius.circular(8),
+        borderRadius: BorderRadius.circular(context.radius.sm),
         child: Container(
           height: 48,
-          padding: const EdgeInsets.symmetric(horizontal: 12),
+          padding: EdgeInsets.symmetric(horizontal: context.spacing.md),
           child: Row(
             children: [
               Icon(
                 icon,
                 size: 20,
-                color: isSelected ? colorScheme.primary : colorScheme.onSurfaceVariant,
+                color: isSelected
+                    ? colorScheme.primary
+                    : colorScheme.onSurfaceVariant,
               ),
-              const SizedBox(width: 12),
+              SizedBox(width: context.spacing.md),
               Expanded(
                 child: Text(
                   label,
                   style: TextStyle(
                     fontSize: 14,
                     fontWeight: isSelected ? FontWeight.w600 : FontWeight.w400,
-                    color: isSelected ? colorScheme.onSurface : colorScheme.onSurfaceVariant,
+                    color: isSelected
+                        ? colorScheme.onSurface
+                        : colorScheme.onSurfaceVariant,
                   ),
                 ),
               ),

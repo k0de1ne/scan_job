@@ -21,7 +21,7 @@ class ChatMessageBubble extends StatelessWidget {
     return Align(
       alignment: isUser ? Alignment.centerRight : Alignment.centerLeft,
       child: Container(
-        margin: const EdgeInsets.symmetric(vertical: 8),
+        margin: EdgeInsets.symmetric(vertical: context.spacing.sm),
         constraints: BoxConstraints(
           maxWidth: MediaQuery.of(context).size.width * 0.85,
         ),
@@ -32,21 +32,16 @@ class ChatMessageBubble extends StatelessWidget {
             if (!isUser && message.metadata != null)
               ThinkingProcess(metadata: message.metadata!),
             Container(
-              padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
+              padding: EdgeInsets.symmetric(
+                horizontal: context.spacing.mdLarge,
+                vertical: context.spacing.md,
+              ),
               decoration: BoxDecoration(
                 color: isUser
                     ? colorScheme.primaryContainer
                     : context.appColors.transparent,
-                borderRadius: BorderRadius.circular(24),
-                boxShadow: isUser
-                    ? [
-                        BoxShadow(
-                          color: colorScheme.onSurface.withValues(alpha: 0.08),
-                          blurRadius: 2,
-                          offset: const Offset(0, 1),
-                        )
-                      ]
-                    : null,
+                borderRadius: BorderRadius.circular(context.radius.xl),
+                boxShadow: isUser ? context.shadows.small : null,
               ),
               child: MarkdownBody(
                 data: message.text,
@@ -75,7 +70,7 @@ class ChatMessageBubble extends StatelessWidget {
                     border: Border(
                       left: BorderSide(
                         color: colorScheme.outlineVariant,
-                        width: 4,
+                        width: context.spacing.xs,
                       ),
                     ),
                   ),

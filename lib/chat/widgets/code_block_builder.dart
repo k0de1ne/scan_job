@@ -3,6 +3,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_markdown/flutter_markdown.dart';
 import 'package:markdown/markdown.dart' as md;
 import 'package:scan_job/l10n/l10n.dart';
+import 'package:scan_job/theme/app_theme.dart';
 
 class CodeBlockBuilder extends MarkdownElementBuilder {
   @override
@@ -58,10 +59,10 @@ class _CodeBlockWidgetState extends State<_CodeBlockWidget> {
     final colorScheme = Theme.of(context).colorScheme;
 
     return Container(
-      margin: const EdgeInsets.symmetric(vertical: 8),
+      margin: EdgeInsets.symmetric(vertical: context.spacing.sm),
       decoration: BoxDecoration(
         color: colorScheme.surfaceContainerHighest,
-        borderRadius: BorderRadius.circular(8),
+        borderRadius: BorderRadius.circular(context.radius.sm),
         border: Border.all(
           color: colorScheme.outlineVariant.withValues(alpha: 0.1),
         ),
@@ -71,12 +72,15 @@ class _CodeBlockWidgetState extends State<_CodeBlockWidget> {
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
           Container(
-            padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+            padding: EdgeInsets.symmetric(
+              horizontal: context.spacing.md,
+              vertical: context.spacing.sm,
+            ),
             decoration: BoxDecoration(
               color: colorScheme.surfaceContainerHigh,
-              borderRadius: const BorderRadius.only(
-                topLeft: Radius.circular(8),
-                topRight: Radius.circular(8),
+              borderRadius: BorderRadius.only(
+                topLeft: Radius.circular(context.radius.sm),
+                topRight: Radius.circular(context.radius.sm),
               ),
             ),
             child: Row(
@@ -92,9 +96,12 @@ class _CodeBlockWidgetState extends State<_CodeBlockWidget> {
                 ),
                 InkWell(
                   onTap: _copyToClipboard,
-                  borderRadius: BorderRadius.circular(4),
+                  borderRadius: BorderRadius.circular(context.radius.xs),
                   child: Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 2),
+                    padding: EdgeInsets.symmetric(
+                      horizontal: context.spacing.xs,
+                      vertical: context.spacing.xs / 2,
+                    ),
                     child: Row(
                       mainAxisSize: MainAxisSize.min,
                       children: [
@@ -105,9 +112,11 @@ class _CodeBlockWidgetState extends State<_CodeBlockWidget> {
                               ? colorScheme.primary
                               : colorScheme.onSurfaceVariant,
                         ),
-                        const SizedBox(width: 4),
+                        SizedBox(width: context.spacing.xs),
                         Text(
-                          _isCopied ? context.l10n.codeCopied : context.l10n.codeCopy,
+                          _isCopied
+                              ? context.l10n.codeCopied
+                              : context.l10n.codeCopy,
                           style: TextStyle(
                             fontSize: 12,
                             color: _isCopied
@@ -123,7 +132,7 @@ class _CodeBlockWidgetState extends State<_CodeBlockWidget> {
             ),
           ),
           Padding(
-            padding: const EdgeInsets.all(16),
+            padding: EdgeInsets.all(context.spacing.lg),
             child: SingleChildScrollView(
               scrollDirection: Axis.horizontal,
               child: Text(

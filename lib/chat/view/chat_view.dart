@@ -53,8 +53,10 @@ class _ChatViewState extends State<ChatView> {
                       }
                       return ListView.builder(
                         padding: EdgeInsets.symmetric(
-                          horizontal: screenWidth > 900 ? 120 : 20,
-                          vertical: 32,
+                          horizontal: screenWidth > 900
+                              ? 120
+                              : context.spacing.mdLarge,
+                          vertical: context.spacing.xxl,
                         ),
                         itemCount: state.messages.length,
                         itemBuilder: (context, index) {
@@ -95,14 +97,17 @@ class _DesktopSidebar extends StatelessWidget {
       curve: Curves.easeInOutCubic,
       width: isExpanded ? 280 : 68,
       color: colorScheme.surfaceContainerLow,
-      padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 16),
+      padding: EdgeInsets.symmetric(
+        horizontal: context.spacing.md,
+        vertical: context.spacing.lg,
+      ),
       child: Column(
         children: [
           _SideButton(
             icon: Icons.menu,
             onTap: onToggle,
           ),
-          const SizedBox(height: 12),
+          SizedBox(height: context.spacing.md),
           _SideButton(
             icon: Icons.edit_square,
             label: isExpanded ? l10n.chatNewChat : null,
@@ -123,7 +128,8 @@ class _DesktopSidebar extends StatelessWidget {
 class _SideButton extends StatelessWidget {
   const _SideButton({
     required this.icon,
-    required this.onTap, this.label,
+    required this.onTap,
+    this.label,
   });
 
   final IconData icon;
@@ -136,13 +142,13 @@ class _SideButton extends StatelessWidget {
 
     return Material(
       color: context.appColors.transparent,
-      borderRadius: BorderRadius.circular(8),
+      borderRadius: BorderRadius.circular(context.radius.sm),
       child: InkWell(
         onTap: onTap,
-        borderRadius: BorderRadius.circular(8),
+        borderRadius: BorderRadius.circular(context.radius.sm),
         child: Container(
           height: 40,
-          padding: const EdgeInsets.symmetric(horizontal: 8),
+          padding: EdgeInsets.symmetric(horizontal: context.spacing.sm),
           child: Row(
             children: [
               Icon(icon, color: colorScheme.onSurfaceVariant, size: 24),
@@ -157,7 +163,7 @@ class _SideButton extends StatelessWidget {
                     child: label != null
                         ? Row(
                             children: [
-                              const SizedBox(width: 12),
+                              SizedBox(width: context.spacing.md),
                               Expanded(
                                 child: Text(
                                   label!,
@@ -199,7 +205,7 @@ class _Header extends StatelessWidget {
 
     return Container(
       height: 64,
-      padding: const EdgeInsets.symmetric(horizontal: 24),
+      padding: EdgeInsets.symmetric(horizontal: context.spacing.xl),
       child: Row(
         children: [
           if (isMobile)
@@ -230,7 +236,10 @@ class _HeroSection extends StatelessWidget {
 
     return Center(
       child: SingleChildScrollView(
-        padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 80),
+        padding: EdgeInsets.symmetric(
+          horizontal: context.spacing.mdLarge,
+          vertical: 80,
+        ),
         child: Column(
           children: [
             Text(
@@ -263,7 +272,10 @@ class _InputArea extends StatelessWidget {
       children: [
         const ChatInput(),
         Padding(
-          padding: const EdgeInsets.only(bottom: 12, top: 8),
+          padding: EdgeInsets.only(
+            bottom: context.spacing.md,
+            top: context.spacing.sm,
+          ),
           child: Text(
             l10n.chatInputFooter,
             style: TextStyle(

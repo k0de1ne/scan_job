@@ -21,20 +21,13 @@ class _ThinkingProcessState extends State<ThinkingProcess> {
     final colorScheme = Theme.of(context).colorScheme;
 
     return Container(
-      margin: const EdgeInsets.only(bottom: 16),
+      margin: EdgeInsets.only(bottom: context.spacing.lg),
       decoration: BoxDecoration(
         color: colorScheme.surfaceContainerLow,
-        borderRadius: BorderRadius.circular(24),
-        border: Border.all(color: colorScheme.outlineVariant.withValues(alpha: 0.1)),
-        boxShadow: _isExpanded
-            ? [
-                BoxShadow(
-                  color: colorScheme.onSurface.withValues(alpha: 0.05),
-                  blurRadius: 12,
-                  offset: const Offset(0, 4),
-                )
-              ]
-            : null,
+        borderRadius: BorderRadius.circular(context.radius.xl),
+        border:
+            Border.all(color: colorScheme.outlineVariant.withValues(alpha: 0.1)),
+        boxShadow: _isExpanded ? context.shadows.medium : null,
       ),
       child: Column(
         mainAxisSize: MainAxisSize.min,
@@ -42,9 +35,12 @@ class _ThinkingProcessState extends State<ThinkingProcess> {
         children: [
           InkWell(
             onTap: () => setState(() => _isExpanded = !_isExpanded),
-            borderRadius: BorderRadius.circular(24),
+            borderRadius: BorderRadius.circular(context.radius.xl),
             child: Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
+              padding: EdgeInsets.symmetric(
+                horizontal: context.spacing.mdLarge,
+                vertical: context.spacing.md,
+              ),
               child: Row(
                 mainAxisSize: MainAxisSize.min,
                 children: [
@@ -53,7 +49,7 @@ class _ThinkingProcessState extends State<ThinkingProcess> {
                     size: 20,
                     color: colorScheme.onSurfaceVariant,
                   ),
-                  const SizedBox(width: 12),
+                  SizedBox(width: context.spacing.md),
                   Text(
                     l10n.chatThinkingProcess,
                     style: TextStyle(
@@ -64,13 +60,15 @@ class _ThinkingProcessState extends State<ThinkingProcess> {
                   ),
                   if (widget.metadata.inputTokens != null &&
                       widget.metadata.outputTokens != null) ...[
-                    const SizedBox(width: 16),
+                    SizedBox(width: context.spacing.lg),
                     Container(
-                      padding: const EdgeInsets.symmetric(
-                          horizontal: 12, vertical: 4),
+                      padding: EdgeInsets.symmetric(
+                        horizontal: context.spacing.md,
+                        vertical: context.spacing.xs,
+                      ),
                       decoration: BoxDecoration(
                         color: colorScheme.onSurface.withValues(alpha: 0.06),
-                        borderRadius: BorderRadius.circular(8),
+                        borderRadius: BorderRadius.circular(context.radius.sm),
                       ),
                       child: Text(
                         '${widget.metadata.inputTokens} ↑  ${widget.metadata.outputTokens} ↓',
@@ -78,7 +76,7 @@ class _ThinkingProcessState extends State<ThinkingProcess> {
                       ),
                     ),
                   ],
-                  const SizedBox(width: 8),
+                  SizedBox(width: context.spacing.sm),
                   AnimatedRotation(
                     turns: _isExpanded ? 0.5 : 0,
                     duration: const Duration(milliseconds: 200),
@@ -94,11 +92,16 @@ class _ThinkingProcessState extends State<ThinkingProcess> {
           ),
           if (_isExpanded && widget.metadata.steps != null)
             Padding(
-              padding: const EdgeInsets.fromLTRB(8, 0, 8, 8),
+              padding: EdgeInsets.fromLTRB(
+                context.spacing.sm,
+                0,
+                context.spacing.sm,
+                context.spacing.sm,
+              ),
               child: Container(
                 decoration: BoxDecoration(
                   color: colorScheme.surface.withValues(alpha: 0.5),
-                  borderRadius: BorderRadius.circular(8),
+                  borderRadius: BorderRadius.circular(context.radius.sm),
                 ),
                 child: Column(
                   children: widget.metadata.steps!
@@ -124,18 +127,21 @@ class _ThoughtStepWidget extends StatelessWidget {
     final appColors = context.appColors;
 
     return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 12),
+      padding: EdgeInsets.symmetric(
+        horizontal: context.spacing.md,
+        vertical: context.spacing.md,
+      ),
       child: IntrinsicHeight(
         child: Row(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            const SizedBox(width: 10),
+            SizedBox(width: context.spacing.md),
             Column(
               children: [
                 Container(
                   width: 8,
                   height: 8,
-                  margin: const EdgeInsets.only(top: 6),
+                  margin: EdgeInsets.only(top: context.spacing.xs + 2),
                   decoration: BoxDecoration(
                     shape: BoxShape.circle,
                     color: _getStatusColor(colorScheme, appColors),
@@ -151,12 +157,12 @@ class _ThoughtStepWidget extends StatelessWidget {
                   child: Container(
                     width: 1.5,
                     color: colorScheme.outlineVariant,
-                    margin: const EdgeInsets.symmetric(vertical: 4),
+                    margin: EdgeInsets.symmetric(vertical: context.spacing.xs),
                   ),
                 ),
               ],
             ),
-            const SizedBox(width: 16),
+            SizedBox(width: context.spacing.lg),
             Flexible(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -168,7 +174,7 @@ class _ThoughtStepWidget extends StatelessWidget {
                       fontWeight: FontWeight.w500,
                     ),
                   ),
-                  const SizedBox(height: 4),
+                  SizedBox(height: context.spacing.xs),
                   Text(
                     _translate(context, step.content),
                     style: TextStyle(
@@ -178,17 +184,17 @@ class _ThoughtStepWidget extends StatelessWidget {
                     ),
                   ),
                   if (step.plan != null) ...[
-                    const SizedBox(height: 12),
+                    SizedBox(height: context.spacing.md),
                     _PlanWidget(plan: step.plan!),
                   ],
                   if (step.tool != null) ...[
-                    const SizedBox(height: 12),
+                    SizedBox(height: context.spacing.md),
                     _ToolCallWidget(
                       tool: step.tool!,
                       output: step.output,
                     ),
                   ],
-                  const SizedBox(height: 8),
+                  SizedBox(height: context.spacing.sm),
                 ],
               ),
             ),
@@ -235,10 +241,10 @@ class _PlanWidget extends StatelessWidget {
     final l10n = context.l10n;
 
     return Container(
-      padding: const EdgeInsets.all(16),
+      padding: EdgeInsets.all(context.spacing.lg),
       decoration: BoxDecoration(
         color: colorScheme.surfaceContainer,
-        borderRadius: BorderRadius.circular(8),
+        borderRadius: BorderRadius.circular(context.radius.sm),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -247,7 +253,7 @@ class _PlanWidget extends StatelessWidget {
             children: [
               Icon(Icons.assignment_outlined,
                   size: 14, color: colorScheme.onSurfaceVariant),
-              const SizedBox(width: 8),
+              SizedBox(width: context.spacing.sm),
               Text(
                 l10n.chatPlan.toUpperCase(),
                 style: TextStyle(
@@ -258,19 +264,22 @@ class _PlanWidget extends StatelessWidget {
               ),
             ],
           ),
-          const SizedBox(height: 12),
+          SizedBox(height: context.spacing.md),
           ...plan.map((item) => Padding(
-                padding: const EdgeInsets.only(bottom: 8),
+                padding: EdgeInsets.only(bottom: context.spacing.sm),
                 child: Row(
                   children: [
                     Container(
                       width: 18,
                       height: 18,
                       decoration: BoxDecoration(
-                        color: item.done ? appColors.success : appColors.transparent,
+                        color: item.done
+                            ? appColors.success
+                            : appColors.transparent,
                         border: Border.all(
-                          color:
-                              item.done ? appColors.success : colorScheme.outline,
+                          color: item.done
+                              ? appColors.success
+                              : colorScheme.outline,
                           width: 1.5,
                         ),
                         borderRadius: BorderRadius.circular(2),
@@ -280,7 +289,7 @@ class _PlanWidget extends StatelessWidget {
                               size: 14, color: appColors.onSuccess)
                           : null,
                     ),
-                    const SizedBox(width: 10),
+                    SizedBox(width: context.spacing.md),
                     Flexible(
                       child: Text(
                         item.task,
@@ -325,7 +334,7 @@ class _ToolCallWidgetState extends State<_ToolCallWidget> {
     return Container(
       decoration: BoxDecoration(
         color: colorScheme.surface,
-        borderRadius: BorderRadius.circular(8),
+        borderRadius: BorderRadius.circular(context.radius.sm),
         border: Border.all(color: colorScheme.outlineVariant),
       ),
       clipBehavior: Clip.antiAlias,
@@ -333,12 +342,15 @@ class _ToolCallWidgetState extends State<_ToolCallWidget> {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Container(
-            padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+            padding: EdgeInsets.symmetric(
+              horizontal: context.spacing.md,
+              vertical: context.spacing.sm,
+            ),
             color: colorScheme.surfaceContainer,
             child: Row(
               children: [
                 Icon(Icons.terminal, size: 14, color: colorScheme.primary),
-                const SizedBox(width: 8),
+                SizedBox(width: context.spacing.sm),
                 Flexible(
                   child: Text(
                     widget.tool,
@@ -354,14 +366,14 @@ class _ToolCallWidgetState extends State<_ToolCallWidget> {
           ),
           if (widget.output != null)
             Padding(
-              padding: const EdgeInsets.all(10),
+              padding: EdgeInsets.all(context.spacing.md),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   if (widget.output!.length > 100)
                     InkWell(
-                      onTap: () =>
-                          setState(() => _isOutputExpanded = !_isOutputExpanded),
+                      onTap: () => setState(
+                          () => _isOutputExpanded = !_isOutputExpanded),
                       child: Row(
                         children: [
                           Text(
@@ -393,7 +405,7 @@ class _ToolCallWidgetState extends State<_ToolCallWidget> {
                     ),
                   if (_isOutputExpanded || widget.output!.length <= 100)
                     Padding(
-                      padding: const EdgeInsets.only(top: 8),
+                      padding: EdgeInsets.only(top: context.spacing.sm),
                       child: Text(
                         widget.output!,
                         style: TextStyle(
@@ -411,3 +423,4 @@ class _ToolCallWidgetState extends State<_ToolCallWidget> {
     );
   }
 }
+
