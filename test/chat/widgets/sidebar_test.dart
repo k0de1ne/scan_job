@@ -17,6 +17,7 @@ void main() {
       chatCubit = MockChatCubit();
       when(() => chatCubit.state).thenReturn(const ChatState());
       when(() => chatCubit.stream).thenAnswer((_) => const Stream.empty());
+      when(() => chatCubit.clearChat()).thenAnswer((_) async {});
 
       appCubit = MockAppCubit();
       when(() => appCubit.state).thenReturn(const AppState());

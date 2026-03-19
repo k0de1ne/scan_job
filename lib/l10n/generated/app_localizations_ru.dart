@@ -105,12 +105,6 @@ class AppLocalizationsRu extends AppLocalizations {
       'Scan Job — это профессиональный инструмент на базе ИИ. Пожалуйста, проверяйте важную информацию.';
 
   @override
-  String get thoughtStepAnalysisTitle => 'Анализ запроса';
-
-  @override
-  String get thoughtStepAnalysisContent => 'Инициализация...';
-
-  @override
   String get thoughtStepThinkingTitle => 'Размышление';
 
   @override

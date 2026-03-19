@@ -61,8 +61,6 @@
     "chatStepActive": "В процессе",
     "chatModelQuick": "Быстрая",
     "chatFooterTerms": "Scan Job — это профессиональный инструмент на базе ИИ. Пожалуйста, проверяйте важную информацию.",
-    "thoughtStepAnalysisTitle": "Анализ запроса",
-    "thoughtStepAnalysisContent": "Инициализация...",
     "thoughtStepThinkingTitle": "Размышление",
     "thoughtStepThinkingSubTitle": "Анализ",
     "thoughtStepToolTitle": "Инструмент {index}",

@@ -101,13 +101,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get chatFooterTerms =>
-      'Scan Job is an AI-powered professional tool. Please verify critical information.';
-
-  @override
-  String get thoughtStepAnalysisTitle => 'Request Analysis';
-
-  @override
-  String get thoughtStepAnalysisContent => 'Initializing...';
+      'Scan Job is a professional AI tool. Please verify important information.';
 
   @override
   String get thoughtStepThinkingTitle => 'Thinking';

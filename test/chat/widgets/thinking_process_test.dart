@@ -12,20 +12,15 @@ void main() {
       outputTokens: 200,
       steps: [
         ThoughtStep(
-          title: 'thoughtStepAnalysisTitle',
-          content: 'thoughtStepAnalysisContent',
-          status: StepStatus.completed,
-          plan: [
-            PlanItem(task: 'Task 1', done: true),
-            PlanItem(task: 'Task 2'),
-          ],
-        ),
-        ThoughtStep(
           title: 'thoughtStepThinkingTitle',
           content: 'thoughtStepThinkingSubTitle',
           status: StepStatus.active,
           tool: 'search_web',
           output: 'Search results from the web...',
+          plan: [
+            PlanItem(task: 'Task 1', done: true),
+            PlanItem(task: 'Task 2'),
+          ],
         ),
         ThoughtStep(
           title: 'Custom Title',
@@ -44,7 +39,7 @@ void main() {
       expect(find.text('Thinking'), findsOneWidget);
       expect(find.text('100 ↑  200 ↓'), findsOneWidget);
       expect(find.byIcon(Icons.expand_more), findsOneWidget);
-      expect(find.text('Request Analysis'), findsNothing); // Collapsed
+      expect(find.text('Thinking'), findsNWidgets(1)); // Only header initially
     });
 
     testWidgets('expands when tapped', (tester) async {
@@ -57,10 +52,8 @@ void main() {
       await tester.tap(find.text('Thinking'));
       await tester.pumpAndSettle();
 
-      expect(find.text('Request Analysis'), findsOneWidget);
-      expect(find.text('Initializing...'), findsOneWidget);
       expect(find.text('Thinking'), findsNWidgets(2)); // Header + Step Title
-      expect(find.text('Analysis'), findsOneWidget); // Step Content
+      expect(find.text('Analysis'), findsOneWidget); // Step Content (for thoughtStepThinkingSubTitle)
       expect(find.text('Custom Title'), findsOneWidget);
       expect(find.text('Custom Content'), findsOneWidget);
     });

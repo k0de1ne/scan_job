@@ -281,20 +281,8 @@ abstract class AppLocalizations {
   /// No description provided for @chatFooterTerms.
   ///
   /// In en, this message translates to:
-  /// **'Scan Job is an AI-powered professional tool. Please verify critical information.'**
+  /// **'Scan Job is a professional AI tool. Please verify important information.'**
   String get chatFooterTerms;
-
-  /// No description provided for @thoughtStepAnalysisTitle.
-  ///
-  /// In en, this message translates to:
-  /// **'Request Analysis'**
-  String get thoughtStepAnalysisTitle;
-
-  /// No description provided for @thoughtStepAnalysisContent.
-  ///
-  /// In en, this message translates to:
-  /// **'Initializing...'**
-  String get thoughtStepAnalysisContent;
 
   /// No description provided for @thoughtStepThinkingTitle.
   ///

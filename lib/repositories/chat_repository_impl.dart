@@ -105,13 +105,7 @@ class ChatRepositoryImpl implements ChatRepository {
       {'role': 'user', 'content': text},
     ];
 
-    final steps = <model.ThoughtStep>[
-      const model.ThoughtStep(
-        title: 'thoughtStepAnalysisTitle',
-        content: 'thoughtStepAnalysisContent',
-        status: model.StepStatus.active,
-      ),
-    ];
+    final steps = <model.ThoughtStep>[];
 
     final responseBuffer = StringBuffer();
 
@@ -132,13 +126,6 @@ class ChatRepositoryImpl implements ChatRepository {
         // 1. Native Reasoning from API
         if (chunk.reasoning != null && chunk.reasoning!.isNotEmpty) {
           thoughtBuffer.write(chunk.reasoning);
-          if (steps.length == 1) {
-            steps[0] = const model.ThoughtStep(
-              title: 'thoughtStepAnalysisTitle',
-              content: 'thoughtStepAnalysisContent',
-              status: model.StepStatus.completed,
-            );
-          }
           if (currentReasoningIdx == -1) {
             steps.add(
               model.ThoughtStep(

@@ -215,8 +215,6 @@ class _ThoughtStepWidget extends StatelessWidget {
   String _translate(BuildContext context, String key) {
     final l10n = context.l10n;
     return switch (key) {
-      'thoughtStepAnalysisTitle' => l10n.thoughtStepAnalysisTitle,
-      'thoughtStepAnalysisContent' => l10n.thoughtStepAnalysisContent,
       'thoughtStepThinkingTitle' => l10n.thoughtStepThinkingTitle,
       'thoughtStepThinkingSubTitle' => l10n.thoughtStepThinkingSubTitle,
       'thoughtStepToolTitle' => l10n.thoughtStepToolTitle(1), // Default index

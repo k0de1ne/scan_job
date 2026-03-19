@@ -31,7 +31,7 @@ void main() {
 
       final lastMessage = messages.last;
       expect(lastMessage.text, contains('Hello!  Done.'));
-      expect(lastMessage.metadata!.steps!.length, greaterThanOrEqualTo(2));
+      expect(lastMessage.metadata!.steps!.length, greaterThanOrEqualTo(1));
       final reasoningStep = lastMessage.metadata!.steps!.firstWhere((s) => s.title == 'thoughtStepThinkingTitle');
       expect(reasoningStep.content, equals('I should be careful.'));
     });
