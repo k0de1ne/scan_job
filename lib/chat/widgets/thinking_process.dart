@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:scan_job/app/cubit/app_cubit.dart';
+import 'package:scan_job/app/cubit/app_state.dart';
 import 'package:scan_job/chat/models/chat_message.dart';
 import 'package:scan_job/l10n/l10n.dart';
 import 'package:scan_job/theme/app_theme.dart';
@@ -20,135 +23,158 @@ class _ThinkingProcessState extends State<ThinkingProcess> {
     final l10n = context.l10n;
     final colorScheme = Theme.of(context).colorScheme;
 
-    return Container(
-      margin: EdgeInsets.only(bottom: context.spacing.lg),
-      decoration: BoxDecoration(
-        color: colorScheme.surfaceContainerLow,
-        borderRadius: BorderRadius.circular(context.radius.xl),
-        border:
-            Border.all(color: colorScheme.outlineVariant.withValues(alpha: 0.1)),
-        boxShadow: _isExpanded ? context.shadows.medium : null,
-      ),
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          InkWell(
-            onTap: () => setState(() => _isExpanded = !_isExpanded),
+    return BlocBuilder<AppCubit, AppState>(
+      builder: (context, appState) {
+        final inputCost = (widget.metadata.inputTokens ?? 0) *
+            (appState.inputPricePerMillion / 1000000);
+        final outputCost = (widget.metadata.outputTokens ?? 0) *
+            (appState.outputPricePerMillion / 1000000);
+        final totalCost = inputCost + outputCost;
+        final hasPricing = appState.inputPricePerMillion > 0 ||
+            appState.outputPricePerMillion > 0;
+
+        return Container(
+          margin: EdgeInsets.only(bottom: context.spacing.lg),
+          decoration: BoxDecoration(
+            color: colorScheme.surfaceContainerLow,
             borderRadius: BorderRadius.circular(context.radius.xl),
-            child: Padding(
-              padding: EdgeInsets.symmetric(
-                horizontal: context.spacing.mdLarge,
-                vertical: context.spacing.md,
-              ),
-              child: Row(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  Icon(
-                    Icons.psychology_outlined,
-                    size: 20,
-                    color: colorScheme.onSurfaceVariant,
+            border: Border.all(
+                color: colorScheme.outlineVariant.withValues(alpha: 0.1)),
+            boxShadow: _isExpanded ? context.shadows.medium : null,
+          ),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              InkWell(
+                onTap: () => setState(() => _isExpanded = !_isExpanded),
+                borderRadius: BorderRadius.circular(context.radius.xl),
+                child: Padding(
+                  padding: EdgeInsets.symmetric(
+                    horizontal: context.spacing.mdLarge,
+                    vertical: context.spacing.md,
                   ),
-                  SizedBox(width: context.spacing.md),
-                  Text(
-                    l10n.chatThinkingProcess,
-                    style: TextStyle(
-                      fontSize: 14,
-                      fontWeight: FontWeight.w500,
-                      color: colorScheme.onSurfaceVariant,
-                    ),
-                  ),
-                  if (widget.metadata.inputTokens != null ||
-                      widget.metadata.outputTokens != null) ...[
-                    SizedBox(width: context.spacing.lg),
-                    Row(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        if (widget.metadata.inputTokens != null)
-                          Padding(
-                            padding:
-                                EdgeInsets.only(right: context.spacing.sm),
-                            child: Container(
-                              padding: EdgeInsets.symmetric(
-                                horizontal: context.spacing.sm,
-                                vertical: context.spacing.xs,
-                              ),
-                              decoration: BoxDecoration(
-                                color: colorScheme.onSurface
-                                    .withValues(alpha: 0.06),
-                                borderRadius:
-                                    BorderRadius.circular(context.radius.sm),
-                              ),
-                              child: Text(
-                                '${widget.metadata.inputTokens} ↑',
-                                style: TextStyle(
-                                  fontSize: 10,
-                                  fontWeight: FontWeight.w600,
-                                  color: colorScheme.onSurfaceVariant,
+                  child: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Icon(
+                        Icons.psychology_outlined,
+                        size: 20,
+                        color: colorScheme.onSurfaceVariant,
+                      ),
+                      SizedBox(width: context.spacing.md),
+                      Text(
+                        l10n.chatThinkingProcess,
+                        style: TextStyle(
+                          fontSize: 14,
+                          fontWeight: FontWeight.w500,
+                          color: colorScheme.onSurfaceVariant,
+                        ),
+                      ),
+                      if (widget.metadata.inputTokens != null ||
+                          widget.metadata.outputTokens != null) ...[
+                        SizedBox(width: context.spacing.lg),
+                        Row(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            if (widget.metadata.inputTokens != null)
+                              Padding(
+                                padding:
+                                    EdgeInsets.only(right: context.spacing.sm),
+                                child: Container(
+                                  padding: EdgeInsets.symmetric(
+                                    horizontal: context.spacing.sm,
+                                    vertical: context.spacing.xs,
+                                  ),
+                                  decoration: BoxDecoration(
+                                    color: colorScheme.onSurface
+                                        .withValues(alpha: 0.06),
+                                    borderRadius: BorderRadius.circular(
+                                        context.radius.sm),
+                                  ),
+                                  child: Text(
+                                    '${widget.metadata.inputTokens} ↑',
+                                    style: TextStyle(
+                                      fontSize: 10,
+                                      fontWeight: FontWeight.w600,
+                                      color: colorScheme.onSurfaceVariant,
+                                    ),
+                                  ),
                                 ),
                               ),
-                            ),
-                          ),
-                        if (widget.metadata.outputTokens != null)
-                          Container(
-                            padding: EdgeInsets.symmetric(
-                              horizontal: context.spacing.sm,
-                              vertical: context.spacing.xs,
-                            ),
-                            decoration: BoxDecoration(
-                              color:
-                                  colorScheme.primary.withValues(alpha: 0.08),
-                              borderRadius:
-                                  BorderRadius.circular(context.radius.sm),
-                            ),
-                            child: Text(
-                              '${widget.metadata.outputTokens} ↓',
-                              style: TextStyle(
-                                fontSize: 10,
-                                fontWeight: FontWeight.w600,
-                                color: colorScheme.primary,
+                            if (widget.metadata.outputTokens != null)
+                              Container(
+                                padding: EdgeInsets.symmetric(
+                                  horizontal: context.spacing.sm,
+                                  vertical: context.spacing.xs,
+                                ),
+                                decoration: BoxDecoration(
+                                  color: colorScheme.primary
+                                      .withValues(alpha: 0.08),
+                                  borderRadius:
+                                      BorderRadius.circular(context.radius.sm),
+                                ),
+                                child: Text(
+                                  '${widget.metadata.outputTokens} ↓',
+                                  style: TextStyle(
+                                    fontSize: 10,
+                                    fontWeight: FontWeight.w600,
+                                    color: colorScheme.primary,
+                                  ),
+                                ),
                               ),
-                            ),
-                          ),
+                            if (hasPricing && totalCost > 0) ...[
+                              SizedBox(width: context.spacing.md),
+                              Text(
+                                '\$${totalCost.toStringAsFixed(4)}',
+                                style: TextStyle(
+                                  fontSize: 10,
+                                  fontWeight: FontWeight.w700,
+                                  color: context.appColors.success,
+                                ),
+                              ),
+                            ],
+                          ],
+                        ),
                       ],
+                      SizedBox(width: context.spacing.sm),
+                      AnimatedRotation(
+                        turns: _isExpanded ? 0.5 : 0,
+                        duration: const Duration(milliseconds: 200),
+                        child: Icon(
+                          Icons.expand_more,
+                          size: 20,
+                          color: colorScheme.onSurfaceVariant,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+              if (_isExpanded && widget.metadata.steps != null)
+                Padding(
+                  padding: EdgeInsets.fromLTRB(
+                    context.spacing.sm,
+                    0,
+                    context.spacing.sm,
+                    context.spacing.sm,
+                  ),
+                  child: Container(
+                    decoration: BoxDecoration(
+                      color: colorScheme.surface.withValues(alpha: 0.5),
+                      borderRadius: BorderRadius.circular(context.radius.sm),
                     ),
-                  ],
-                  SizedBox(width: context.spacing.sm),
-                  AnimatedRotation(
-                    turns: _isExpanded ? 0.5 : 0,
-                    duration: const Duration(milliseconds: 200),
-                    child: Icon(
-                      Icons.expand_more,
-                      size: 20,
-                      color: colorScheme.onSurfaceVariant,
+                    child: Column(
+                      children: widget.metadata.steps!
+                          .map((step) => _ThoughtStepWidget(step: step))
+                          .toList(),
                     ),
                   ),
-                ],
-              ),
-            ),
+                ),
+            ],
           ),
-          if (_isExpanded && widget.metadata.steps != null)
-            Padding(
-              padding: EdgeInsets.fromLTRB(
-                context.spacing.sm,
-                0,
-                context.spacing.sm,
-                context.spacing.sm,
-              ),
-              child: Container(
-                decoration: BoxDecoration(
-                  color: colorScheme.surface.withValues(alpha: 0.5),
-                  borderRadius: BorderRadius.circular(context.radius.sm),
-                ),
-                child: Column(
-                  children: widget.metadata.steps!
-                      .map((step) => _ThoughtStepWidget(step: step))
-                      .toList(),
-                ),
-              ),
-            ),
-        ],
-      ),
+        );
+      },
     );
   }
 }
@@ -458,4 +484,3 @@ class _ToolCallWidgetState extends State<_ToolCallWidget> {
     );
   }
 }
-

@@ -60,6 +60,12 @@ class AppLocalizationsEn extends AppLocalizations {
   String get settingsLlmModelName => 'Model Name';
 
   @override
+  String get settingsLlmPriceInput => 'Price per 1M Input Tokens (\$)';
+
+  @override
+  String get settingsLlmPriceOutput => 'Price per 1M Output Tokens (\$)';
+
+  @override
   String get settingsLlmHelp =>
       'Configure your local (LM Studio) or remote OpenAI-compatible API.';
 

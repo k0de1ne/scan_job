@@ -41,6 +41,8 @@
     "settingsLlmBaseUrl": "Base URL",
     "settingsLlmApiKey": "API Key",
     "settingsLlmModelName": "Model Name",
+    "settingsLlmPriceInput": "Цена за 1М токенов (вход) ($)",
+    "settingsLlmPriceOutput": "Цена за 1М токенов (выход) ($)",
     "settingsLlmHelp": "Настройте ваш локальный (LM Studio) или удаленный OpenAI-совместимый API.",
     "chatNavAbout": "О Scan Job",
     "@chatNavAbout": {

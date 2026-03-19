@@ -200,6 +200,18 @@ abstract class AppLocalizations {
   /// **'Model Name'**
   String get settingsLlmModelName;
 
+  /// No description provided for @settingsLlmPriceInput.
+  ///
+  /// In en, this message translates to:
+  /// **'Price per 1M Input Tokens (\$)'**
+  String get settingsLlmPriceInput;
+
+  /// No description provided for @settingsLlmPriceOutput.
+  ///
+  /// In en, this message translates to:
+  /// **'Price per 1M Output Tokens (\$)'**
+  String get settingsLlmPriceOutput;
+
   /// No description provided for @settingsLlmHelp.
   ///
   /// In en, this message translates to:

@@ -20,4 +20,12 @@ class AppCubit extends Cubit<AppState> {
   void setLlmModelName(String modelName) {
     emit(state.copyWith(llmModelName: modelName));
   }
+
+  void setInputPrice(String price) {
+    emit(state.copyWith(inputPricePerMillion: double.tryParse(price) ?? 0.0));
+  }
+
+  void setOutputPrice(String price) {
+    emit(state.copyWith(outputPricePerMillion: double.tryParse(price) ?? 0.0));
+  }
 }

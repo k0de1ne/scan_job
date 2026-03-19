@@ -41,6 +41,8 @@
     "settingsLlmBaseUrl": "Base URL",
     "settingsLlmApiKey": "API Key",
     "settingsLlmModelName": "Model Name",
+    "settingsLlmPriceInput": "Price per 1M Input Tokens ($)",
+    "settingsLlmPriceOutput": "Price per 1M Output Tokens ($)",
     "settingsLlmHelp": "Configure your local (LM Studio) or remote OpenAI-compatible API.",
     "chatNavAbout": "About Scan Job",
     "@chatNavAbout": {

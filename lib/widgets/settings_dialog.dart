@@ -126,6 +126,18 @@ class _LlmSettings extends StatelessWidget {
               initialValue: state.llmModelName,
               onChanged: cubit.setLlmModelName,
             ),
+            SizedBox(height: context.spacing.md),
+            _SettingsTextField(
+              label: l10n.settingsLlmPriceInput,
+              initialValue: state.inputPricePerMillion.toString(),
+              onChanged: cubit.setInputPrice,
+            ),
+            SizedBox(height: context.spacing.md),
+            _SettingsTextField(
+              label: l10n.settingsLlmPriceOutput,
+              initialValue: state.outputPricePerMillion.toString(),
+              onChanged: cubit.setOutputPrice,
+            ),
           ],
         );
       },
