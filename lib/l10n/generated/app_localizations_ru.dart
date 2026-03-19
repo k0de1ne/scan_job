@@ -103,4 +103,47 @@ class AppLocalizationsRu extends AppLocalizations {
   @override
   String get chatFooterTerms =>
       'Scan Job — это профессиональный инструмент на базе ИИ. Пожалуйста, проверяйте важную информацию.';
+
+  @override
+  String get thoughtStepAnalysisTitle => 'Анализ запроса';
+
+  @override
+  String get thoughtStepAnalysisContent => 'Инициализация...';
+
+  @override
+  String get thoughtStepThinkingTitle => 'Размышление';
+
+  @override
+  String get thoughtStepThinkingSubTitle => 'Анализ';
+
+  @override
+  String thoughtStepToolTitle(int index) {
+    return 'Инструмент $index';
+  }
+
+  @override
+  String get thoughtStepToolStarting => 'Запуск...';
+
+  @override
+  String thoughtStepToolCompletedTitle(int index) {
+    return 'Инструмент $index выполнен';
+  }
+
+  @override
+  String get thoughtStepToolDone => 'Готово.';
+
+  @override
+  String get thoughtStepToolRunning => 'В процессе...';
+
+  @override
+  String get dashboardComingSoon => 'Панель управления скоро появится';
+
+  @override
+  String get codeTitle => 'Код';
+
+  @override
+  String get codeCopy => 'Копировать';
+
+  @override
+  String get codeCopied => 'Скопировано';
 }

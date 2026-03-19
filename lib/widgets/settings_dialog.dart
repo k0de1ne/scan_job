@@ -3,14 +3,19 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:scan_job/app/cubit/app_cubit.dart';
 import 'package:scan_job/app/cubit/app_state.dart';
 import 'package:scan_job/l10n/l10n.dart';
+import 'package:scan_job/theme/app_theme.dart';
 
 class SettingsDialog extends StatelessWidget {
   const SettingsDialog({super.key});
 
   static Future<void> show(BuildContext context) {
+    final appCubit = context.read<AppCubit>();
     return showDialog<void>(
       context: context,
-      builder: (context) => const SettingsDialog(),
+      builder: (context) => BlocProvider.value(
+        value: appCubit,
+        child: const SettingsDialog(),
+      ),
     );
   }
 
@@ -21,68 +26,70 @@ class SettingsDialog extends StatelessWidget {
 
     return Dialog(
       backgroundColor: colorScheme.surface,
-      surfaceTintColor: Colors.transparent,
+      surfaceTintColor: context.appColors.transparent,
       shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(20),
+        borderRadius: BorderRadius.circular(8),
       ),
-      child: Container(
-        width: 400,
-        padding: const EdgeInsets.all(24),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Row(
-              children: [
-                Text(
-                  l10n.settingsTitle,
-                  style: TextStyle(
-                    fontSize: 20,
-                    fontWeight: FontWeight.w600,
-                    color: colorScheme.onSurface,
+      child: SingleChildScrollView(
+        child: Container(
+          width: 400,
+          padding: const EdgeInsets.all(24),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Row(
+                children: [
+                  Text(
+                    l10n.settingsTitle,
+                    style: TextStyle(
+                      fontSize: 20,
+                      fontWeight: FontWeight.w600,
+                      color: colorScheme.onSurface,
+                    ),
                   ),
-                ),
-                const Spacer(),
-                IconButton(
-                  icon: const Icon(Icons.close),
-                  onPressed: () => Navigator.of(context).pop(),
-                  padding: EdgeInsets.zero,
-                  constraints: const BoxConstraints(),
+                  const Spacer(),
+                  IconButton(
+                    icon: const Icon(Icons.close),
+                    onPressed: () => Navigator.of(context).pop(),
+                    padding: EdgeInsets.zero,
+                    constraints: const BoxConstraints(),
+                    color: colorScheme.onSurfaceVariant,
+                  ),
+                ],
+              ),
+              const SizedBox(height: 24),
+              Text(
+                l10n.settingsThemeTitle,
+                style: TextStyle(
+                  fontSize: 14,
+                  fontWeight: FontWeight.w600,
                   color: colorScheme.onSurfaceVariant,
                 ),
-              ],
-            ),
-            const SizedBox(height: 24),
-            Text(
-              l10n.settingsThemeTitle,
-              style: TextStyle(
-                fontSize: 14,
-                fontWeight: FontWeight.w600,
-                color: colorScheme.onSurfaceVariant,
               ),
-            ),
-            const SizedBox(height: 12),
-            const _ThemeSelector(),
-            const SizedBox(height: 24),
-            Text(
-              l10n.settingsLlmTitle,
-              style: TextStyle(
-                fontSize: 14,
-                fontWeight: FontWeight.w600,
-                color: colorScheme.onSurfaceVariant,
+              const SizedBox(height: 12),
+              const _ThemeSelector(),
+              const SizedBox(height: 24),
+              Text(
+                l10n.settingsLlmTitle,
+                style: TextStyle(
+                  fontSize: 14,
+                  fontWeight: FontWeight.w600,
+                  color: colorScheme.onSurfaceVariant,
+                ),
               ),
-            ),
-            const SizedBox(height: 8),
-            Text(
-              l10n.settingsLlmHelp,
-              style: TextStyle(
-                fontSize: 12,
-                color: colorScheme.onSurfaceVariant,
+              const SizedBox(height: 8),
+              Text(
+                l10n.settingsLlmHelp,
+                style: TextStyle(
+                  fontSize: 12,
+                  color: colorScheme.onSurfaceVariant,
+                ),
               ),
-            ),
-            const SizedBox(height: 16),
-            const _LlmSettings(),
-          ],
+              const SizedBox(height: 16),
+              const _LlmSettings(),
+            ],
+          ),
         ),
       ),
     );
@@ -263,11 +270,11 @@ class _ThemeOption extends StatelessWidget {
     final colorScheme = Theme.of(context).colorScheme;
 
     return Material(
-      color: isSelected ? colorScheme.surfaceContainer : Colors.transparent,
-      borderRadius: BorderRadius.circular(12),
+      color: isSelected ? colorScheme.surfaceContainer : context.appColors.transparent,
+      borderRadius: BorderRadius.circular(8),
       child: InkWell(
         onTap: onTap,
-        borderRadius: BorderRadius.circular(12),
+        borderRadius: BorderRadius.circular(8),
         child: Container(
           height: 48,
           padding: const EdgeInsets.symmetric(horizontal: 12),

@@ -1,10 +1,26 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:mocktail/mocktail.dart';
 import 'package:scan_job/app/view/app.dart';
 import 'package:scan_job/chat/view/chat_page.dart';
 import 'package:scan_job/l10n/l10n.dart';
+import 'package:scan_job/repositories/chat_repository.dart';
+import 'package:scan_job/theme/app_theme.dart';
+
+class MockChatRepository extends Mock implements ChatRepository {}
 
 void main() {
+  late ChatRepository chatRepository;
+
+  setUp(() {
+    chatRepository = MockChatRepository();
+    when(() => chatRepository.sendMessage(
+          text: any(named: 'text'),
+          history: any(named: 'history'),
+        )).thenAnswer((_) => const Stream.empty());
+  });
+
   group('App', () {
     testWidgets('renders ChatPage', (tester) async {
       await tester.pumpWidget(const App());
@@ -29,13 +45,16 @@ void main() {
               addTearDown(tester.view.resetDevicePixelRatio);
 
               await tester.pumpWidget(
-                MaterialApp(
-                  localizationsDelegates:
-                      AppLocalizations.localizationsDelegates,
-                  supportedLocales: AppLocalizations.supportedLocales,
-                  locale: locale,
-                  theme: ThemeData(useMaterial3: true),
-                  home: page,
+                RepositoryProvider.value(
+                  value: chatRepository,
+                  child: MaterialApp(
+                    localizationsDelegates:
+                        AppLocalizations.localizationsDelegates,
+                    supportedLocales: AppLocalizations.supportedLocales,
+                    locale: locale,
+                    theme: AppTheme.light,
+                    home: page,
+                  ),
                 ),
               );
 

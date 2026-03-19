@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:scan_job/l10n/l10n.dart';
 
 class DashboardStub extends StatelessWidget {
   const DashboardStub({super.key});
@@ -16,7 +17,7 @@ class DashboardStub extends StatelessWidget {
         ),
         const SizedBox(height: 16),
         Text(
-          'Dashboard coming soon',
+          context.l10n.dashboardComingSoon,
           style: TextStyle(fontSize: 18, color: colorScheme.onSurfaceVariant),
         ),
       ],

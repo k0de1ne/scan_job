@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:scan_job/chat/cubit/chat_cubit.dart';
 import 'package:scan_job/l10n/l10n.dart';
+import 'package:scan_job/theme/app_theme.dart';
 import 'package:scan_job/widgets/settings_dialog.dart';
 
 class ChatSidebar extends StatelessWidget {
@@ -69,11 +70,11 @@ class _SideButton extends StatelessWidget {
     final colorScheme = Theme.of(context).colorScheme;
 
     return Material(
-      color: Colors.transparent,
-      borderRadius: BorderRadius.circular(20),
+      color: context.appColors.transparent,
+      borderRadius: BorderRadius.circular(8),
       child: InkWell(
         onTap: onTap,
-        borderRadius: BorderRadius.circular(20),
+        borderRadius: BorderRadius.circular(8),
         child: Container(
           height: 40,
           padding: const EdgeInsets.symmetric(horizontal: 8),

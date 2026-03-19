@@ -60,5 +60,34 @@
     "chatStepCompleted": "Выполнено",
     "chatStepActive": "В процессе",
     "chatModelQuick": "Быстрая",
-    "chatFooterTerms": "Scan Job — это профессиональный инструмент на базе ИИ. Пожалуйста, проверяйте важную информацию."
+    "chatFooterTerms": "Scan Job — это профессиональный инструмент на базе ИИ. Пожалуйста, проверяйте важную информацию.",
+    "thoughtStepAnalysisTitle": "Анализ запроса",
+    "thoughtStepAnalysisContent": "Инициализация...",
+    "thoughtStepThinkingTitle": "Размышление",
+    "thoughtStepThinkingSubTitle": "Анализ",
+    "thoughtStepToolTitle": "Инструмент {index}",
+    "@thoughtStepToolTitle": {
+        "description": "Title for a tool call step",
+        "placeholders": {
+            "index": {
+                "type": "int"
+            }
+        }
+    },
+    "thoughtStepToolStarting": "Запуск...",
+    "thoughtStepToolCompletedTitle": "Инструмент {index} выполнен",
+    "@thoughtStepToolCompletedTitle": {
+        "description": "Title for a completed tool call step",
+        "placeholders": {
+            "index": {
+                "type": "int"
+            }
+        }
+    },
+    "thoughtStepToolDone": "Готово.",
+    "thoughtStepToolRunning": "В процессе...",
+    "dashboardComingSoon": "Панель управления скоро появится",
+    "codeTitle": "Код",
+    "codeCopy": "Копировать",
+    "codeCopied": "Скопировано"
 }

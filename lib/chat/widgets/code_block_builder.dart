@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_markdown/flutter_markdown.dart';
 import 'package:markdown/markdown.dart' as md;
+import 'package:scan_job/l10n/l10n.dart';
 
 class CodeBlockBuilder extends MarkdownElementBuilder {
   @override
@@ -60,7 +61,7 @@ class _CodeBlockWidgetState extends State<_CodeBlockWidget> {
       margin: const EdgeInsets.symmetric(vertical: 8),
       decoration: BoxDecoration(
         color: colorScheme.surfaceContainerHighest,
-        borderRadius: BorderRadius.circular(12),
+        borderRadius: BorderRadius.circular(8),
         border: Border.all(
           color: colorScheme.outlineVariant.withValues(alpha: 0.1),
         ),
@@ -74,15 +75,15 @@ class _CodeBlockWidgetState extends State<_CodeBlockWidget> {
             decoration: BoxDecoration(
               color: colorScheme.surfaceContainerHigh,
               borderRadius: const BorderRadius.only(
-                topLeft: Radius.circular(12),
-                topRight: Radius.circular(12),
+                topLeft: Radius.circular(8),
+                topRight: Radius.circular(8),
               ),
             ),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Text(
-                  'Code',
+                  context.l10n.codeTitle,
                   style: TextStyle(
                     fontSize: 12,
                     fontWeight: FontWeight.w500,
@@ -106,7 +107,7 @@ class _CodeBlockWidgetState extends State<_CodeBlockWidget> {
                         ),
                         const SizedBox(width: 4),
                         Text(
-                          _isCopied ? 'Copied' : 'Copy',
+                          _isCopied ? context.l10n.codeCopied : context.l10n.codeCopy,
                           style: TextStyle(
                             fontSize: 12,
                             color: _isCopied

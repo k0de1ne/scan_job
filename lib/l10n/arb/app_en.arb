@@ -60,5 +60,34 @@
     "chatStepCompleted": "Completed",
     "chatStepActive": "Active",
     "chatModelQuick": "Quick",
-    "chatFooterTerms": "Scan Job is an AI-powered professional tool. Please verify critical information."
+    "chatFooterTerms": "Scan Job is an AI-powered professional tool. Please verify critical information.",
+    "thoughtStepAnalysisTitle": "Request Analysis",
+    "thoughtStepAnalysisContent": "Initializing...",
+    "thoughtStepThinkingTitle": "Thinking",
+    "thoughtStepThinkingSubTitle": "Analysis",
+    "thoughtStepToolTitle": "Tool {index}",
+    "@thoughtStepToolTitle": {
+        "description": "Title for a tool call step",
+        "placeholders": {
+            "index": {
+                "type": "int"
+            }
+        }
+    },
+    "thoughtStepToolStarting": "Starting...",
+    "thoughtStepToolCompletedTitle": "Tool {index} completed",
+    "@thoughtStepToolCompletedTitle": {
+        "description": "Title for a completed tool call step",
+        "placeholders": {
+            "index": {
+                "type": "int"
+            }
+        }
+    },
+    "thoughtStepToolDone": "Done.",
+    "thoughtStepToolRunning": "Running...",
+    "dashboardComingSoon": "Dashboard coming soon",
+    "codeTitle": "Code",
+    "codeCopy": "Copy",
+    "codeCopied": "Copied"
 }

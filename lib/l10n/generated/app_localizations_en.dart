@@ -102,4 +102,47 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get chatFooterTerms =>
       'Scan Job is an AI-powered professional tool. Please verify critical information.';
+
+  @override
+  String get thoughtStepAnalysisTitle => 'Request Analysis';
+
+  @override
+  String get thoughtStepAnalysisContent => 'Initializing...';
+
+  @override
+  String get thoughtStepThinkingTitle => 'Thinking';
+
+  @override
+  String get thoughtStepThinkingSubTitle => 'Analysis';
+
+  @override
+  String thoughtStepToolTitle(int index) {
+    return 'Tool $index';
+  }
+
+  @override
+  String get thoughtStepToolStarting => 'Starting...';
+
+  @override
+  String thoughtStepToolCompletedTitle(int index) {
+    return 'Tool $index completed';
+  }
+
+  @override
+  String get thoughtStepToolDone => 'Done.';
+
+  @override
+  String get thoughtStepToolRunning => 'Running...';
+
+  @override
+  String get dashboardComingSoon => 'Dashboard coming soon';
+
+  @override
+  String get codeTitle => 'Code';
+
+  @override
+  String get codeCopy => 'Copy';
+
+  @override
+  String get codeCopied => 'Copied';
 }

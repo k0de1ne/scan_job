@@ -77,7 +77,11 @@ class ChatRepositoryImpl implements ChatRepository {
     ];
 
     final steps = <model.ThoughtStep>[
-      const model.ThoughtStep(title: 'Анализ запроса', content: 'Инициализация...', status: model.StepStatus.active),
+      const model.ThoughtStep(
+        title: 'thoughtStepAnalysisTitle',
+        content: 'thoughtStepAnalysisContent',
+        status: model.StepStatus.active,
+      ),
     ];
 
     final responseBuffer = StringBuffer();
@@ -105,16 +109,25 @@ class ChatRepositoryImpl implements ChatRepository {
       final toolCallBuffers = <int, Map<String, dynamic>>{};
       var hasNewToolCall = false;
       var currentReasoningIdx = -1;
+      var isInsideThinkTag = false;
 
       await for (final chunk in stream) {
         // 1. Native Reasoning from API
         if (chunk.reasoning != null && chunk.reasoning!.isNotEmpty) {
           thoughtBuffer.write(chunk.reasoning);
           if (steps.length == 1) {
-            steps[0] = const model.ThoughtStep(title: 'Анализ запроса', content: 'Запрос принят.', status: model.StepStatus.completed);
+            steps[0] = const model.ThoughtStep(
+              title: 'thoughtStepAnalysisTitle',
+              content: 'thoughtStepAnalysisContent',
+              status: model.StepStatus.completed,
+            );
           }
           if (currentReasoningIdx == -1) {
-            steps.add(model.ThoughtStep(title: iteration == 0 ? 'Размышление' : 'Анализ', content: '', status: model.StepStatus.active));
+            steps.add(model.ThoughtStep(
+              title: iteration == 0 ? 'thoughtStepThinkingTitle' : 'thoughtStepThinkingSubTitle',
+              content: '',
+              status: model.StepStatus.active,
+            ));
             currentReasoningIdx = steps.length - 1;
           }
           steps[currentReasoningIdx] = model.ThoughtStep(
@@ -147,16 +160,76 @@ class ChatRepositoryImpl implements ChatRepository {
             final sIdx = steps.indexWhere((s) => s.tool != null && s.tool!.startsWith('[$stepKey]'));
             
             if (sIdx == -1) {
-              steps.add(model.ThoughtStep(title: 'Инструмент ${idx + 1}', content: 'Запуск...', tool: '[$stepKey] $tName($tArgs)', status: model.StepStatus.active));
+              steps.add(model.ThoughtStep(
+                title: 'thoughtStepToolTitle',
+                content: 'thoughtStepToolStarting',
+                tool: '[$stepKey] $tName($tArgs)',
+                status: model.StepStatus.active,
+              ));
             } else {
-              steps[sIdx] = model.ThoughtStep(title: steps[sIdx].title, content: 'Выполняется...', tool: '[$stepKey] $tName($tArgs)', status: model.StepStatus.active);
+              steps[sIdx] = model.ThoughtStep(
+                title: steps[sIdx].title,
+                content: 'thoughtStepToolRunning',
+                tool: '[$stepKey] $tName($tArgs)',
+                status: model.StepStatus.active,
+              );
             }
           }
         }
 
-        // 3. Main Content
+        // 3. Main Content & <think> tags
         if (chunk.content.isNotEmpty) {
-          responseBuffer.write(chunk.content);
+          var remainingContent = chunk.content;
+
+          while (remainingContent.isNotEmpty) {
+            if (!isInsideThinkTag) {
+              if (remainingContent.contains('<think>')) {
+                final parts = remainingContent.split('<think>');
+                if (parts[0].isNotEmpty) responseBuffer.write(parts[0]);
+                isInsideThinkTag = true;
+                remainingContent = parts.sublist(1).join('<think>');
+                
+                // Ensure reasoning step exists
+                if (currentReasoningIdx == -1) {
+                  steps.add(model.ThoughtStep(
+                    title: iteration == 0 ? 'thoughtStepThinkingTitle' : 'thoughtStepThinkingSubTitle',
+                    content: '',
+                    status: model.StepStatus.active,
+                  ));
+                  currentReasoningIdx = steps.length - 1;
+                }
+              } else {
+                responseBuffer.write(remainingContent);
+                remainingContent = '';
+              }
+            } else {
+              if (remainingContent.contains('</think>')) {
+                final parts = remainingContent.split('</think>');
+                thoughtBuffer.write(parts[0]);
+                isInsideThinkTag = false;
+                remainingContent = parts.sublist(1).join('</think>');
+                
+                if (currentReasoningIdx != -1) {
+                  steps[currentReasoningIdx] = model.ThoughtStep(
+                    title: steps[currentReasoningIdx].title,
+                    content: thoughtBuffer.toString().trim(),
+                    status: model.StepStatus.active,
+                  );
+                }
+              } else {
+                thoughtBuffer.write(remainingContent);
+                remainingContent = '';
+                
+                if (currentReasoningIdx != -1) {
+                  steps[currentReasoningIdx] = model.ThoughtStep(
+                    title: steps[currentReasoningIdx].title,
+                    content: thoughtBuffer.toString().trim(),
+                    status: model.StepStatus.active,
+                  );
+                }
+              }
+            }
+          }
         }
 
         yield model.ChatMessage(
@@ -181,7 +254,13 @@ class ChatRepositoryImpl implements ChatRepository {
         final key = 'tool_${iteration}_$idx';
         final sIdx = steps.indexWhere((s) => s.tool != null && s.tool!.startsWith('[$key]'));
         if (sIdx != -1) {
-          steps[sIdx] = model.ThoughtStep(title: 'Инструмент ${idx + 1} выполнен', content: 'Готово.', tool: steps[sIdx].tool, output: res, status: model.StepStatus.completed);
+          steps[sIdx] = model.ThoughtStep(
+            title: 'thoughtStepToolCompletedTitle',
+            content: 'thoughtStepToolDone',
+            tool: steps[sIdx].tool,
+            output: res,
+            status: model.StepStatus.completed,
+          );
         }
         assistantCalls.add({
           'id': b['id'], 
@@ -206,7 +285,7 @@ class ChatRepositoryImpl implements ChatRepository {
       if (steps[i].status == model.StepStatus.active) {
         steps[i] = model.ThoughtStep(
           title: steps[i].title, 
-          content: steps[i].content.isEmpty ? 'Готово.' : steps[i].content, 
+          content: steps[i].content.isEmpty ? 'thoughtStepToolDone' : steps[i].content, 
           status: model.StepStatus.completed, 
           tool: steps[i].tool, 
           output: steps[i].output,

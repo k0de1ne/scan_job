@@ -29,6 +29,7 @@ abstract final class AppTheme {
       const AppColors(
         success: Color(0xFF28A745),
         onSuccess: Color(0xFFFFFFFF),
+        transparent: Colors.transparent,
       ),
     ],
     hoverColor: const Color(0xFFE9EEF6),
@@ -80,6 +81,7 @@ abstract final class AppTheme {
       const AppColors(
         success: Color(0xFF48C76F),
         onSuccess: Color(0xFF000000),
+        transparent: Colors.transparent,
       ),
     ],
   );
@@ -97,19 +99,23 @@ class AppColors extends ThemeExtension<AppColors> {
   const AppColors({
     required this.success,
     required this.onSuccess,
+    required this.transparent,
   });
 
   final Color success;
   final Color onSuccess;
+  final Color transparent;
 
   @override
   AppColors copyWith({
     Color? success,
     Color? onSuccess,
+    Color? transparent,
   }) {
     return AppColors(
       success: success ?? this.success,
       onSuccess: onSuccess ?? this.onSuccess,
+      transparent: transparent ?? this.transparent,
     );
   }
 
@@ -119,6 +125,7 @@ class AppColors extends ThemeExtension<AppColors> {
     return AppColors(
       success: Color.lerp(success, other.success, t)!,
       onSuccess: Color.lerp(onSuccess, other.onSuccess, t)!,
+      transparent: Color.lerp(transparent, other.transparent, t)!,
     );
   }
 }

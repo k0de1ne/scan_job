@@ -3,6 +3,7 @@ import 'package:flutter_markdown/flutter_markdown.dart';
 import 'package:scan_job/chat/models/chat_message.dart';
 import 'package:scan_job/chat/widgets/code_block_builder.dart';
 import 'package:scan_job/chat/widgets/thinking_process.dart';
+import 'package:scan_job/theme/app_theme.dart';
 
 class ChatMessageBubble extends StatelessWidget {
   const ChatMessageBubble({
@@ -35,7 +36,7 @@ class ChatMessageBubble extends StatelessWidget {
               decoration: BoxDecoration(
                 color: isUser
                     ? colorScheme.primaryContainer
-                    : Colors.transparent,
+                    : context.appColors.transparent,
                 borderRadius: BorderRadius.circular(24),
                 boxShadow: isUser
                     ? [

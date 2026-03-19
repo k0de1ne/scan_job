@@ -32,7 +32,7 @@ void main() {
       final lastMessage = messages.last;
       expect(lastMessage.text, contains('Hello!  Done.'));
       expect(lastMessage.metadata!.steps!.length, greaterThanOrEqualTo(2));
-      final reasoningStep = lastMessage.metadata!.steps!.firstWhere((s) => s.title.contains('Размышление'));
+      final reasoningStep = lastMessage.metadata!.steps!.firstWhere((s) => s.title == 'thoughtStepThinkingTitle');
       expect(reasoningStep.content, equals('I should be careful.'));
     });
 
@@ -52,10 +52,17 @@ void main() {
         ),
       ];
 
+      var callCount = 0;
       when(() => mockApiClient.sendMessageStream(
         messages: any(named: 'messages'),
         tools: any(named: 'tools'),
-      )).thenAnswer((_) => Stream.fromIterable(chunks));
+      )).thenAnswer((_) {
+        if (callCount == 0) {
+          callCount++;
+          return Stream.fromIterable(chunks);
+        }
+        return const Stream.empty();
+      });
 
       final stream = repository.sendMessage(text: 'call two tools');
       final messages = await stream.toList();
@@ -63,7 +70,7 @@ void main() {
       final lastMessage = messages.last;
       final steps = lastMessage.metadata!.steps!;
       
-      final toolSteps = steps.where((s) => s.title.contains('Вызов инструмента') || s.title.contains('Инструмент')).toList();
+      final toolSteps = steps.where((s) => s.title == 'thoughtStepToolTitle' || s.title == 'thoughtStepToolCompletedTitle').toList();
       
       // Should have 2 tool steps found by IDs or indexing
       expect(toolSteps.length, equals(2));

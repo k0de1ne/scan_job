@@ -7,6 +7,7 @@ import 'package:scan_job/chat/widgets/chat_input.dart';
 import 'package:scan_job/chat/widgets/chat_message_bubble.dart';
 import 'package:scan_job/chat/widgets/sidebar.dart';
 import 'package:scan_job/l10n/l10n.dart';
+import 'package:scan_job/theme/app_theme.dart';
 import 'package:scan_job/widgets/settings_dialog.dart';
 
 class ChatView extends StatefulWidget {
@@ -134,11 +135,11 @@ class _SideButton extends StatelessWidget {
     final colorScheme = Theme.of(context).colorScheme;
 
     return Material(
-      color: Colors.transparent,
-      borderRadius: BorderRadius.circular(20),
+      color: context.appColors.transparent,
+      borderRadius: BorderRadius.circular(8),
       child: InkWell(
         onTap: onTap,
-        borderRadius: BorderRadius.circular(20),
+        borderRadius: BorderRadius.circular(8),
         child: Container(
           height: 40,
           padding: const EdgeInsets.symmetric(horizontal: 8),

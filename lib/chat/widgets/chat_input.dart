@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:scan_job/chat/cubit/chat_cubit.dart';
 import 'package:scan_job/l10n/l10n.dart';
+import 'package:scan_job/theme/app_theme.dart';
 
 class ChatInput extends StatefulWidget {
   const ChatInput({this.isCentered = false, super.key});
@@ -52,7 +53,7 @@ class _ChatInputState extends State<ChatInput> {
             ],
           ),
           child: Material(
-            color: Colors.transparent,
+            color: context.appColors.transparent,
             child: Column(
               mainAxisSize: MainAxisSize.min,
               children: [
@@ -81,8 +82,10 @@ class _ChatInputState extends State<ChatInput> {
                 ),
                 Padding(
                   padding: const EdgeInsets.fromLTRB(16, 0, 16, 12),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  child: Wrap(
+                    alignment: WrapAlignment.spaceBetween,
+                    crossAxisAlignment: WrapCrossAlignment.center,
+                    runSpacing: 8,
                     children: [
                       Row(
                         mainAxisSize: MainAxisSize.min,
@@ -112,7 +115,6 @@ class _ChatInputState extends State<ChatInput> {
                             onTap: _sendMessage,
                             icon: Icons.send,
                             isIconOnly: true,
-                            backgroundColor: Colors.transparent,
                           ),
                         ],
                       ),
@@ -134,25 +136,23 @@ class _ActionButton extends StatelessWidget {
     this.icon,
     this.label,
     this.isIconOnly = false,
-    this.backgroundColor,
   });
 
   final VoidCallback onTap;
   final IconData? icon;
   final String? label;
   final bool isIconOnly;
-  final Color? backgroundColor;
 
   @override
   Widget build(BuildContext context) {
     final colorScheme = Theme.of(context).colorScheme;
 
     return Material(
-      color: backgroundColor ?? Colors.transparent,
-      borderRadius: BorderRadius.circular(20),
+      color: context.appColors.transparent,
+      borderRadius: BorderRadius.circular(8),
       child: InkWell(
         onTap: onTap,
-        borderRadius: BorderRadius.circular(20),
+        borderRadius: BorderRadius.circular(8),
         child: Container(
           height: 40,
           padding: EdgeInsets.symmetric(horizontal: isIconOnly ? 0 : 12),

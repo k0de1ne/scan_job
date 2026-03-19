@@ -70,7 +70,7 @@ class _ThinkingProcessState extends State<ThinkingProcess> {
                           horizontal: 12, vertical: 4),
                       decoration: BoxDecoration(
                         color: colorScheme.onSurface.withValues(alpha: 0.06),
-                        borderRadius: BorderRadius.circular(12),
+                        borderRadius: BorderRadius.circular(8),
                       ),
                       child: Text(
                         '${widget.metadata.inputTokens} ↑  ${widget.metadata.outputTokens} ↓',
@@ -98,7 +98,7 @@ class _ThinkingProcessState extends State<ThinkingProcess> {
               child: Container(
                 decoration: BoxDecoration(
                   color: colorScheme.surface.withValues(alpha: 0.5),
-                  borderRadius: BorderRadius.circular(20),
+                  borderRadius: BorderRadius.circular(8),
                 ),
                 child: Column(
                   children: widget.metadata.steps!
@@ -162,7 +162,7 @@ class _ThoughtStepWidget extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    step.title,
+                    _translate(context, step.title),
                     style: const TextStyle(
                       fontSize: 14,
                       fontWeight: FontWeight.w500,
@@ -170,7 +170,7 @@ class _ThoughtStepWidget extends StatelessWidget {
                   ),
                   const SizedBox(height: 4),
                   Text(
-                    step.content,
+                    _translate(context, step.content),
                     style: TextStyle(
                       fontSize: 13,
                       color: colorScheme.onSurfaceVariant,
@@ -205,6 +205,22 @@ class _ThoughtStepWidget extends StatelessWidget {
       StepStatus.pending => colorScheme.outline,
     };
   }
+
+  String _translate(BuildContext context, String key) {
+    final l10n = context.l10n;
+    return switch (key) {
+      'thoughtStepAnalysisTitle' => l10n.thoughtStepAnalysisTitle,
+      'thoughtStepAnalysisContent' => l10n.thoughtStepAnalysisContent,
+      'thoughtStepThinkingTitle' => l10n.thoughtStepThinkingTitle,
+      'thoughtStepThinkingSubTitle' => l10n.thoughtStepThinkingSubTitle,
+      'thoughtStepToolTitle' => l10n.thoughtStepToolTitle(1), // Default index
+      'thoughtStepToolStarting' => l10n.thoughtStepToolStarting,
+      'thoughtStepToolCompletedTitle' => l10n.thoughtStepToolCompletedTitle(1),
+      'thoughtStepToolDone' => l10n.thoughtStepToolDone,
+      'thoughtStepToolRunning' => l10n.thoughtStepToolRunning,
+      _ => key,
+    };
+  }
 }
 
 class _PlanWidget extends StatelessWidget {
@@ -222,7 +238,7 @@ class _PlanWidget extends StatelessWidget {
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
         color: colorScheme.surfaceContainer,
-        borderRadius: BorderRadius.circular(16),
+        borderRadius: BorderRadius.circular(8),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -251,7 +267,7 @@ class _PlanWidget extends StatelessWidget {
                       width: 18,
                       height: 18,
                       decoration: BoxDecoration(
-                        color: item.done ? appColors.success : Colors.transparent,
+                        color: item.done ? appColors.success : appColors.transparent,
                         border: Border.all(
                           color:
                               item.done ? appColors.success : colorScheme.outline,
@@ -309,7 +325,7 @@ class _ToolCallWidgetState extends State<_ToolCallWidget> {
     return Container(
       decoration: BoxDecoration(
         color: colorScheme.surface,
-        borderRadius: BorderRadius.circular(16),
+        borderRadius: BorderRadius.circular(8),
         border: Border.all(color: colorScheme.outlineVariant),
       ),
       clipBehavior: Clip.antiAlias,

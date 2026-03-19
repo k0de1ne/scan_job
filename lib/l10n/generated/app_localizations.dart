@@ -283,6 +283,84 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Scan Job is an AI-powered professional tool. Please verify critical information.'**
   String get chatFooterTerms;
+
+  /// No description provided for @thoughtStepAnalysisTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Request Analysis'**
+  String get thoughtStepAnalysisTitle;
+
+  /// No description provided for @thoughtStepAnalysisContent.
+  ///
+  /// In en, this message translates to:
+  /// **'Initializing...'**
+  String get thoughtStepAnalysisContent;
+
+  /// No description provided for @thoughtStepThinkingTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Thinking'**
+  String get thoughtStepThinkingTitle;
+
+  /// No description provided for @thoughtStepThinkingSubTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Analysis'**
+  String get thoughtStepThinkingSubTitle;
+
+  /// Title for a tool call step
+  ///
+  /// In en, this message translates to:
+  /// **'Tool {index}'**
+  String thoughtStepToolTitle(int index);
+
+  /// No description provided for @thoughtStepToolStarting.
+  ///
+  /// In en, this message translates to:
+  /// **'Starting...'**
+  String get thoughtStepToolStarting;
+
+  /// Title for a completed tool call step
+  ///
+  /// In en, this message translates to:
+  /// **'Tool {index} completed'**
+  String thoughtStepToolCompletedTitle(int index);
+
+  /// No description provided for @thoughtStepToolDone.
+  ///
+  /// In en, this message translates to:
+  /// **'Done.'**
+  String get thoughtStepToolDone;
+
+  /// No description provided for @thoughtStepToolRunning.
+  ///
+  /// In en, this message translates to:
+  /// **'Running...'**
+  String get thoughtStepToolRunning;
+
+  /// No description provided for @dashboardComingSoon.
+  ///
+  /// In en, this message translates to:
+  /// **'Dashboard coming soon'**
+  String get dashboardComingSoon;
+
+  /// No description provided for @codeTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Code'**
+  String get codeTitle;
+
+  /// No description provided for @codeCopy.
+  ///
+  /// In en, this message translates to:
+  /// **'Copy'**
+  String get codeCopy;
+
+  /// No description provided for @codeCopied.
+  ///
+  /// In en, this message translates to:
+  /// **'Copied'**
+  String get codeCopied;
 }
 
 class _AppLocalizationsDelegate
