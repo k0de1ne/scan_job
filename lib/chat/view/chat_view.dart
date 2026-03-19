@@ -30,49 +30,88 @@ class _ChatViewState extends State<ChatView> {
     return Scaffold(
       backgroundColor: colorScheme.surface,
       drawer: isMobile ? const ChatSidebar() : null,
-      body: Row(
-        children: [
-          if (!isMobile)
-            _DesktopSidebar(
-              isExpanded: _isSidebarExpanded,
-              onToggle: () =>
-                  setState(() => _isSidebarExpanded = !_isSidebarExpanded),
-            ),
-          Expanded(
-            child: Column(
-              children: [
-                _Header(
-                  isMobile: isMobile,
-                  title: l10n.appTitle,
+      body: BlocListener<ChatCubit, ChatState>(
+        listenWhen: (previous, current) =>
+            previous.status != ChatStatus.failure &&
+            current.status == ChatStatus.failure,
+        listener: (context, state) {
+          if (state.status == ChatStatus.failure && state.error != null) {
+            final error = state.error!;
+            String message;
+
+            if (error.contains('401') || error.contains('Unauthorized')) {
+              message = l10n.chatErrorNoApiKey;
+            } else if (error.contains('429') ||
+                error.contains('Too Many Requests') ||
+                error.contains('API Error') ||
+                error.contains('Connection refused') ||
+                error.contains('SocketException') ||
+                error.contains('HttpException')) {
+              message = l10n.chatErrorServerBusy;
+            } else {
+              message = l10n.chatErrorGeneric;
+            }
+
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(
+                content: Text(message),
+                backgroundColor: colorScheme.error,
+                behavior: SnackBarBehavior.floating,
+                action: SnackBarAction(
+                  label: 'OK',
+                  textColor: colorScheme.onError,
+                  onPressed: () {
+                    ScaffoldMessenger.of(context).hideCurrentSnackBar();
+                  },
                 ),
-                Expanded(
-                  child: BlocBuilder<ChatCubit, ChatState>(
-                    builder: (context, state) {
-                      if (state.messages.isEmpty) {
-                        return _HeroSection(l10n: l10n);
-                      }
-                      return ListView.builder(
-                        padding: EdgeInsets.symmetric(
-                          horizontal: screenWidth > 900
-                              ? 120
-                              : context.spacing.mdLarge,
-                          vertical: context.spacing.xxl,
-                        ),
-                        itemCount: state.messages.length,
-                        itemBuilder: (context, index) {
-                          return ChatMessageBubble(
-                            message: state.messages[index],
-                          );
-                        },
-                      );
-                    },
+              ),
+            );
+          }
+        },
+        child: Row(
+          children: [
+            if (!isMobile)
+              _DesktopSidebar(
+                isExpanded: _isSidebarExpanded,
+                onToggle: () =>
+                    setState(() => _isSidebarExpanded = !_isSidebarExpanded),
+              ),
+            Expanded(
+              child: Column(
+                children: [
+                  _Header(
+                    isMobile: isMobile,
+                    title: l10n.appTitle,
                   ),
-                ),
-                _InputArea(l10n: l10n),
-              ],
+                  Expanded(
+                    child: BlocBuilder<ChatCubit, ChatState>(
+                      builder: (context, state) {
+                        if (state.messages.isEmpty) {
+                          return _HeroSection(l10n: l10n);
+                        }
+                        return ListView.builder(
+                          padding: EdgeInsets.symmetric(
+                            horizontal: screenWidth > 900
+                                ? 120
+                                : context.spacing.mdLarge,
+                            vertical: context.spacing.xxl,
+                          ),
+                          itemCount: state.messages.length,
+                          itemBuilder: (context, index) {
+                            return ChatMessageBubble(
+                              message: state.messages[index],
+                            );
+                          },
+                        );
+                      },
+                    ),
+                  ),
+                  _InputArea(l10n: l10n),
+                ],
+              ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }

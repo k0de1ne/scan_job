@@ -89,5 +89,9 @@
     "dashboardComingSoon": "Dashboard coming soon",
     "codeTitle": "Code",
     "codeCopy": "Copy",
-    "codeCopied": "Copied"
+    "codeCopied": "Copied",
+    "chatErrorTitle": "Error",
+    "chatErrorServerBusy": "Server is busy or unreachable. Please check your connection or LLM settings.",
+    "chatErrorNoApiKey": "API Key is missing. Please check settings.",
+    "chatErrorGeneric": "Something went wrong. Please try again."
 }

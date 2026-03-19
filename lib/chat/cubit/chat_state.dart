@@ -20,12 +20,12 @@ class ChatState extends Equatable {
   ChatState copyWith({
     ChatStatus? status,
     List<ChatMessage>? messages,
-    String? error,
+    String? Function()? error,
   }) {
     return ChatState(
       status: status ?? this.status,
       messages: messages ?? this.messages,
-      error: error ?? this.error,
+      error: error != null ? error() : this.error,
     );
   }
 }

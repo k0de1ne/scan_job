@@ -361,6 +361,30 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Copied'**
   String get codeCopied;
+
+  /// No description provided for @chatErrorTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Error'**
+  String get chatErrorTitle;
+
+  /// No description provided for @chatErrorServerBusy.
+  ///
+  /// In en, this message translates to:
+  /// **'Server is busy or unreachable. Please check your connection or LLM settings.'**
+  String get chatErrorServerBusy;
+
+  /// No description provided for @chatErrorNoApiKey.
+  ///
+  /// In en, this message translates to:
+  /// **'API Key is missing. Please check settings.'**
+  String get chatErrorNoApiKey;
+
+  /// No description provided for @chatErrorGeneric.
+  ///
+  /// In en, this message translates to:
+  /// **'Something went wrong. Please try again.'**
+  String get chatErrorGeneric;
 }
 
 class _AppLocalizationsDelegate

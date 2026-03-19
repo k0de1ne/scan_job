@@ -89,5 +89,9 @@
     "dashboardComingSoon": "Панель управления скоро появится",
     "codeTitle": "Код",
     "codeCopy": "Копировать",
-    "codeCopied": "Скопировано"
+    "codeCopied": "Скопировано",
+    "chatErrorTitle": "Ошибка",
+    "chatErrorServerBusy": "Сервер занят или недоступен. Проверьте соединение или настройки LLM.",
+    "chatErrorNoApiKey": "API-ключ отсутствует. Проверьте настройки.",
+    "chatErrorGeneric": "Что-то пошло не так. Пожалуйста, попробуйте еще раз."
 }

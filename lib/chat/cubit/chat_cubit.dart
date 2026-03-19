@@ -28,6 +28,7 @@ class ChatCubit extends Cubit<ChatState> {
       state.copyWith(
         messages: [...state.messages, userMessage],
         status: ChatStatus.loading,
+        error: () => null,
       ),
     );
 
@@ -57,15 +58,25 @@ class ChatCubit extends Cubit<ChatState> {
           lastAiMessage = message;
         },
         onError: (Object error) {
-          emit(state.copyWith(status: ChatStatus.failure));
+          emit(
+            state.copyWith(
+              status: ChatStatus.failure,
+              error: () => error.toString(),
+            ),
+          );
         },
         onDone: () {
           emit(state.copyWith(status: ChatStatus.success));
         },
         cancelOnError: true,
       );
-    } on Exception catch (_) {
-      emit(state.copyWith(status: ChatStatus.failure));
+    } on Exception catch (e) {
+      emit(
+        state.copyWith(
+          status: ChatStatus.failure,
+          error: () => e.toString(),
+        ),
+      );
     }
   }
 

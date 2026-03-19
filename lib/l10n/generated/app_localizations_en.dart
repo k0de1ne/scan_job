@@ -145,4 +145,17 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get codeCopied => 'Copied';
+
+  @override
+  String get chatErrorTitle => 'Error';
+
+  @override
+  String get chatErrorServerBusy =>
+      'Server is busy or unreachable. Please check your connection or LLM settings.';
+
+  @override
+  String get chatErrorNoApiKey => 'API Key is missing. Please check settings.';
+
+  @override
+  String get chatErrorGeneric => 'Something went wrong. Please try again.';
 }

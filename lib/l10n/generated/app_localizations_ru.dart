@@ -146,4 +146,18 @@ class AppLocalizationsRu extends AppLocalizations {
 
   @override
   String get codeCopied => 'Скопировано';
+
+  @override
+  String get chatErrorTitle => 'Ошибка';
+
+  @override
+  String get chatErrorServerBusy =>
+      'Сервер занят или недоступен. Проверьте соединение или настройки LLM.';
+
+  @override
+  String get chatErrorNoApiKey => 'API-ключ отсутствует. Проверьте настройки.';
+
+  @override
+  String get chatErrorGeneric =>
+      'Что-то пошло не так. Пожалуйста, попробуйте еще раз.';
 }
