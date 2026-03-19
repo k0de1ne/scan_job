@@ -65,9 +65,7 @@ class ChatRepositoryImpl implements ChatRepository {
     final messages = <Map<String, dynamic>>[
       {
         'role': 'system', 
-        'content': 'You are Scan Job, a professional AI assistant. '
-            'You have the capability to call multiple tools PARALLEL (simultaneously) in a single response. '
-            'If a task requires multiple checks, call ALL necessary tools at once in a single message without waiting for each individual result.'
+        'content': 'You are Scan Job, a professional AI assistant.'
       },
       ...history.map((m) => {
         'role': m.role == model.MessageRole.user ? 'user' : 'assistant',
