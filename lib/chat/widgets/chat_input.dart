@@ -103,10 +103,8 @@ class _ChatInputState extends State<ChatInput> {
                         context.spacing.lg,
                         context.spacing.md,
                       ),
-                      child: Wrap(
-                        alignment: WrapAlignment.spaceBetween,
-                        crossAxisAlignment: WrapCrossAlignment.center,
-                        runSpacing: context.spacing.sm,
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
                           Row(
                             mainAxisSize: MainAxisSize.min,
@@ -120,6 +118,7 @@ class _ChatInputState extends State<ChatInput> {
                               _ActionButton(
                                 onTap: isLoading ? null : () {},
                                 icon: Icons.tune,
+                                isIconOnly: true,
                               ),
                             ],
                           ),
