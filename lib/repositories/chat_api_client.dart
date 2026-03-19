@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:convert';
 import 'package:http/http.dart' as http;
+import 'package:langchain_tiktoken/langchain_tiktoken.dart';
 
 class ChatStreamChunk {
   ChatStreamChunk({
@@ -61,18 +62,23 @@ class ChatApiClient {
       throw Exception('API Error: ${streamedResponse.statusCode} - $bodyStr');
     }
 
+    // Initialize Tiktoken encoding
+    final encoding = getEncoding('cl100k_base');
+    
     int? promptTokens;
     int? completionTokens;
     
-    // Estimate prompt tokens locally: ~4 chars per token
-    int totalPromptChars = 0;
+    // Accurate local prompt token count
+    int totalPromptTokens = 0;
     for (final m in messages) {
-      totalPromptChars += (m['content'] as String? ?? '').length;
+      final content = m['content'] as String? ?? '';
+      totalPromptTokens += encoding.encode(content).length;
+      totalPromptTokens += 4; // Add standard metadata tokens for messages
     }
-    promptTokens = (totalPromptChars / 4).ceil();
+    promptTokens = totalPromptTokens;
 
     String buffer = '';
-    int estimatedCompletionTokens = 0;
+    int accurateCompletionTokens = 0;
 
     await for (final chunk in streamedResponse.stream.transform(utf8.decoder)) {
       buffer += chunk;
@@ -102,7 +108,7 @@ class ChatApiClient {
               yield ChatStreamChunk(
                 content: '',
                 promptTokens: promptTokens,
-                completionTokens: completionTokens ?? estimatedCompletionTokens,
+                completionTokens: completionTokens ?? accurateCompletionTokens,
               );
             }
             continue;
@@ -115,7 +121,7 @@ class ChatApiClient {
                 yield ChatStreamChunk(
                   content: '',
                   promptTokens: promptTokens,
-                  completionTokens: completionTokens ?? estimatedCompletionTokens,
+                  completionTokens: completionTokens ?? accurateCompletionTokens,
                 );
              }
              continue;
@@ -126,20 +132,19 @@ class ChatApiClient {
               (delta['reasoning_content'] as String?) ??
               (delta['reasoning'] as String?);
 
-          // Update estimation
+          // Update tokens using Tiktoken
           if (content.isNotEmpty) {
-            estimatedCompletionTokens += (content.length / 4).ceil();
+            accurateCompletionTokens += encoding.encode(content).length;
           }
           if (reasoning != null && reasoning.isNotEmpty) {
-            estimatedCompletionTokens += (reasoning.length / 4).ceil();
+            accurateCompletionTokens += encoding.encode(reasoning).length;
           }
 
           List<Map<String, dynamic>>? toolCalls;
           if (delta['tool_calls'] != null) {
             toolCalls = (delta['tool_calls'] as List<dynamic>)
                 .cast<Map<String, dynamic>>();
-            // Tool calls also consume tokens
-            estimatedCompletionTokens += 4; 
+            accurateCompletionTokens += 8; // Tool calls overhead
           }
 
           if (content.isNotEmpty || reasoning != null || toolCalls != null || usage != null) {
@@ -148,7 +153,7 @@ class ChatApiClient {
               reasoning: reasoning,
               toolCalls: toolCalls,
               promptTokens: promptTokens,
-              completionTokens: completionTokens ?? estimatedCompletionTokens,
+              completionTokens: completionTokens ?? accurateCompletionTokens,
             );
           }
         } catch (e) {
