@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:convert';
 
+import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:scan_job/chat/models/chat_message.dart' as model;
 import 'package:scan_job/repositories/chat_api_client.dart';
 import 'package:scan_job/repositories/chat_repository.dart';
@@ -29,6 +30,8 @@ class ChatRepositoryImpl implements ChatRepository {
   String? _baseUrl;
   String? _apiKey;
   String? _modelName;
+
+  bool get isWebPlatform => kIsWeb;
 
   void _updateConfig({
     String? baseUrl,
@@ -62,7 +65,7 @@ class ChatRepositoryImpl implements ChatRepository {
   @override
   List<Map<String, dynamic>> getTools() {
     return [
-      ...HhTool.instance.getToolsSpec(),
+      ...HhTool.instance.getToolsSpec(isWeb: isWebPlatform),
       {
         'type': 'function',
         'function': {
@@ -88,7 +91,10 @@ class ChatRepositoryImpl implements ChatRepository {
     final messages = <Map<String, dynamic>>[
       {
         'role': 'system',
-        'content': 'You are Scan Job, a professional AI assistant.',
+        'content':
+            'You are Scan Job, a professional AI assistant.\n'
+            'Current platform: ${isWebPlatform ? 'web' : 'mobile/desktop'}\n'
+            'Current time: ${DateTime.now().toUtc().toIso8601String()}',
       },
       ...history.map(
         (m) => {

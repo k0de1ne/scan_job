@@ -38,12 +38,14 @@ class HhAuthService {
     return null;
   }
 
+  String getAuthUrl() {
+    return 'https://hh.ru/oauth/authorize?client_id=$clientId&response_type=code';
+  }
+
   Future<String?> authenticate() async {
-    final authUrl =
-        'https://hh.ru/oauth/authorize?client_id=$clientId&response_type=code';
     try {
       final result = await FlutterWebAuth2.authenticate(
-        url: authUrl,
+        url: getAuthUrl(),
         callbackUrlScheme: callbackUrlScheme,
         options: const FlutterWebAuth2Options(preferEphemeral: true),
       );
@@ -89,6 +91,44 @@ class HhAuthService {
       }
     } catch (e) {
       debugPrint('HH Auth: Exception during token exchange: $e');
+    }
+    return null;
+  }
+
+  Future<String?> loginWithCode(String code) async {
+    try {
+      final response = await _client.post(
+        Uri.parse('https://hh.ru/oauth/token'),
+        headers: {'User-Agent': userAgent},
+        body: {
+          'client_id': clientId,
+          'client_secret': clientSecret,
+          'code': code,
+          'grant_type': 'authorization_code',
+        },
+      );
+
+      if (response.statusCode == 200) {
+        final data = jsonDecode(response.body) as Map<String, dynamic>;
+        final accessToken = data['access_token'] as String;
+
+        final meResponse = await _client.get(
+          Uri.parse('https://api.hh.ru/me'),
+          headers: {
+            'Authorization': 'Bearer $accessToken',
+            'User-Agent': userAgent,
+          },
+        );
+
+        if (meResponse.statusCode == 200) {
+          final meData = jsonDecode(meResponse.body) as Map<String, dynamic>;
+          final id = meData['id'].toString();
+          await _saveAccount(id, data);
+          return id;
+        }
+      }
+    } catch (e) {
+      debugPrint('HH Auth: Exception during login with code: $e');
     }
     return null;
   }
@@ -188,18 +228,55 @@ class HhTool {
     return null;
   }
 
-  List<Map<String, dynamic>> getToolsSpec() {
-    return [
-      {
+  List<Map<String, dynamic>> getToolsSpec({required bool isWeb}) {
+    final tools = <Map<String, dynamic>>[];
+
+    if (isWeb) {
+      tools.add({
         'type': 'function',
         'function': {
-          'name': 'hh_login',
+          'name': 'hh_get_auth_url',
           'description':
-              'Start HeadHunter OAuth login. Opens browser for authentication.',
+              'Get HeadHunter authorization URL. Open in browser, authorize, then use hh_login_with_code.',
           'parameters': const {
             'type': 'object',
             'properties': {},
             'required': [],
+          },
+        },
+      });
+    } else {
+      tools.add({
+        'type': 'function',
+        'function': {
+          'name': 'hh_login',
+          'description':
+              'Start HeadHunter OAuth login. Automatically completes authorization.',
+          'parameters': const {
+            'type': 'object',
+            'properties': {},
+            'required': [],
+          },
+        },
+      });
+    }
+
+    tools.addAll([
+      {
+        'type': 'function',
+        'function': {
+          'name': 'hh_login_with_code',
+          'description':
+              'Complete HeadHunter OAuth login with authorization code (for web only).',
+          'parameters': const {
+            'type': 'object',
+            'properties': {
+              'code': {
+                'type': 'string',
+                'description': 'Authorization code from DevTools Network tab',
+              },
+            },
+            'required': ['code'],
           },
         },
       },
@@ -270,13 +347,19 @@ class HhTool {
           },
         },
       },
-    ];
+    ]);
+
+    return tools;
   }
 
   Future<String> executeTool(String name, Map<String, dynamic> args) async {
     switch (name) {
       case 'hh_login':
         return _login();
+      case 'hh_get_auth_url':
+        return _getAuthUrl();
+      case 'hh_login_with_code':
+        return _loginWithCode(args['code'] as String);
       case 'hh_get_profile':
         return _getProfile();
       case 'hh_get_resumes':
@@ -292,6 +375,14 @@ class HhTool {
     }
   }
 
+  Future<String> _getAuthUrl() async {
+    return jsonEncode({
+      'auth_url': _service.getAuthUrl(),
+      'message':
+          'Open URL in browser, login, then press F12 -> Network tab -> find "hhandroid://oauthresponse" request -> copy code parameter -> call hh_login_with_code',
+    });
+  }
+
   Future<String> _login() async {
     final code = await _service.authenticate();
     if (code == null) {
@@ -305,9 +396,29 @@ class HhTool {
     final profile = await _service.getProfile(id);
     return jsonEncode({
       'success': true,
+      'logged_in': true,
       'id': id,
       'first_name': profile?['first_name'],
       'last_name': profile?['last_name'],
+      'message': 'Successfully logged in to HeadHunter',
+    });
+  }
+
+  Future<String> _loginWithCode(String code) async {
+    final id = await _service.loginWithCode(code);
+    if (id == null) {
+      throw Exception(
+        'Failed to exchange code for token. Make sure the code is valid and not expired.',
+      );
+    }
+    _selectedAccountId = id;
+    final profile = await _service.getProfile(id);
+    return jsonEncode({
+      'success': true,
+      'id': id,
+      'first_name': profile?['first_name'],
+      'last_name': profile?['last_name'],
+      'message': 'Successfully logged in!',
     });
   }
 
@@ -374,7 +485,7 @@ class HhTool {
     final ids = await _service.getAccountIds();
     return jsonEncode({
       'success': true,
-      'accounts': ids.cast<String>(),
+      'accounts': ids,
       'selected_id': _selectedAccountId,
     });
   }
