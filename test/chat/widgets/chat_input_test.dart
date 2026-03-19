@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:bloc_test/bloc_test.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -32,6 +34,34 @@ void main() {
         ),
       );
       expect(find.byType(ChatInput), findsOneWidget);
+    });
+
+    testWidgets('clears text immediately before sendMessage completes', (tester) async {
+      final completer = Completer<void>();
+      when(() => chatCubit.sendMessage(any())).thenAnswer((_) => completer.future);
+
+      await tester.pumpApp(
+        BlocProvider.value(
+          value: chatCubit,
+          child: Theme(
+            data: AppTheme.light,
+            child: const ChatInput(),
+          ),
+        ),
+      );
+
+      await tester.enterText(find.byType(TextField), 'hello');
+      await tester.tap(find.byIcon(Icons.send));
+      
+      // Pump to trigger the _sendMessage call and its first sync parts
+      await tester.pump(); 
+
+      verify(() => chatCubit.sendMessage('hello')).called(1);
+      // Text should be cleared even though sendMessage future hasn't completed
+      expect(find.text('hello'), findsNothing);
+      
+      completer.complete();
+      await tester.pump();
     });
 
     testWidgets('calls sendMessage when send button is tapped', (tester) async {

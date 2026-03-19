@@ -25,9 +25,9 @@ class _ChatInputState extends State<ChatInput> {
   Future<void> _sendMessage() async {
     final text = _controller.text;
     if (text.isNotEmpty) {
-      await context.read<ChatCubit>().sendMessage(text);
       _controller.clear();
       setState(() {});
+      await context.read<ChatCubit>().sendMessage(text);
     }
   }
 
