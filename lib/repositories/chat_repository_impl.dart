@@ -106,8 +106,9 @@ class ChatRepositoryImpl implements ChatRepository {
     ];
 
     final steps = <model.ThoughtStep>[];
-
     final responseBuffer = StringBuffer();
+    int? lastInputTokens;
+    int? lastOutputTokens;
 
     for (var iteration = 0; iteration < 10; iteration++) {
       final tools = getTools();
@@ -123,6 +124,11 @@ class ChatRepositoryImpl implements ChatRepository {
       var isInsideThinkTag = false;
 
       await for (final chunk in stream) {
+        if (chunk.promptTokens != null) lastInputTokens = chunk.promptTokens;
+        if (chunk.completionTokens != null) {
+          lastOutputTokens = chunk.completionTokens;
+        }
+
         // 1. Native Reasoning from API
         if (chunk.reasoning != null && chunk.reasoning!.isNotEmpty) {
           thoughtBuffer.write(chunk.reasoning);
@@ -257,7 +263,11 @@ class ChatRepositoryImpl implements ChatRepository {
           text: responseBuffer.toString(),
           role: model.MessageRole.ai,
           timestamp: DateTime.now(),
-          metadata: model.ChatMetadata(steps: List.from(steps)),
+          metadata: model.ChatMetadata(
+            steps: List.from(steps),
+            inputTokens: lastInputTokens,
+            outputTokens: lastOutputTokens,
+          ),
         );
       }
 
@@ -341,7 +351,11 @@ class ChatRepositoryImpl implements ChatRepository {
       text: responseBuffer.toString(),
       role: model.MessageRole.ai,
       timestamp: DateTime.now(),
-      metadata: model.ChatMetadata(steps: List.from(steps)),
+      metadata: model.ChatMetadata(
+        steps: List.from(steps),
+        inputTokens: lastInputTokens,
+        outputTokens: lastOutputTokens,
+      ),
     );
   }
 }

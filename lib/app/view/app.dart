@@ -14,15 +14,20 @@ class App extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MultiRepositoryProvider(
-      providers: [
-        RepositoryProvider<ChatRepository>(
-          create: (context) => ChatRepositoryImpl(),
-        ),
-      ],
-      child: BlocProvider(
-        create: (_) => AppCubit(),
-        child: const AppView(),
+    return BlocProvider(
+      create: (_) => AppCubit(),
+      child: BlocBuilder<AppCubit, AppState>(
+        buildWhen: (previous, current) => false, // Only build once
+        builder: (context, state) {
+          return RepositoryProvider<ChatRepository>(
+            create: (context) => ChatRepositoryImpl(
+              baseUrl: state.llmBaseUrl,
+              apiKey: state.llmApiKey,
+              modelName: state.llmModelName,
+            ),
+            child: const AppView(),
+          );
+        },
       ),
     );
   }

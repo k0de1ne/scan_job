@@ -58,22 +58,59 @@ class _ThinkingProcessState extends State<ThinkingProcess> {
                       color: colorScheme.onSurfaceVariant,
                     ),
                   ),
-                  if (widget.metadata.inputTokens != null &&
+                  if (widget.metadata.inputTokens != null ||
                       widget.metadata.outputTokens != null) ...[
                     SizedBox(width: context.spacing.lg),
-                    Container(
-                      padding: EdgeInsets.symmetric(
-                        horizontal: context.spacing.md,
-                        vertical: context.spacing.xs,
-                      ),
-                      decoration: BoxDecoration(
-                        color: colorScheme.onSurface.withValues(alpha: 0.06),
-                        borderRadius: BorderRadius.circular(context.radius.sm),
-                      ),
-                      child: Text(
-                        '${widget.metadata.inputTokens} ↑  ${widget.metadata.outputTokens} ↓',
-                        style: const TextStyle(fontSize: 11),
-                      ),
+                    Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        if (widget.metadata.inputTokens != null)
+                          Padding(
+                            padding:
+                                EdgeInsets.only(right: context.spacing.sm),
+                            child: Container(
+                              padding: EdgeInsets.symmetric(
+                                horizontal: context.spacing.sm,
+                                vertical: context.spacing.xs,
+                              ),
+                              decoration: BoxDecoration(
+                                color: colorScheme.onSurface
+                                    .withValues(alpha: 0.06),
+                                borderRadius:
+                                    BorderRadius.circular(context.radius.sm),
+                              ),
+                              child: Text(
+                                '${widget.metadata.inputTokens} ↑',
+                                style: TextStyle(
+                                  fontSize: 10,
+                                  fontWeight: FontWeight.w600,
+                                  color: colorScheme.onSurfaceVariant,
+                                ),
+                              ),
+                            ),
+                          ),
+                        if (widget.metadata.outputTokens != null)
+                          Container(
+                            padding: EdgeInsets.symmetric(
+                              horizontal: context.spacing.sm,
+                              vertical: context.spacing.xs,
+                            ),
+                            decoration: BoxDecoration(
+                              color:
+                                  colorScheme.primary.withValues(alpha: 0.08),
+                              borderRadius:
+                                  BorderRadius.circular(context.radius.sm),
+                            ),
+                            child: Text(
+                              '${widget.metadata.outputTokens} ↓',
+                              style: TextStyle(
+                                fontSize: 10,
+                                fontWeight: FontWeight.w600,
+                                color: colorScheme.primary,
+                              ),
+                            ),
+                          ),
+                      ],
                     ),
                   ],
                   SizedBox(width: context.spacing.sm),

@@ -1,48 +1,49 @@
 import 'dart:convert';
 import 'dart:io';
+import 'package:http/http.dart' as http;
 
 void main() async {
-  final client = HttpClient();
-  final request = await client.postUrl(
-    Uri.parse('http://192.168.0.17:1234/v1/chat/completions'),
-  );
-  
-  request.headers.contentType = ContentType.json;
-  
-  final body = {
-    'model': 'openai/gpt-oss-20b',
-    'messages': [
-      {'role': 'user', 'content': '1+1. Think step-by-step.'}
-    ],
+  final baseUrl = 'http://192.168.0.17:1234/v1';
+  final modelName = 'openai/gpt-oss-20b';
+
+  print('--- LM Studio Diagnostic ---');
+  print('Connecting to: $baseUrl');
+  print('Model: $modelName');
+
+  final uri = Uri.parse('$baseUrl/chat/completions');
+  final request = http.Request('POST', uri);
+  request.headers['Content-Type'] = 'application/json';
+  request.body = jsonEncode({
+    'model': modelName,
+    'messages': [{'role': 'user', 'content': 'Say hi'}],
     'stream': true,
-  };
-  
-  request.write(jsonEncode(body));
-  final response = await request.close();
-  
-  response
-      .transform(utf8.decoder)
-      .transform(const LineSplitter())
-      .listen((line) {
-    if (line.startsWith('data: ')) {
-      final dataStr = line.substring(6);
-      if (dataStr == '[DONE]') return;
-      
-      try {
-        final data = jsonDecode(dataStr) as Map<String, dynamic>;
-        final choices = data['choices'] as List<dynamic>;
-        final choice = choices[0] as Map<String, dynamic>;
-        final delta = choice['delta'] as Map<String, dynamic>;
+    'stream_options': {'include_usage': true},
+  });
+
+  try {
+    final client = http.Client();
+    final streamedResponse = await client.send(request);
+    print('Status Code: ${streamedResponse.statusCode}');
+
+    await for (final chunk in streamedResponse.stream.transform(utf8.decoder)) {
+      final lines = chunk.split('\n');
+      for (var line in lines) {
+        if (line.trim().isEmpty) continue;
+        print('CHUNK: $line');
         
-        if (delta.containsKey('reasoning')) {
-          stdout.write('[[REASONING: ${delta['reasoning']}]]');
+        if (line.startsWith('data: ')) {
+          final dataStr = line.substring(6).trim();
+          if (dataStr == '[DONE]') continue;
+          try {
+            final data = jsonDecode(dataStr);
+            if (data['usage'] != null) {
+              print('>>> FOUND USAGE: ${data['usage']}');
+            }
+          } catch (_) {}
         }
-        if (delta.containsKey('content')) {
-          stdout.write(delta['content'] as String);
-        }
-      } on Exception catch (_) {
-        // Ignore malformed chunks
       }
     }
-  });
+  } catch (e) {
+    print('Error: $e');
+  }
 }
