@@ -31,6 +31,12 @@
 
   <title>scan_job</title>
   <link rel="manifest" href="manifest.json">
+
+  <script>
+    window.addEventListener('flutter-web-auth-2', (event) => {
+      window.location.href = event.detail;
+    });
+  </script>
 </head>
 <body>
   <!--

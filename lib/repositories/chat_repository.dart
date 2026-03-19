@@ -11,4 +11,6 @@ abstract class ChatRepository {
     required String text,
     List<ChatMessage> history = const [],
   });
+
+  List<Map<String, dynamic>> getTools();
 }

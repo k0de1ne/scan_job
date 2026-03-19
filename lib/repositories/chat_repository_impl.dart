@@ -1,8 +1,10 @@
 import 'dart:async';
+import 'dart:convert';
 
 import 'package:scan_job/chat/models/chat_message.dart' as model;
 import 'package:scan_job/repositories/chat_api_client.dart';
 import 'package:scan_job/repositories/chat_repository.dart';
+import 'package:scan_job/tools/hh_tool.dart';
 
 class ChatRepositoryImpl implements ChatRepository {
   ChatRepositoryImpl({
@@ -58,19 +60,42 @@ class ChatRepositoryImpl implements ChatRepository {
   }
 
   @override
+  List<Map<String, dynamic>> getTools() {
+    return [
+      ...HhTool.instance.getToolsSpec(),
+      {
+        'type': 'function',
+        'function': {
+          'name': 'test_tool',
+          'description': 'Diagnostic tool.',
+          'parameters': {
+            'type': 'object',
+            'properties': {
+              'input': {'type': 'string'},
+            },
+            'required': ['input'],
+          },
+        },
+      },
+    ];
+  }
+
+  @override
   Stream<model.ChatMessage> sendMessage({
     required String text,
     List<model.ChatMessage> history = const [],
   }) async* {
     final messages = <Map<String, dynamic>>[
       {
-        'role': 'system', 
-        'content': 'You are Scan Job, a professional AI assistant.'
+        'role': 'system',
+        'content': 'You are Scan Job, a professional AI assistant.',
       },
-      ...history.map((m) => {
-        'role': m.role == model.MessageRole.user ? 'user' : 'assistant',
-        'content': m.text,
-      }),
+      ...history.map(
+        (m) => {
+          'role': m.role == model.MessageRole.user ? 'user' : 'assistant',
+          'content': m.text,
+        },
+      ),
       {'role': 'user', 'content': text},
     ];
 
@@ -83,24 +108,12 @@ class ChatRepositoryImpl implements ChatRepository {
     ];
 
     final responseBuffer = StringBuffer();
-    
+
     for (var iteration = 0; iteration < 10; iteration++) {
+      final tools = getTools();
       final stream = _apiClient.sendMessageStream(
         messages: messages,
-        tools: [
-          {
-            'type': 'function',
-            'function': {
-              'name': 'test_tool',
-              'description': 'Diagnostic tool.',
-              'parameters': {
-                'type': 'object',
-                'properties': {'input': {'type': 'string'}},
-                'required': ['input'],
-              },
-            },
-          }
-        ],
+        tools: tools,
       );
 
       final thoughtBuffer = StringBuffer();
@@ -121,11 +134,15 @@ class ChatRepositoryImpl implements ChatRepository {
             );
           }
           if (currentReasoningIdx == -1) {
-            steps.add(model.ThoughtStep(
-              title: iteration == 0 ? 'thoughtStepThinkingTitle' : 'thoughtStepThinkingSubTitle',
-              content: '',
-              status: model.StepStatus.active,
-            ));
+            steps.add(
+              model.ThoughtStep(
+                title: iteration == 0
+                    ? 'thoughtStepThinkingTitle'
+                    : 'thoughtStepThinkingSubTitle',
+                content: '',
+                status: model.StepStatus.active,
+              ),
+            );
             currentReasoningIdx = steps.length - 1;
           }
           steps[currentReasoningIdx] = model.ThoughtStep(
@@ -140,7 +157,10 @@ class ChatRepositoryImpl implements ChatRepository {
           hasNewToolCall = true;
           for (final delta in chunk.toolCalls!) {
             final idx = delta['index'] as int? ?? 0;
-            final buffer = toolCallBuffers.putIfAbsent(idx, () => {'id': '', 'name': '', 'args': StringBuffer()});
+            final buffer = toolCallBuffers.putIfAbsent(
+              idx,
+              () => {'id': '', 'name': '', 'args': StringBuffer()},
+            );
             if (delta['id'] != null) buffer['id'] = delta['id'] as String;
             final function = delta['function'] as Map<String, dynamic>?;
             if (function != null) {
@@ -148,22 +168,28 @@ class ChatRepositoryImpl implements ChatRepository {
                 buffer['name'] = function['name'] as String;
               }
               if (function['arguments'] != null) {
-                (buffer['args'] as StringBuffer).write(function['arguments'] as String);
+                (buffer['args'] as StringBuffer).write(
+                  function['arguments'] as String,
+                );
               }
             }
-            
+
             final tName = buffer['name'] as String;
             final tArgs = buffer['args'].toString();
             final stepKey = 'tool_${iteration}_$idx';
-            final sIdx = steps.indexWhere((s) => s.tool != null && s.tool!.startsWith('[$stepKey]'));
-            
+            final sIdx = steps.indexWhere(
+              (s) => s.tool != null && s.tool!.startsWith('[$stepKey]'),
+            );
+
             if (sIdx == -1) {
-              steps.add(model.ThoughtStep(
-                title: 'thoughtStepToolTitle',
-                content: 'thoughtStepToolStarting',
-                tool: '[$stepKey] $tName($tArgs)',
-                status: model.StepStatus.active,
-              ));
+              steps.add(
+                model.ThoughtStep(
+                  title: 'thoughtStepToolTitle',
+                  content: 'thoughtStepToolStarting',
+                  tool: '[$stepKey] $tName($tArgs)',
+                  status: model.StepStatus.active,
+                ),
+              );
             } else {
               steps[sIdx] = model.ThoughtStep(
                 title: steps[sIdx].title,
@@ -186,14 +212,18 @@ class ChatRepositoryImpl implements ChatRepository {
                 if (parts[0].isNotEmpty) responseBuffer.write(parts[0]);
                 isInsideThinkTag = true;
                 remainingContent = parts.sublist(1).join('<think>');
-                
+
                 // Ensure reasoning step exists
                 if (currentReasoningIdx == -1) {
-                  steps.add(model.ThoughtStep(
-                    title: iteration == 0 ? 'thoughtStepThinkingTitle' : 'thoughtStepThinkingSubTitle',
-                    content: '',
-                    status: model.StepStatus.active,
-                  ));
+                  steps.add(
+                    model.ThoughtStep(
+                      title: iteration == 0
+                          ? 'thoughtStepThinkingTitle'
+                          : 'thoughtStepThinkingSubTitle',
+                      content: '',
+                      status: model.StepStatus.active,
+                    ),
+                  );
                   currentReasoningIdx = steps.length - 1;
                 }
               } else {
@@ -206,7 +236,7 @@ class ChatRepositoryImpl implements ChatRepository {
                 thoughtBuffer.write(parts[0]);
                 isInsideThinkTag = false;
                 remainingContent = parts.sublist(1).join('</think>');
-                
+
                 if (currentReasoningIdx != -1) {
                   steps[currentReasoningIdx] = model.ThoughtStep(
                     title: steps[currentReasoningIdx].title,
@@ -217,7 +247,7 @@ class ChatRepositoryImpl implements ChatRepository {
               } else {
                 thoughtBuffer.write(remainingContent);
                 remainingContent = '';
-                
+
                 if (currentReasoningIdx != -1) {
                   steps[currentReasoningIdx] = model.ThoughtStep(
                     title: steps[currentReasoningIdx].title,
@@ -239,7 +269,11 @@ class ChatRepositoryImpl implements ChatRepository {
       }
 
       if (currentReasoningIdx != -1) {
-        steps[currentReasoningIdx] = model.ThoughtStep(title: steps[currentReasoningIdx].title, content: steps[currentReasoningIdx].content, status: model.StepStatus.completed);
+        steps[currentReasoningIdx] = model.ThoughtStep(
+          title: steps[currentReasoningIdx].title,
+          content: steps[currentReasoningIdx].content,
+          status: model.StepStatus.completed,
+        );
       }
 
       if (!hasNewToolCall) break;
@@ -248,9 +282,23 @@ class ChatRepositoryImpl implements ChatRepository {
       final assistantCalls = <Map<String, dynamic>>[];
       for (final idx in toolCallBuffers.keys) {
         final b = toolCallBuffers[idx]!;
-        final res = '{"status": "success", "data": "Result for ${b['args']}"}';
+        final toolName = b['name'] as String;
+        final toolArgs = b['args'].toString();
+
+        String res;
+        try {
+          final parsedArgs = toolArgs.isNotEmpty
+              ? jsonDecode(toolArgs) as Map<String, dynamic>
+              : <String, dynamic>{};
+          res = await HhTool.instance.executeTool(toolName, parsedArgs);
+        } catch (e) {
+          res = '{"status": "error", "error": "${e.toString()}"}';
+        }
+
         final key = 'tool_${iteration}_$idx';
-        final sIdx = steps.indexWhere((s) => s.tool != null && s.tool!.startsWith('[$key]'));
+        final sIdx = steps.indexWhere(
+          (s) => s.tool != null && s.tool!.startsWith('[$key]'),
+        );
         if (sIdx != -1) {
           steps[sIdx] = model.ThoughtStep(
             title: 'thoughtStepToolCompletedTitle',
@@ -261,39 +309,45 @@ class ChatRepositoryImpl implements ChatRepository {
           );
         }
         assistantCalls.add({
-          'id': b['id'], 
-          'type': 'function', 
+          'id': b['id'],
+          'type': 'function',
           'function': {
-            'name': b['name'], 
-            'arguments': b['args'].toString(),
+            'name': toolName,
+            'arguments': toolArgs,
           },
         });
         messages.add({
-          'role': 'tool', 
-          'tool_call_id': b['id'], 
-          'name': b['name'], 
+          'role': 'tool',
+          'tool_call_id': b['id'],
+          'name': toolName,
           'content': res,
         });
       }
-      messages.add({'role': 'assistant', 'content': null, 'tool_calls': assistantCalls});
+      messages.add({
+        'role': 'assistant',
+        'content': null,
+        'tool_calls': assistantCalls,
+      });
     }
 
     // Ensure all steps are closed
     for (var i = 0; i < steps.length; i++) {
       if (steps[i].status == model.StepStatus.active) {
         steps[i] = model.ThoughtStep(
-          title: steps[i].title, 
-          content: steps[i].content.isEmpty ? 'thoughtStepToolDone' : steps[i].content, 
-          status: model.StepStatus.completed, 
-          tool: steps[i].tool, 
+          title: steps[i].title,
+          content: steps[i].content.isEmpty
+              ? 'thoughtStepToolDone'
+              : steps[i].content,
+          status: model.StepStatus.completed,
+          tool: steps[i].tool,
           output: steps[i].output,
         );
       }
     }
     yield model.ChatMessage(
-      text: responseBuffer.toString(), 
-      role: model.MessageRole.ai, 
-      timestamp: DateTime.now(), 
+      text: responseBuffer.toString(),
+      role: model.MessageRole.ai,
+      timestamp: DateTime.now(),
       metadata: model.ChatMetadata(steps: List.from(steps)),
     );
   }

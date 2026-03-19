@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 class AppState extends Equatable {
   const AppState({
     this.themeMode = ThemeMode.system,
-    this.llmBaseUrl = 'http://localhost:1234/v1',
+    this.llmBaseUrl = 'http://192.168.0.17:1234/v1',
     this.llmApiKey = 'not-needed',
     this.llmModelName = 'openai/gpt-oss-20b',
   });
