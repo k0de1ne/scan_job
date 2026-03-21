@@ -320,6 +320,10 @@ class HhTool {
     return null;
   }
 
+  Future<List<Map<String, dynamic>>> getAccounts() async {
+    return _service.getAccounts();
+  }
+
   List<Map<String, dynamic>> getToolsSpec({required bool isWeb}) {
     final tools = <Map<String, dynamic>>[];
 

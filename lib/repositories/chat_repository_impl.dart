@@ -89,6 +89,16 @@ class ChatRepositoryImpl implements ChatRepository {
     List<model.ChatMessage> history = const [],
     List<model.ChatAttachment> attachments = const [],
   }) async* {
+    final accounts = await HhTool.instance.getAccounts();
+    final selectedId = await HhTool.instance.getSelectedAccountId();
+
+    final accountsInfo = accounts.isEmpty
+        ? 'No accounts connected.'
+        : accounts.map((a) {
+            final isSelected = a['id'] == selectedId;
+            return '- ${a['first_name']} ${a['last_name']} (ID: ${a['id']})${isSelected ? ' [ACTIVE]' : ''}';
+          }).join('\n');
+
     var promptText = text;
     if (attachments.isNotEmpty) {
       final attachmentsInfo = attachments.map((a) {
@@ -104,10 +114,10 @@ class ChatRepositoryImpl implements ChatRepository {
     final messages = <Map<String, dynamic>>[
       {
         'role': 'system',
-        'content':
-            'You are Scan Job, a professional AI assistant.\n'
+        'content': 'You are Scan Job, a professional AI assistant.\n'
             'Current platform: ${isWebPlatform ? 'web' : 'mobile/desktop'}\n'
-            'Current time: ${DateTime.now().toUtc().toIso8601String()}',
+            'Current time: ${DateTime.now().toUtc().toIso8601String()}\n'
+            'Connected HeadHunter accounts:\n$accountsInfo',
       },
       ...history.map(
         (m) {
