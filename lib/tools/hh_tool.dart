@@ -19,7 +19,7 @@ class HhAuthService {
 
   Future<List<String>> getAccountIds() async {
     final prefs = await SharedPreferences.getInstance();
-    final List<String>? accountsJson = prefs.getStringList(accountsKey);
+    final accountsJson = prefs.getStringList(accountsKey);
     if (accountsJson == null) return [];
     return accountsJson.map((jsonStr) {
       final map = jsonDecode(jsonStr);
@@ -29,7 +29,7 @@ class HhAuthService {
 
   Future<Map<String, dynamic>?> getAccountToken(String id) async {
     final prefs = await SharedPreferences.getInstance();
-    final List<String>? accountsJson = prefs.getStringList(accountsKey);
+    final accountsJson = prefs.getStringList(accountsKey);
     if (accountsJson == null) return null;
     for (final jsonStr in accountsJson) {
       final map = jsonDecode(jsonStr);
@@ -135,7 +135,7 @@ class HhAuthService {
 
   Future<void> _saveAccount(String id, Map<String, dynamic> tokenData) async {
     final prefs = await SharedPreferences.getInstance();
-    final List<String> accountsJson = prefs.getStringList(accountsKey) ?? [];
+    final accountsJson = prefs.getStringList(accountsKey) ?? [];
     final newAccount = jsonEncode({'id': id, 'token': tokenData});
     final index = accountsJson.indexWhere(
       (jsonStr) => jsonDecode(jsonStr)['id'] == id,
@@ -150,7 +150,7 @@ class HhAuthService {
 
   Future<void> removeAccount(String id) async {
     final prefs = await SharedPreferences.getInstance();
-    final List<String>? accountsJson = prefs.getStringList(accountsKey);
+    final accountsJson = prefs.getStringList(accountsKey);
     if (accountsJson == null) return;
     accountsJson.removeWhere((jsonStr) => jsonDecode(jsonStr)['id'] == id);
     await prefs.setStringList(accountsKey, accountsJson);

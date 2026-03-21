@@ -210,13 +210,13 @@ class AppSpacing extends ThemeExtension<AppSpacing> {
   AppSpacing lerp(ThemeExtension<AppSpacing>? other, double t) {
     if (other is! AppSpacing) return this;
     return AppSpacing(
-      xs: (xs + (other.xs - xs) * t),
-      sm: (sm + (other.sm - sm) * t),
-      md: (md + (other.md - md) * t),
-      mdLarge: (mdLarge + (other.mdLarge - mdLarge) * t),
-      lg: (lg + (other.lg - lg) * t),
-      xl: (xl + (other.xl - xl) * t),
-      xxl: (xxl + (other.xxl - xxl) * t),
+      xs: xs + (other.xs - xs) * t,
+      sm: sm + (other.sm - sm) * t,
+      md: md + (other.md - md) * t,
+      mdLarge: mdLarge + (other.mdLarge - mdLarge) * t,
+      lg: lg + (other.lg - lg) * t,
+      xl: xl + (other.xl - xl) * t,
+      xxl: xxl + (other.xxl - xxl) * t,
     );
   }
 
@@ -275,13 +275,13 @@ class AppRadius extends ThemeExtension<AppRadius> {
   AppRadius lerp(ThemeExtension<AppRadius>? other, double t) {
     if (other is! AppRadius) return this;
     return AppRadius(
-      xs: (xs + (other.xs - xs) * t),
-      sm: (sm + (other.sm - sm) * t),
-      md: (md + (other.md - md) * t),
-      lg: (lg + (other.lg - lg) * t),
-      xl: (xl + (other.xl - xl) * t),
-      xxl: (xxl + (other.xxl - xxl) * t),
-      circle: (circle + (other.circle - circle) * t),
+      xs: xs + (other.xs - xs) * t,
+      sm: sm + (other.sm - sm) * t,
+      md: md + (other.md - md) * t,
+      lg: lg + (other.lg - lg) * t,
+      xl: xl + (other.xl - xl) * t,
+      xxl: xxl + (other.xxl - xxl) * t,
+      circle: circle + (other.circle - circle) * t,
     );
   }
 

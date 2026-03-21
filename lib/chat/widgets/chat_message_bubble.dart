@@ -31,6 +31,18 @@ class ChatMessageBubble extends StatelessWidget {
           children: [
             if (!isUser && message.metadata != null)
               ThinkingProcess(metadata: message.metadata!),
+            if (message.attachments != null && message.attachments!.isNotEmpty)
+              Padding(
+                padding: EdgeInsets.only(bottom: context.spacing.sm),
+                child: Wrap(
+                  spacing: context.spacing.sm,
+                  runSpacing: context.spacing.sm,
+                  alignment: isUser ? WrapAlignment.end : WrapAlignment.start,
+                  children: message.attachments!.map((attachment) {
+                    return _AttachmentPreview(attachment: attachment);
+                  }).toList(),
+                ),
+              ),
             Container(
               padding: EdgeInsets.symmetric(
                 horizontal: context.spacing.mdLarge,
@@ -112,5 +124,68 @@ class ChatMessageBubble extends StatelessWidget {
         ),
       ),
     );
+  }
+}
+
+class _AttachmentPreview extends StatelessWidget {
+  const _AttachmentPreview({required this.attachment});
+
+  final ChatAttachment attachment;
+
+  @override
+  Widget build(BuildContext context) {
+    final colorScheme = Theme.of(context).colorScheme;
+
+    return Container(
+      padding: EdgeInsets.symmetric(
+        horizontal: context.spacing.md,
+        vertical: context.spacing.sm,
+      ),
+      decoration: BoxDecoration(
+        color: colorScheme.surfaceContainer,
+        borderRadius: BorderRadius.circular(context.radius.md),
+        border: Border.all(
+          color: colorScheme.outlineVariant,
+        ),
+      ),
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Icon(
+            _getIconForExtension(attachment.extension),
+            size: 20,
+            color: colorScheme.primary,
+          ),
+          SizedBox(width: context.spacing.sm),
+          Flexible(
+            child: Text(
+              attachment.name,
+              style: TextStyle(
+                fontSize: 14,
+                fontWeight: FontWeight.w500,
+                color: colorScheme.onSurface,
+              ),
+              maxLines: 1,
+              overflow: TextOverflow.ellipsis,
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  IconData _getIconForExtension(String? extension) {
+    switch (extension?.toLowerCase()) {
+      case 'pdf':
+        return Icons.picture_as_pdf;
+      case 'txt':
+        return Icons.description;
+      case 'jpg':
+      case 'jpeg':
+      case 'png':
+        return Icons.image;
+      default:
+        return Icons.insert_drive_file;
+    }
   }
 }

@@ -60,19 +60,38 @@ class ChatMetadata extends Equatable {
   List<Object?> get props => [steps, inputTokens, outputTokens];
 }
 
+class ChatAttachment extends Equatable {
+  const ChatAttachment({
+    required this.name,
+    required this.bytes,
+    this.extension,
+    this.extractedText,
+  });
+
+  final String name;
+  final List<int> bytes;
+  final String? extension;
+  final String? extractedText;
+
+  @override
+  List<Object?> get props => [name, bytes, extension, extractedText];
+}
+
 class ChatMessage extends Equatable {
   const ChatMessage({
     required this.text,
     required this.role,
     required this.timestamp,
     this.metadata,
+    this.attachments,
   });
 
   final String text;
   final MessageRole role;
   final DateTime timestamp;
   final ChatMetadata? metadata;
+  final List<ChatAttachment>? attachments;
 
   @override
-  List<Object?> get props => [text, role, timestamp, metadata];
+  List<Object?> get props => [text, role, timestamp, metadata, attachments];
 }

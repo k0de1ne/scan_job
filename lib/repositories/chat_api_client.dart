@@ -69,7 +69,7 @@ class ChatApiClient {
     int? completionTokens;
     
     // Accurate local prompt token count
-    int totalPromptTokens = 0;
+    var totalPromptTokens = 0;
     for (final m in messages) {
       final content = m['content'] as String? ?? '';
       totalPromptTokens += encoding.encode(content).length;
@@ -77,15 +77,15 @@ class ChatApiClient {
     }
     promptTokens = totalPromptTokens;
 
-    String buffer = '';
-    int accurateCompletionTokens = 0;
+    var buffer = '';
+    var accurateCompletionTokens = 0;
 
     await for (final chunk in streamedResponse.stream.transform(utf8.decoder)) {
       buffer += chunk;
 
       while (buffer.contains('\n')) {
         final newlineIndex = buffer.indexOf('\n');
-        var line = buffer.substring(0, newlineIndex).trim();
+        final line = buffer.substring(0, newlineIndex).trim();
         buffer = buffer.substring(newlineIndex + 1);
 
         if (line.isEmpty || !line.startsWith('data: ')) continue;

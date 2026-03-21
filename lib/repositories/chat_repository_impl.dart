@@ -87,7 +87,20 @@ class ChatRepositoryImpl implements ChatRepository {
   Stream<model.ChatMessage> sendMessage({
     required String text,
     List<model.ChatMessage> history = const [],
+    List<model.ChatAttachment> attachments = const [],
   }) async* {
+    var promptText = text;
+    if (attachments.isNotEmpty) {
+      final attachmentsInfo = attachments.map((a) {
+        var info = '[File: ${a.name}]';
+        if (a.extractedText != null && a.extractedText!.isNotEmpty) {
+          info += '\nContent:\n${a.extractedText}';
+        }
+        return info;
+      }).join('\n\n');
+      promptText = '$promptText\n\nAttachments:\n$attachmentsInfo';
+    }
+
     final messages = <Map<String, dynamic>>[
       {
         'role': 'system',
@@ -97,12 +110,27 @@ class ChatRepositoryImpl implements ChatRepository {
             'Current time: ${DateTime.now().toUtc().toIso8601String()}',
       },
       ...history.map(
-        (m) => {
-          'role': m.role == model.MessageRole.user ? 'user' : 'assistant',
-          'content': m.text,
+        (m) {
+          var content = m.text;
+          if (m.role == model.MessageRole.user &&
+              m.attachments != null &&
+              m.attachments!.isNotEmpty) {
+            final attachmentsInfo = m.attachments!.map((a) {
+              var info = '[File: ${a.name}]';
+              if (a.extractedText != null && a.extractedText!.isNotEmpty) {
+                info += '\nContent:\n${a.extractedText}';
+              }
+              return info;
+            }).join('\n\n');
+            content = '$content\n\nAttachments:\n$attachmentsInfo';
+          }
+          return {
+            'role': m.role == model.MessageRole.user ? 'user' : 'assistant',
+            'content': content,
+          };
         },
       ),
-      {'role': 'user', 'content': text},
+      {'role': 'user', 'content': promptText},
     ];
 
     final steps = <model.ThoughtStep>[];
@@ -295,7 +323,7 @@ class ChatRepositoryImpl implements ChatRepository {
               : <String, dynamic>{};
           res = await HhTool.instance.executeTool(toolName, parsedArgs);
         } catch (e) {
-          res = '{"status": "error", "error": "${e.toString()}"}';
+          res = '{"status": "error", "error": "$e"}';
         }
 
         final key = 'tool_${iteration}_$idx';

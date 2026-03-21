@@ -1,7 +1,9 @@
+import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:scan_job/chat/cubit/chat_cubit.dart';
 import 'package:scan_job/chat/cubit/chat_state.dart';
+import 'package:scan_job/chat/models/chat_message.dart';
 import 'package:scan_job/l10n/l10n.dart';
 import 'package:scan_job/theme/app_theme.dart';
 
@@ -23,10 +25,42 @@ class _ChatInputState extends State<ChatInput> {
     super.dispose();
   }
 
+  Future<void> _pickFile() async {
+    try {
+      final result = await FilePicker.platform.pickFiles(
+        allowMultiple: true,
+        withData: true,
+        type: FileType.custom,
+        allowedExtensions: ['pdf', 'txt'],
+      );
+
+      if (result != null && mounted) {
+        final cubit = context.read<ChatCubit>();
+        for (final file in result.files) {
+          if (file.bytes != null) {
+            await cubit.addAttachment(
+              ChatAttachment(
+                name: file.name,
+                bytes: file.bytes!,
+                extension: file.extension,
+              ),
+            );
+          }
+        }
+      }
+    } catch (e) {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Error picking file: $e')),
+        );
+      }
+    }
+  }
+
   Future<void> _sendMessage() async {
     final text = _controller.text;
-    if (text.isNotEmpty) {
-      final cubit = context.read<ChatCubit>();
+    final cubit = context.read<ChatCubit>();
+    if (text.isNotEmpty || cubit.state.pendingAttachments.isNotEmpty) {
       if (cubit.state.status == ChatStatus.loading) return;
 
       _controller.clear();
@@ -62,7 +96,32 @@ class _ChatInputState extends State<ChatInput> {
 
                 return Column(
                   mainAxisSize: MainAxisSize.min,
+                  crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
+                    if (state.pendingAttachments.isNotEmpty)
+                      Padding(
+                        padding: EdgeInsets.fromLTRB(
+                          context.spacing.xl,
+                          context.spacing.md,
+                          context.spacing.xl,
+                          0,
+                        ),
+                        child: Wrap(
+                          spacing: context.spacing.sm,
+                          runSpacing: context.spacing.sm,
+                          children: List.generate(
+                            state.pendingAttachments.length,
+                            (index) {
+                              final attachment = state.pendingAttachments[index];
+                              return _AttachmentChip(
+                                attachment: attachment,
+                                onRemove: () =>
+                                    context.read<ChatCubit>().removeAttachment(index),
+                              );
+                            },
+                          ),
+                        ),
+                      ),
                     Padding(
                       padding: EdgeInsets.symmetric(
                         horizontal: context.spacing.xl,
@@ -110,7 +169,7 @@ class _ChatInputState extends State<ChatInput> {
                             mainAxisSize: MainAxisSize.min,
                             children: [
                               _ActionButton(
-                                onTap: isLoading ? null : () {},
+                                onTap: isLoading ? null : _pickFile,
                                 icon: Icons.add,
                                 isIconOnly: true,
                               ),
@@ -139,7 +198,10 @@ class _ChatInputState extends State<ChatInput> {
                                 )
                               else
                                 _ActionButton(
-                                  onTap: _sendMessage,
+                                  onTap: (state.pendingAttachments.isEmpty &&
+                                          _controller.text.isEmpty)
+                                      ? null
+                                      : _sendMessage,
                                   icon: Icons.send,
                                   isIconOnly: true,
                                 ),
@@ -159,13 +221,87 @@ class _ChatInputState extends State<ChatInput> {
   }
 }
 
+class _AttachmentChip extends StatelessWidget {
+  const _AttachmentChip({
+    required this.attachment,
+    required this.onRemove,
+  });
+
+  final ChatAttachment attachment;
+  final VoidCallback onRemove;
+
+  @override
+  Widget build(BuildContext context) {
+    final colorScheme = Theme.of(context).colorScheme;
+
+    return Container(
+      padding: EdgeInsets.symmetric(
+        horizontal: context.spacing.sm,
+        vertical: context.spacing.xs,
+      ),
+      decoration: BoxDecoration(
+        color: colorScheme.surfaceContainerHigh,
+        borderRadius: BorderRadius.circular(context.radius.sm),
+        border: Border.all(
+          color: colorScheme.outlineVariant,
+        ),
+      ),
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Icon(
+            _getIconForExtension(attachment.extension),
+            size: 16,
+            color: colorScheme.primary,
+          ),
+          SizedBox(width: context.spacing.xs),
+          Flexible(
+            child: Text(
+              attachment.name,
+              style: TextStyle(
+                fontSize: 12,
+                color: colorScheme.onSurface,
+              ),
+              maxLines: 1,
+              overflow: TextOverflow.ellipsis,
+            ),
+          ),
+          SizedBox(width: context.spacing.xs),
+          GestureDetector(
+            onTap: onRemove,
+            child: Icon(
+              Icons.close,
+              size: 14,
+              color: colorScheme.onSurfaceVariant,
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  IconData _getIconForExtension(String? extension) {
+    switch (extension?.toLowerCase()) {
+      case 'pdf':
+        return Icons.picture_as_pdf;
+      case 'txt':
+        return Icons.description;
+      case 'jpg':
+      case 'jpeg':
+      case 'png':
+        return Icons.image;
+      default:
+        return Icons.insert_drive_file;
+    }
+  }
+}
+
 class _ActionButton extends StatelessWidget {
   const _ActionButton({
     this.onTap,
     this.icon,
     this.label,
     this.isIconOnly = false,
-    super.key,
   });
 
   final VoidCallback? onTap;

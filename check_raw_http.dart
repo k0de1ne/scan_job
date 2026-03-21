@@ -1,10 +1,9 @@
 import 'dart:convert';
-import 'dart:io';
 import 'package:http/http.dart' as http;
 
 void main() async {
-  final baseUrl = 'http://192.168.0.17:1234/v1';
-  final modelName = 'openai/gpt-oss-20b';
+  const baseUrl = 'http://192.168.0.17:1234/v1';
+  const modelName = 'openai/gpt-oss-20b';
 
   print('--- LM Studio Diagnostic ---');
   print('Connecting to: $baseUrl');
@@ -27,7 +26,7 @@ void main() async {
 
     await for (final chunk in streamedResponse.stream.transform(utf8.decoder)) {
       final lines = chunk.split('\n');
-      for (var line in lines) {
+      for (final line in lines) {
         if (line.trim().isEmpty) continue;
         print('CHUNK: $line');
         

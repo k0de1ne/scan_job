@@ -10,6 +10,7 @@ abstract class ChatRepository {
   Stream<ChatMessage> sendMessage({
     required String text,
     List<ChatMessage> history = const [],
+    List<ChatAttachment> attachments = const [],
   });
 
   List<Map<String, dynamic>> getTools();
