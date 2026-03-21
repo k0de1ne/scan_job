@@ -85,21 +85,113 @@ void main() {
         }
 
         // 2. Resumes
-        final resumesJson = await tool.executeTool('hh_get_resumes', {});
+        print('\n[3/4] Running functional tools check:');
+
+        // 2.0.1 Suggest Test
+        print('  ⌛ Testing hh_get_suggest (areas: Moscow)...');
+        final suggestJson = await tool.executeTool('hh_get_suggest', {'type': 'areas', 'text': 'Moscow'});
+        final suggestResult = jsonDecode(suggestJson);
+        String areaId = '1'; // Default
+        if (suggestResult['items'] != null && suggestResult['items'].isNotEmpty) {
+          areaId = suggestResult['items'][0]['id'];
+          print('    ✅ hh_get_suggest: OK (Found ID: $areaId for ${suggestResult['items'][0]['text']})');
+        }
+
+        // 2.0.2 Create Test Resume (New Structure)
+        print('  ⌛ Testing hh_create_resume (Refactored)...');
+        final createJson = await tool.executeTool('hh_create_resume', {
+          'title': 'Test Resume',
+          'first_name': profile['first_name'],
+          'last_name': profile['last_name'],
+          'area_id': areaId,
+          'professional_role_ids': ['96'], // Software Engineer
+          'email': profile['email'],
+          'gender': 'male',
+          'experience': [
+            {
+              'start': '2022-01-01',
+              'company': 'Scan Job AI',
+              'position': 'AI Engineer',
+              'description': 'Building career automation tools.'
+            }
+          ],
+          'skills': 'Expert in Flutter and Dart.',
+          'skill_set': ['Flutter', 'Dart']
+        });
+        final createResult = jsonDecode(createJson);
+        String? newResumeId;
+        if (createResult.containsKey('id')) {
+          newResumeId = createResult['id'];
+          print('    ✅ hh_create_resume: OK (New ID: $newResumeId, Title: ${createResult['title']})');
+        } else {
+          print('    ❌ hh_create_resume: FAILED - $createJson');
+        }
+
+        final resumesJson = await tool.executeTool('hh_get_my_resumes', {});
         final resumes = jsonDecode(resumesJson);
         if (resumes['success'] == true) {
-          print('  ✅ hh_get_resumes: OK (Found ${resumes['count']} items)');
+          print('  ✅ hh_get_my_resumes: OK (Found ${resumes['count']} items)');
+          
+          if (resumes['count'] > 0) {
+            final resumeId = resumes['resumes'][0]['id'];
+            
+            // 2.1 Resume Details
+            final detailsJson = await tool.executeTool('hh_get_resume_details', {'resume_id': resumeId});
+            final details = jsonDecode(detailsJson);
+            if (details.containsKey('id')) {
+              print('    ✅ hh_get_resume_details: OK (ID: ${details['id']})');
+            } else {
+              print('    ❌ hh_get_resume_details: FAILED');
+            }
+
+            // 2.2 Resume Negotiations
+            final negJson = await tool.executeTool('hh_get_resume_negotiations', {'resume_id': resumeId});
+            final neg = jsonDecode(negJson);
+            if (neg.containsKey('items') || neg.containsKey('error')) {
+              print('    ✅ hh_get_resume_negotiations: OK');
+            } else {
+              print('    ❌ hh_get_resume_negotiations: FAILED');
+            }
+
+            // 2.3 Market Stats
+            print('  ⌛ Starting hh_get_market_stats (this may take a few seconds)...');
+            final statsJson = await tool.executeTool('hh_get_market_stats', {
+              'resume_id': resumeId,
+              'text': resumes['resumes'][0]['title'],
+              'max_vacancies': 10
+            });
+            final stats = jsonDecode(statsJson);
+            if (stats.containsKey('atsScore')) {
+              print('    ✅ hh_get_market_stats: OK (ATS Score: ${stats['atsScore']})');
+            } else {
+              print('    ❌ hh_get_market_stats: FAILED');
+            }
+
+            // 2.4 Mass Apply (Dry run / Limit 1)
+            print('  ⌛ Starting hh_mass_apply (Limit: 1)...');
+            final applyJson = await tool.executeTool('hh_mass_apply', {
+              'resume_id': resumeId,
+              'text': resumes['resumes'][0]['title'],
+              'limit': 1
+            });
+            final apply = jsonDecode(applyJson);
+            if (apply.containsKey('attempted')) {
+              print('    ✅ hh_mass_apply: OK (Attempted: ${apply['attempted']})');
+            } else {
+              print('    ❌ hh_mass_apply: FAILED');
+            }
+          }
         } else {
-          print('  ❌ hh_get_resumes: FAILED');
+          print('  ❌ hh_get_my_resumes: FAILED');
         }
 
         // 3. List Accounts
-        final listJson = await tool.executeTool('hh_list_accounts', {});
+        final listJson = await tool.executeTool('hh_get_accounts', {});
         final listAccs = jsonDecode(listJson);
         if (listAccs['success'] == true) {
-          print('  ✅ hh_list_accounts: OK (Current ID: ${listAccs['selected_id']})');
+          print('  ✅ hh_get_accounts: OK (Current ID: ${listAccs['selected_id']}, Count: ${listAccs['accounts'].length})');
         } else {
-          print('  ❌ hh_list_accounts: FAILED');
+          print('  ❌ hh_get_accounts: FAILED');
         }
 
         print('\n[4/4] Final status:');

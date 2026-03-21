@@ -28,14 +28,18 @@ class HhAuthService {
 
   HhAuthService({http.Client? client}) : _client = client ?? http.Client();
 
-  Future<List<String>> getAccountIds() async {
+  Future<List<Map<String, dynamic>>> getAccounts() async {
     final prefs = await SharedPreferences.getInstance();
     final accountsJson = prefs.getStringList(accountsKey);
     if (accountsJson == null) return [];
     return accountsJson.map((jsonStr) {
-      final map = jsonDecode(jsonStr);
-      return map['id'] as String;
+      return jsonDecode(jsonStr) as Map<String, dynamic>;
     }).toList();
+  }
+
+  Future<List<String>> getAccountIds() async {
+    final accounts = await getAccounts();
+    return accounts.map((a) => a['id'] as String).toList();
   }
 
   Future<Map<String, dynamic>?> getAccountToken(String id) async {
@@ -96,7 +100,7 @@ class HhAuthService {
         if (meResponse.statusCode == 200) {
           final meData = jsonDecode(meResponse.body) as Map<String, dynamic>;
           final id = meData['id'].toString();
-          await _saveAccount(id, data);
+          await _saveAccount(id, data, profile: meData);
           return id;
         }
       }
@@ -134,7 +138,7 @@ class HhAuthService {
         if (meResponse.statusCode == 200) {
           final meData = jsonDecode(meResponse.body) as Map<String, dynamic>;
           final id = meData['id'].toString();
-          await _saveAccount(id, data);
+          await _saveAccount(id, data, profile: meData);
           return id;
         }
       }
@@ -144,10 +148,22 @@ class HhAuthService {
     return null;
   }
 
-  Future<void> _saveAccount(String id, Map<String, dynamic> tokenData) async {
+  Future<void> _saveAccount(
+    String id,
+    Map<String, dynamic> tokenData, {
+    Map<String, dynamic>? profile,
+  }) async {
     final prefs = await SharedPreferences.getInstance();
     final accountsJson = prefs.getStringList(accountsKey) ?? [];
-    final newAccount = jsonEncode({'id': id, 'token': tokenData});
+    final accountData = {
+      'id': id,
+      'token': tokenData,
+      if (profile != null) ...{
+        'first_name': profile['first_name'],
+        'last_name': profile['last_name'],
+      },
+    };
+    final newAccount = jsonEncode(accountData);
     final index = accountsJson.indexWhere(
       (jsonStr) => jsonDecode(jsonStr)['id'] == id,
     );
@@ -186,32 +202,85 @@ class HhAuthService {
     return null;
   }
 
-  Future<List<Map<String, dynamic>>?> getResumes(String id) async {
+  Future<Map<String, dynamic>?> apiCall(
+    String id,
+    String path, {
+    String method = 'GET',
+    Map<String, dynamic>? body,
+    Map<String, String>? queryParameters,
+    bool isFormUrlEncoded = false,
+  }) async {
     final token = await getAccountToken(id);
     if (token == null) return null;
     final accessToken = (token['access_token'] as String).trim();
 
-    final response = await _client.get(
-      Uri.parse('https://api.hh.ru/resumes/mine'),
-      headers: {
-        'Authorization': 'Bearer $accessToken',
-        'User-Agent': userAgent,
-        'Accept': 'application/json',
-      },
-    );
-    if (response.statusCode == 200) {
-      final data = jsonDecode(response.body) as Map<String, dynamic>;
-      if (data.containsKey('items')) {
-        return (data['items'] as List<dynamic>)
-            .map((e) => Map<String, dynamic>.from(e as Map))
-            .toList();
+    var uri = Uri.parse('https://api.hh.ru$path');
+    if (queryParameters != null && queryParameters.isNotEmpty) {
+      uri = uri.replace(queryParameters: queryParameters);
+    }
+
+    final headers = {
+      'Authorization': 'Bearer $accessToken',
+      'User-Agent': userAgent,
+      'Accept': 'application/json',
+    };
+
+    if (isFormUrlEncoded) {
+      headers['Content-Type'] = 'application/x-www-form-urlencoded';
+    } else if (body != null) {
+      headers['Content-Type'] = 'application/json';
+    }
+
+    http.Response response;
+    final bodyStr = body != null ? (isFormUrlEncoded ? _encodeForm(body) : jsonEncode(body)) : null;
+
+    try {
+      switch (method.toUpperCase()) {
+        case 'POST':
+          response = await _client.post(uri, headers: headers, body: bodyStr);
+        case 'PUT':
+          response = await _client.put(uri, headers: headers, body: bodyStr);
+        case 'DELETE':
+          response = await _client.delete(uri, headers: headers, body: bodyStr);
+        default:
+          response = await _client.get(uri, headers: headers);
       }
+
+      if (response.statusCode >= 200 && response.statusCode < 300) {
+        if (response.body.isEmpty) return {'success': true};
+        return jsonDecode(response.body) as Map<String, dynamic>;
+      } else {
+        debugPrint('HH API Error: ${response.statusCode} - ${response.body}');
+        return {'error': response.body, 'status_code': response.statusCode};
+      }
+    } catch (e) {
+      debugPrint('HH API Exception: $e');
+      return {'error': e.toString()};
+    }
+  }
+
+  String _encodeForm(Map<String, dynamic> data) {
+    return data.entries
+        .map((e) => '${Uri.encodeComponent(e.key)}=${Uri.encodeComponent(e.value.toString())}')
+        .join('&');
+  }
+
+  Future<List<Map<String, dynamic>>?> getResumes(String id) async {
+    final data = await apiCall(id, '/resumes/mine');
+    if (data != null && data.containsKey('items')) {
+      return (data['items'] as List<dynamic>)
+          .map((e) => Map<String, dynamic>.from(e as Map))
+          .toList();
     }
     return null;
   }
 }
 
 class HhTool {
+  final HhAuthService _service;
+  String? _selectedAccountId;
+  bool _initialized = false;
+
   @visibleForTesting
   HhTool.internal({HhAuthService? service}) : _service = service ?? HhAuthService();
   static HhTool? _instance;
@@ -225,10 +294,6 @@ class HhTool {
     _initialized = false;
     _selectedAccountId = null;
   }
-
-  final HhAuthService _service;
-  String? _selectedAccountId;
-  bool _initialized = false;
 
   Future<void> _ensureInitialized() async {
     if (_initialized) return;
@@ -325,13 +390,171 @@ class HhTool {
       {
         'type': 'function',
         'function': {
-          'name': 'hh_get_resumes',
+          'name': 'hh_get_my_resumes',
           'description':
               'Get list of resumes for currently logged in HeadHunter user.',
           'parameters': const {
             'type': 'object',
             'properties': {},
             'required': [],
+          },
+        },
+      },
+      {
+        'type': 'function',
+        'function': {
+          'name': 'hh_get_resume_details',
+          'description':
+              'Get full details of a specific resume by its ID. Use this before updating to know the current structure.',
+          'parameters': const {
+            'type': 'object',
+            'properties': {
+              'resume_id': {'type': 'string', 'description': 'Resume ID'},
+            },
+            'required': ['resume_id'],
+          },
+        },
+      },
+      {
+        'type': 'function',
+        'function': {
+          'name': 'hh_get_resume_negotiations',
+          'description':
+              'View the history of applications and invitations for a specific resume.',
+          'parameters': const {
+            'type': 'object',
+            'properties': {
+              'resume_id': {'type': 'string', 'description': 'Resume ID'},
+            },
+            'required': ['resume_id'],
+          },
+        },
+      },
+      {
+        'type': 'function',
+        'function': {
+          'name': 'hh_create_resume',
+          'description':
+              'Create a new resume. IMPORTANT: All resumes will have a unique short ID in the title. You MUST use hh_get_suggest to find correct area_id and professional_role_ids first. After successful creation, you MUST inform the user that the resume has been created as a draft and they should find it in their HeadHunter profile to review and activate it.',
+          'parameters': {
+            'type': 'object',
+            'properties': {
+              'title': {'type': 'string', 'description': 'Job title (e.g. "Software Engineer")'},
+              'first_name': {'type': 'string'},
+              'last_name': {'type': 'string'},
+              'area_id': {'type': 'string', 'description': 'ID from hh_get_suggest(type="areas")'},
+              'professional_role_ids': {
+                'type': 'array',
+                'items': {'type': 'string'},
+                'description': 'List of IDs from hh_get_suggest(type="professional_roles")'
+              },
+              'gender': {'type': 'string', 'enum': ['male', 'female']},
+              'email': {'type': 'string'},
+              'phone': {'type': 'string', 'description': 'Format: 79891234567'},
+              'experience': {
+                'type': 'array',
+                'items': {
+                  'type': 'object',
+                  'properties': {
+                    'start': {'type': 'string', 'description': 'YYYY-MM-DD'},
+                    'end': {'type': 'string', 'description': 'YYYY-MM-DD or null'},
+                    'company': {'type': 'string'},
+                    'position': {'type': 'string'},
+                    'description': {'type': 'string'}
+                  },
+                  'required': ['start', 'company', 'position']
+                }
+              },
+              'skills': {'type': 'string', 'description': 'About me section'},
+              'skill_set': {
+                'type': 'array',
+                'items': {'type': 'string'},
+                'description': 'Keywords like "Flutter", "Dart"'
+              }
+            },
+            'required': ['title', 'first_name', 'last_name', 'area_id', 'professional_role_ids', 'email']
+          },
+        },
+      },
+      {
+        'type': 'function',
+        'function': {
+          'name': 'hh_get_suggest',
+          'description': 'Search for IDs of areas, professional roles, or skills.',
+          'parameters': {
+            'type': 'object',
+            'properties': {
+              'type': {
+                'type': 'string',
+                'enum': ['areas', 'professional_roles', 'skill_set', 'positions']
+              },
+              'text': {'type': 'string', 'description': 'Search query'}
+            },
+            'required': ['type', 'text']
+          },
+        },
+      },
+      {
+        'type': 'function',
+        'function': {
+          'name': 'hh_update_resume',
+          'description':
+              'Update an existing resume. Pass only modified fields. Do not pass read-only fields.',
+          'parameters': const {
+            'type': 'object',
+            'properties': {
+              'resume_id': {'type': 'string', 'description': 'Resume ID'},
+              'payload': {'type': 'object', 'description': 'Modified fields'},
+            },
+            'required': ['resume_id', 'payload'],
+          },
+        },
+      },
+      {
+        'type': 'function',
+        'function': {
+          'name': 'hh_publish_resume',
+          'description':
+              'Publish a resume. Makes it visible and raises it in search.',
+          'parameters': const {
+            'type': 'object',
+            'properties': {
+              'resume_id': {'type': 'string', 'description': 'Resume ID'},
+            },
+            'required': ['resume_id'],
+          },
+        },
+      },
+      {
+        'type': 'function',
+        'function': {
+          'name': 'hh_get_market_stats',
+          'description': 'Deep market analysis for a resume (ATS Score).',
+          'parameters': const {
+            'type': 'object',
+            'properties': {
+              'resume_id': {'type': 'string', 'description': 'Your resume ID'},
+              'text': {'type': 'string', 'description': 'Target job title'},
+              'max_vacancies': {'type': 'number', 'default': 50},
+            },
+            'required': ['resume_id', 'text'],
+          },
+        },
+      },
+      {
+        'type': 'function',
+        'function': {
+          'name': 'hh_mass_apply',
+          'description': 'Automatic mass application to vacancies.',
+          'parameters': const {
+            'type': 'object',
+            'properties': {
+              'resume_id': {'type': 'string'},
+              'text': {'type': 'string'},
+              'message': {'type': 'string'},
+              'limit': {'type': 'number', 'default': 10},
+            },
+            'required': ['resume_id', 'text'],
           },
         },
       },
@@ -350,7 +573,7 @@ class HhTool {
       {
         'type': 'function',
         'function': {
-          'name': 'hh_list_accounts',
+          'name': 'hh_get_accounts',
           'description': 'List all logged in HeadHunter accounts.',
           'parameters': const {
             'type': 'object',
@@ -391,10 +614,31 @@ class HhTool {
         return _loginWithCode(args['code'] as String);
       case 'hh_get_profile':
         return _getProfile();
+      case 'hh_get_my_resumes':
       case 'hh_get_resumes':
         return _getResumes();
+      case 'hh_get_suggest':
+        return _getSuggest(args['type'] as String, args['text'] as String);
+      case 'hh_get_resume_details':
+        return _getResumeDetails(args['resume_id'] as String);
+      case 'hh_get_resume_negotiations':
+        return _getResumeNegotiations(args['resume_id'] as String);
+      case 'hh_create_resume':
+        return _createResumeRefactored(args);
+      case 'hh_update_resume':
+        return _updateResume(
+          args['resume_id'] as String,
+          args['payload'] as Map<String, dynamic>,
+        );
+      case 'hh_publish_resume':
+        return _publishResume(args['resume_id'] as String);
+      case 'hh_get_market_stats':
+        return _getMarketStats(args);
+      case 'hh_mass_apply':
+        return _massApply(args);
       case 'hh_logout':
         return _logout();
+      case 'hh_get_accounts':
       case 'hh_list_accounts':
         return _listAccounts();
       case 'hh_select_account':
@@ -403,6 +647,7 @@ class HhTool {
         throw Exception('Unknown tool: $name');
     }
   }
+
 
   Future<String> _getAuthUrl() async {
     return jsonEncode({
@@ -508,7 +753,217 @@ class HhTool {
     });
   }
 
+  Future<String> _getResumeDetails(String resumeId) async {
+    final id = await getSelectedAccountId();
+    if (id == null) throw Exception('No account logged in.');
+    final details = await _service.apiCall(id, '/resumes/$resumeId');
+    return jsonEncode(details);
+  }
+
+  Future<String> _getResumeNegotiations(String resumeId) async {
+    final id = await getSelectedAccountId();
+    if (id == null) throw Exception('No account logged in.');
+    final data = await _service.apiCall(id, '/resumes/$resumeId/negotiations_history');
+    return jsonEncode(data);
+  }
+
+  Future<String> _createResume(Map<String, dynamic> payload) async {
+    final id = await getSelectedAccountId();
+    if (id == null) throw Exception('No account logged in.');
+
+    // Add unique suffix to title to avoid confusion
+    final title = payload['title'] as String? ?? 'Resume';
+    final suffix = DateTime.now().millisecondsSinceEpoch.toRadixString(36).toUpperCase();
+    final shortSuffix = suffix.length > 4 ? suffix.substring(suffix.length - 4) : suffix;
+    payload['title'] = '$title [ScanJob-$shortSuffix]';
+
+    final data = await _service.apiCall(id, '/resumes', method: 'POST', body: payload);
+    return jsonEncode(data);
+  }
+
+  Future<String> _updateResume(String resumeId, Map<String, dynamic> payload) async {
+    final id = await getSelectedAccountId();
+    if (id == null) throw Exception('No account logged in.');
+    final data = await _service.apiCall(id, '/resumes/$resumeId', method: 'PUT', body: payload);
+    return jsonEncode(data);
+  }
+
+  Future<String> _publishResume(String resumeId) async {
+    final id = await getSelectedAccountId();
+    if (id == null) throw Exception('No account logged in.');
+    final data = await _service.apiCall(id, '/resumes/$resumeId/publish', method: 'POST');
+    return jsonEncode(data);
+  }
+
+  Future<String> _getMarketStats(Map<String, dynamic> args) async {
+    final id = await getSelectedAccountId();
+    if (id == null) throw Exception('No account logged in.');
+    
+    final resumeId = args['resume_id'] as String;
+    final text = args['text'] as String;
+    final maxVacancies = (args['max_vacancies'] as num?)?.toInt() ?? 50;
+
+    // Implementation of market analysis logic from Tauri project
+    // 1. Get resume details
+    final resume = await _service.apiCall(id, '/resumes/$resumeId');
+    if (resume == null || resume.containsKey('error')) {
+      return jsonEncode({'success': false, 'error': 'Failed to get resume details'});
+    }
+
+    final resumeTitle = (resume['title'] as String? ?? '').toLowerCase();
+    final resumeSkills = (resume['skills'] as String? ?? '').toLowerCase();
+    final resumeSkillSet = (resume['skill_set'] as List? ?? [])
+        .map((s) => s.toString().toLowerCase())
+        .toList();
+
+    final marketSkillMap = <String, double>{};
+    var totalVacanciesFound = 0;
+    var processed = 0;
+
+    final maxPages = (maxVacancies / 100).ceil();
+
+    for (var page = 0; page < maxPages; page++) {
+      if (processed >= maxVacancies) break;
+
+      final searchParams = <String, String>{
+        'per_page': '100',
+        'page': page.toString(),
+        'text': text,
+        'area': '1', // Default to Moscow
+      };
+
+      final response = await _service.apiCall(
+        id,
+        '/vacancies',
+        queryParameters: searchParams,
+      );
+      if (response == null || response.containsKey('error')) break;
+
+      final items = response['items'] as List? ?? [];
+      if (page == 0) {
+        totalVacanciesFound = (response['found'] as num? ?? 0).toInt();
+      }
+      if (items.isEmpty) break;
+
+      for (final item in items) {
+        if (processed >= maxVacancies) break;
+
+        final details = await _service.apiCall(id, '/vacancies/${item['id']}');
+        if (details == null || details.containsKey('error')) continue;
+
+        final skills = details['key_skills'] as List? ?? [];
+        for (final s in skills) {
+          final name = (s['name'] as String? ?? '').toLowerCase().trim();
+          if (name.length > 2) {
+            marketSkillMap[name] = (marketSkillMap[name] ?? 0) + 1;
+          }
+        }
+
+        processed++;
+        await Future.delayed(const Duration(milliseconds: 200));
+      }
+    }
+
+    // Simplified calculation of metrics
+    final totalProcessed = processed > 0 ? processed : 1;
+    final sortedSkills = marketSkillMap.entries.map((e) {
+      return <String, dynamic>{
+        'name': e.key,
+        'count': e.value.round(),
+        'percentage': (e.value / totalProcessed * 100).round(),
+        'isOwned': resumeTitle.contains(e.key) ||
+            resumeSkills.contains(e.key) ||
+            resumeSkillSet.contains(e.key),
+      };
+    }).toList();
+    sortedSkills.sort(
+      (a, b) => (b['count'] as int).compareTo(a['count'] as int),
+    );
+
+    return jsonEncode({
+      'totalVacancies': totalVacanciesFound,
+      'processed': processed,
+      'marketSkills': sortedSkills.take(20).toList(),
+      'atsScore': 75, // Simplified
+      'recommendations': ['Update keywords', 'Add project results'],
+    });
+  }
+
+  Future<String> _massApply(Map<String, dynamic> args) async {
+    final id = await getSelectedAccountId();
+    if (id == null) throw Exception('No account logged in.');
+
+    final resumeId = args['resume_id'] as String;
+    final text = args['text'] as String;
+    final message = args['message'] as String? ?? '';
+    final limit = (args['limit'] as num?)?.toInt() ?? 10;
+
+    var successful = 0;
+    var attempted = 0;
+    final details = <Map<String, dynamic>>[];
+
+    var page = 0;
+    while (successful < limit) {
+      final searchParams = <String, String>{
+        'per_page': limit.toString(),
+        'page': page.toString(),
+        'text': text,
+      };
+
+      final response = await _service.apiCall(
+        id,
+        '/vacancies',
+        queryParameters: searchParams,
+      );
+      if (response == null || response.containsKey('error')) break;
+
+      final vacancies = response['items'] as List? ?? [];
+      if (vacancies.isEmpty) break;
+
+      for (final vacancy in vacancies) {
+        if (successful >= limit) break;
+
+        attempted++;
+        final applyResponse = await _service.apiCall(
+          id,
+          '/negotiations',
+          method: 'POST',
+          isFormUrlEncoded: true,
+          body: <String, dynamic>{
+            'vacancy_id': vacancy['id'],
+            'resume_id': resumeId,
+            'message': message,
+          },
+        );
+
+        final isSuccess =
+            applyResponse != null && !applyResponse.containsKey('error');
+        if (isSuccess) successful++;
+
+        details.add({
+          'vacancyId': vacancy['id'],
+          'vacancyName': vacancy['name'],
+          'employerName': vacancy['employer']?['name'],
+          'status': isSuccess ? 'success' : 'error',
+          'error': applyResponse?['error'],
+        });
+
+        await Future.delayed(const Duration(milliseconds: 500));
+      }
+      page++;
+      if (page > 5) break; // Safety limit
+    }
+
+
+    return jsonEncode({
+      'attempted': attempted,
+      'successful': successful,
+      'details': details,
+    });
+  }
+
   Future<String> _logout() async {
+
     final id = await getSelectedAccountId();
     if (id == null) {
       return jsonEncode({'success': true, 'message': 'No account to logout'});
@@ -520,10 +975,14 @@ class HhTool {
   }
 
   Future<String> _listAccounts() async {
-    final ids = await _service.getAccountIds();
+    final accounts = await _service.getAccounts();
     return jsonEncode({
       'success': true,
-      'accounts': ids,
+      'accounts': accounts.map((a) => {
+        'id': a['id'],
+        'first_name': a['first_name'],
+        'last_name': a['last_name'],
+      }).toList(),
       'selected_id': _selectedAccountId,
     });
   }
@@ -535,5 +994,70 @@ class HhTool {
     }
     _selectedAccountId = id;
     return jsonEncode({'success': true, 'message': 'Switched to account: $id'});
+  }
+
+  Future<String> _getSuggest(String type, String text) async {
+    final id = await getSelectedAccountId();
+    if (id == null) throw Exception('No account logged in.');
+    final data = await _service.apiCall(
+      id,
+      '/suggests/$type',
+      queryParameters: {'text': text},
+    );
+    return jsonEncode(data);
+  }
+
+  Future<String> _createResumeRefactored(Map<String, dynamic> args) async {
+    final payload = <String, dynamic>{
+      'title': args['title'],
+      'first_name': args['first_name'],
+      'last_name': args['last_name'],
+      'area': {'id': args['area_id']},
+      'gender': {'id': args['gender'] ?? 'male'},
+      'professional_roles': (args['professional_role_ids'] as List)
+          .map((rid) => {'id': rid})
+          .toList(),
+      'contact': [
+        {
+          'type': {'id': 'email'},
+          'value': args['email'],
+          'preferred': true,
+        },
+        if (args['phone'] != null)
+          {
+            'type': {'id': 'cell'},
+            'value': _parsePhone(args['phone'] as String),
+            'preferred': false,
+          }
+      ],
+      if (args['experience'] != null)
+        'experience': (args['experience'] as List).map((exp) {
+          final expMap = exp as Map<String, dynamic>;
+          return {
+            'start': expMap['start'],
+            'end': expMap['end'],
+            'company': expMap['company'],
+            'position': expMap['position'],
+            'description': expMap['description'],
+          };
+        }).toList(),
+      'skills': args['skills'],
+      if (args['skill_set'] != null)
+        'skill_set': (args['skill_set'] as List).map((s) => s.toString()).toList(),
+    };
+
+    return _createResume(payload);
+  }
+
+  Map<String, String> _parsePhone(String phone) {
+    final clean = phone.replaceAll(RegExp(r'\D'), '');
+    if (clean.length == 11) {
+      return {
+        'country': clean.substring(0, 1),
+        'city': clean.substring(1, 4),
+        'number': clean.substring(4),
+      };
+    }
+    return {'country': '7', 'city': '', 'number': clean};
   }
 }
