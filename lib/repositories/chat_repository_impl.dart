@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'dart:convert';
+import 'dart:ui' as ui;
 
 import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:scan_job/chat/models/chat_message.dart' as model;
@@ -91,6 +92,7 @@ class ChatRepositoryImpl implements ChatRepository {
   }) async* {
     final accounts = await HhTool.instance.getAccounts();
     final selectedId = await HhTool.instance.getSelectedAccountId();
+    final locale = ui.PlatformDispatcher.instance.locale.languageCode;
 
     final accountsInfo = accounts.isEmpty
         ? 'No accounts connected.'
@@ -117,6 +119,7 @@ class ChatRepositoryImpl implements ChatRepository {
         'content': 'You are Scan Job, a professional AI assistant.\n'
             'Current platform: ${isWebPlatform ? 'web' : 'mobile/desktop'}\n'
             'Current time: ${DateTime.now().toUtc().toIso8601String()}\n'
+            'Preferred language: $locale. Always respond in this language unless requested otherwise.\n'
             'Connected HeadHunter accounts:\n$accountsInfo',
       },
       ...history.map(
