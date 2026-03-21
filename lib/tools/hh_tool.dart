@@ -5,17 +5,28 @@ import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
 
 class HhAuthService {
-  static const String clientId =
+  static const String _defaultClientId =
       'HIOMIAS39CA9DICTA7JIO64LQKQJF5AGIK74G9ITJKLNEDAOH5FHS5G1JI7FOEGD';
-  static const String clientSecret =
+  static const String _defaultClientSecret =
       'V9M870DE342BGHFRUJ5FTCGCUA1482AN0DI8C5TFI9ULMA89H10N60NOP8I4JMVS';
-  static const String userAgent =
-      'Mozilla/5.0 (Linux; Android 13; Galaxy A55) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/119.0.0.0 Mobile Safari/537.36';
+
+  String get clientId => const String.fromEnvironment('HH_CLIENT_ID').isNotEmpty
+      ? const String.fromEnvironment('HH_CLIENT_ID')
+      : _defaultClientId;
+
+  String get clientSecret =>
+      const String.fromEnvironment('HH_CLIENT_SECRET').isNotEmpty
+          ? const String.fromEnvironment('HH_CLIENT_SECRET')
+          : _defaultClientSecret;
+
+  static const String userAgent = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36';
   static const String accountsKey = 'hh_accounts';
   static const String selectedAccountKey = 'hh_selected_account';
   static const String callbackUrlScheme = 'hhandroid';
 
-  final http.Client _client = http.Client();
+  final http.Client _client;
+
+  HhAuthService({http.Client? client}) : _client = client ?? http.Client();
 
   Future<List<String>> getAccountIds() async {
     final prefs = await SharedPreferences.getInstance();
@@ -159,11 +170,14 @@ class HhAuthService {
   Future<Map<String, dynamic>?> getProfile(String id) async {
     final token = await getAccountToken(id);
     if (token == null) return null;
+    final accessToken = (token['access_token'] as String).trim();
+
     final response = await _client.get(
       Uri.parse('https://api.hh.ru/me'),
       headers: {
-        'Authorization': 'Bearer ${token['access_token']}',
+        'Authorization': 'Bearer $accessToken',
         'User-Agent': userAgent,
+        'Accept': 'application/json',
       },
     );
     if (response.statusCode == 200) {
@@ -175,11 +189,14 @@ class HhAuthService {
   Future<List<Map<String, dynamic>>?> getResumes(String id) async {
     final token = await getAccountToken(id);
     if (token == null) return null;
+    final accessToken = (token['access_token'] as String).trim();
+
     final response = await _client.get(
       Uri.parse('https://api.hh.ru/resumes/mine'),
       headers: {
-        'Authorization': 'Bearer ${token['access_token']}',
+        'Authorization': 'Bearer $accessToken',
         'User-Agent': userAgent,
+        'Accept': 'application/json',
       },
     );
     if (response.statusCode == 200) {
@@ -195,11 +212,21 @@ class HhAuthService {
 }
 
 class HhTool {
-  HhTool._();
+  @visibleForTesting
+  HhTool.internal({HhAuthService? service}) : _service = service ?? HhAuthService();
   static HhTool? _instance;
-  static HhTool get instance => _instance ??= HhTool._();
+  static HhTool get instance => _instance ??= HhTool.internal();
 
-  final HhAuthService _service = HhAuthService();
+  @visibleForTesting
+  static void setInstance(HhTool tool) => _instance = tool;
+
+  @visibleForTesting
+  void reset() {
+    _initialized = false;
+    _selectedAccountId = null;
+  }
+
+  final HhAuthService _service;
   String? _selectedAccountId;
   bool _initialized = false;
 
@@ -433,14 +460,23 @@ class HhTool {
     if (profile == null) {
       throw Exception('Failed to get profile');
     }
+
+    String? phoneNumber;
+    final phoneData = profile['phone'];
+    if (phoneData is Map) {
+      phoneNumber = phoneData['number']?.toString();
+    } else if (phoneData is List && phoneData.isNotEmpty) {
+      phoneNumber = (phoneData[0] as Map)['number']?.toString();
+    }
+
     return jsonEncode({
       'success': true,
-      'id': profile['id'],
+      'id': profile['id']?.toString(),
       'first_name': profile['first_name'],
       'last_name': profile['last_name'],
       'middle_name': profile['middle_name'],
       'email': profile['email'],
-      'phone': profile['phone']?['number'],
+      'phone': phoneNumber,
       'alternate_url': profile['alternate_url'],
     });
   }
