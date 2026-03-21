@@ -77,9 +77,6 @@ class AppLocalizationsRu extends AppLocalizations {
   String get chatNavApp => 'Приложение Scan Job';
 
   @override
-  String get chatNewChat => 'Новый чат';
-
-  @override
   String get chatThinkingProcess => 'Размышление';
 
   @override

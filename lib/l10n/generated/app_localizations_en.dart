@@ -76,9 +76,6 @@ class AppLocalizationsEn extends AppLocalizations {
   String get chatNavApp => 'Scan Job App';
 
   @override
-  String get chatNewChat => 'New Chat';
-
-  @override
   String get chatThinkingProcess => 'Thinking';
 
   @override

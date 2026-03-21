@@ -230,12 +230,6 @@ abstract class AppLocalizations {
   /// **'Scan Job App'**
   String get chatNavApp;
 
-  /// No description provided for @chatNewChat.
-  ///
-  /// In en, this message translates to:
-  /// **'New Chat'**
-  String get chatNewChat;
-
   /// No description provided for @chatThinkingProcess.
   ///
   /// In en, this message translates to:

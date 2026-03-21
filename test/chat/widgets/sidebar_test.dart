@@ -17,7 +17,6 @@ void main() {
       chatCubit = MockChatCubit();
       when(() => chatCubit.state).thenReturn(const ChatState());
       when(() => chatCubit.stream).thenAnswer((_) => const Stream.empty());
-      when(() => chatCubit.clearChat()).thenAnswer((_) async {});
 
       appCubit = MockAppCubit();
       when(() => appCubit.state).thenReturn(const AppState());
@@ -39,27 +38,7 @@ void main() {
 
       expect(find.byType(ChatSidebar), findsOneWidget);
       expect(find.byIcon(Icons.menu), findsOneWidget);
-      expect(find.byIcon(Icons.edit_square), findsOneWidget);
       expect(find.byIcon(Icons.settings_outlined), findsOneWidget);
-    });
-
-    testWidgets('calls clearChat when new chat is tapped', (tester) async {
-      await tester.pumpApp(
-        const Scaffold(
-          drawer: ChatSidebar(),
-        ),
-        chatCubit: chatCubit,
-      );
-
-      // Open drawer
-      tester.state<ScaffoldState>(find.byType(Scaffold)).openDrawer();
-      await tester.pumpAndSettle();
-
-      await tester.tap(find.byIcon(Icons.edit_square));
-      await tester.pumpAndSettle();
-
-      verify(() => chatCubit.clearChat()).called(1);
-      expect(find.byType(ChatSidebar), findsNothing); // Should be closed
     });
 
     testWidgets('opens SettingsDialog when settings is tapped', (tester) async {

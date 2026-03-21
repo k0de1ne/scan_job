@@ -146,12 +146,6 @@ class _DesktopSidebar extends StatelessWidget {
             icon: Icons.menu,
             onTap: onToggle,
           ),
-          SizedBox(height: context.spacing.md),
-          _SideButton(
-            icon: Icons.edit_square,
-            label: isExpanded ? l10n.chatNewChat : null,
-            onTap: () => context.read<ChatCubit>().clearChat(),
-          ),
           const Spacer(),
           _SideButton(
             icon: Icons.settings_outlined,

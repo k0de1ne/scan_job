@@ -52,7 +52,6 @@
     "@chatNavApp": {
         "description": "Navigation app label"
     },
-    "chatNewChat": "Новый чат",
     "chatThinkingProcess": "Размышление",
     "chatPlan": "План действий",
     "chatToolCall": "Вызов инструмента",

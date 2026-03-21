@@ -86,11 +86,6 @@ class ChatCubit extends Cubit<ChatState> {
     emit(state.copyWith(status: ChatStatus.success));
   }
 
-  Future<void> clearChat() async {
-    await _subscription?.cancel();
-    emit(const ChatState());
-  }
-
   @override
   Future<void> close() async {
     await _subscription?.cancel();

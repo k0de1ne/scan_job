@@ -30,15 +30,6 @@ class ChatSidebar extends StatelessWidget {
                 icon: Icons.menu,
                 onTap: () async => Navigator.of(context).maybePop(),
               ),
-              SizedBox(height: context.spacing.md),
-              _SideButton(
-                icon: Icons.edit_square,
-                label: l10n.chatNewChat,
-                onTap: () async {
-                  context.read<ChatCubit>().clearChat();
-                  await Navigator.of(context).maybePop();
-                },
-              ),
               const Spacer(),
               _SideButton(
                 icon: Icons.settings_outlined,

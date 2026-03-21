@@ -140,21 +140,5 @@ void main() {
       );
     });
 
-    blocTest<ChatCubit, ChatState>(
-      'clearChat emits initial state',
-      build: () => chatCubit,
-      seed: () => ChatState(
-        messages: [
-          ChatMessage(
-            text: 'hello',
-            role: MessageRole.user,
-            timestamp: timestamp,
-          ),
-        ],
-        status: ChatStatus.success,
-      ),
-      act: (cubit) => cubit.clearChat(),
-      expect: () => [const ChatState()],
-    );
   });
 }
