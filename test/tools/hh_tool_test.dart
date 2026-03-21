@@ -15,9 +15,8 @@ void main() {
       SharedPreferences.setMockInitialValues({});
       mockService = MockHhAuthService();
       // Reset the singleton instance with a mock for testing
-      tool = HhTool.instance; // This just gets the singleton
-      // We use the new internal constructor or setInstance if available
-      HhTool.setInstance(HhTool.testApi(service: mockService));
+      // We use the internal constructor directly for testing
+      HhTool.setInstance(HhTool.internal(service: mockService));
       tool = HhTool.instance;
     });
 
@@ -74,13 +73,4 @@ void main() {
       verify(() => mockService.removeAccount('user_123')).called(1);
     });
   });
-}
-
-// Extension to allow creating HhTool with a mock for testing if private constructor is used
-extension HhToolTest on HhTool {
-  static HhTool testApi({required HhAuthService service}) {
-    // In lib/tools/hh_tool.dart I added a factory or adjusted constructor
-    // I will adjust the lib to make this cleaner if needed.
-    return HhTool.internal(service: service);
-  }
 }

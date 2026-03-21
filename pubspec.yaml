@@ -28,6 +28,7 @@ dependencies:
   markdown: ^7.3.0
   shared_preferences: ^2.2.2
   syncfusion_flutter_pdf: ^28.1.33
+  workmanager: 0.9.0+3
 
 dev_dependencies:
   bloc_test: ^10.0.0

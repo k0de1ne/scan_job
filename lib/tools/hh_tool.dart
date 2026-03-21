@@ -47,7 +47,7 @@ class HhAuthService {
     final accountsJson = prefs.getStringList(accountsKey);
     if (accountsJson == null) return null;
     for (final jsonStr in accountsJson) {
-      final map = jsonDecode(jsonStr);
+      final map = jsonDecode(jsonStr) as Map<String, dynamic>;
       if (map['id'] == id) return map['token'] as Map<String, dynamic>?;
     }
     return null;
@@ -66,7 +66,7 @@ class HhAuthService {
       );
       final uri = Uri.parse(result);
       return uri.queryParameters['code'];
-    } catch (e) {
+    } on Exception catch (e) {
       debugPrint('HH Auth: Error during authenticate: $e');
       return null;
     }
@@ -104,7 +104,7 @@ class HhAuthService {
           return id;
         }
       }
-    } catch (e) {
+    } on Exception catch (e) {
       debugPrint('HH Auth: Exception during token exchange: $e');
     }
     return null;
@@ -142,7 +142,7 @@ class HhAuthService {
           return id;
         }
       }
-    } catch (e) {
+    } on Exception catch (e) {
       debugPrint('HH Auth: Exception during login with code: $e');
     }
     return null;
@@ -529,6 +529,31 @@ class HhTool {
           },
         },
       },
+    ]);
+
+    if (!isWeb && (defaultTargetPlatform == TargetPlatform.android || defaultTargetPlatform == TargetPlatform.iOS)) {
+      tools.add({
+        'type': 'function',
+        'function': {
+          'name': 'hh_auto_update_resume',
+          'description':
+              'Enable or disable automatic resume raising (every 4 hours). Requires active session. Works in background.',
+          'parameters': const {
+            'type': 'object',
+            'properties': {
+              'resume_id': {'type': 'string', 'description': 'Resume ID'},
+              'enable': {
+                'type': 'boolean',
+                'description': 'True to enable, false to disable'
+              },
+            },
+            'required': ['resume_id', 'enable'],
+          },
+        },
+      });
+    }
+
+    tools.addAll([
       {
         'type': 'function',
         'function': {
@@ -636,6 +661,11 @@ class HhTool {
         );
       case 'hh_publish_resume':
         return _publishResume(args['resume_id'] as String);
+      case 'hh_auto_update_resume':
+        return _toggleAutoUpdate(
+          args['resume_id'] as String,
+          args['enable'] as bool,
+        );
       case 'hh_get_market_stats':
         return _getMarketStats(args);
       case 'hh_mass_apply':
@@ -796,6 +826,13 @@ class HhTool {
     final id = await getSelectedAccountId();
     if (id == null) throw Exception('No account logged in.');
     final data = await _service.apiCall(id, '/resumes/$resumeId/publish', method: 'POST');
+    
+    // Update last update timestamp if successful
+    if (data != null && !data.containsKey('error')) {
+      final prefs = await SharedPreferences.getInstance();
+      await prefs.setInt('hh_last_update_$resumeId', DateTime.now().millisecondsSinceEpoch);
+    }
+    
     return jsonEncode(data);
   }
 
@@ -1016,20 +1053,20 @@ class HhTool {
       'title': args['title'],
       'first_name': args['first_name'],
       'last_name': args['last_name'],
-      'area': {'id': args['area_id']},
-      'gender': {'id': args['gender'] ?? 'male'},
+      'area': <String, dynamic>{'id': args['area_id']},
+      'gender': <String, dynamic>{'id': args['gender'] ?? 'male'},
       'professional_roles': (args['professional_role_ids'] as List)
-          .map((rid) => {'id': rid})
+          .map((rid) => <String, dynamic>{'id': rid})
           .toList(),
-      'contact': [
-        {
-          'type': {'id': 'email'},
+      'contact': <Map<String, dynamic>>[
+        <String, dynamic>{
+          'type': <String, dynamic>{'id': 'email'},
           'value': args['email'],
           'preferred': true,
         },
         if (args['phone'] != null)
-          {
-            'type': {'id': 'cell'},
+          <String, dynamic>{
+            'type': <String, dynamic>{'id': 'cell'},
             'value': _parsePhone(args['phone'] as String),
             'preferred': false,
           }
@@ -1037,7 +1074,7 @@ class HhTool {
       if (args['experience'] != null)
         'experience': (args['experience'] as List).map((exp) {
           final expMap = exp as Map<String, dynamic>;
-          return {
+          return <String, dynamic>{
             'start': expMap['start'],
             'end': expMap['end'],
             'company': expMap['company'],
@@ -1063,5 +1100,54 @@ class HhTool {
       };
     }
     return {'country': '7', 'city': '', 'number': clean};
+  }
+
+  static const String autoUpdateResumesKey = 'hh_auto_update_resumes';
+
+  Future<String> _toggleAutoUpdate(String resumeId, bool enable) async {
+    final prefs = await SharedPreferences.getInstance();
+    final list = prefs.getStringList(autoUpdateResumesKey) ?? [];
+
+    if (enable) {
+      if (!list.contains(resumeId)) {
+        list.add(resumeId);
+        await prefs.setStringList(autoUpdateResumesKey, list);
+        // Also initialize last update time if not set
+        await prefs.setInt('hh_last_update_$resumeId', 0);
+      }
+      return jsonEncode({
+        'success': true,
+        'message': 'Auto-update enabled for resume $resumeId (every 4 hours)',
+      });
+    } else {
+      list.remove(resumeId);
+      await prefs.setStringList(autoUpdateResumesKey, list);
+      return jsonEncode({
+        'success': true,
+        'message': 'Auto-update disabled for resume $resumeId',
+      });
+    }
+  }
+
+  Future<void> performAutoUpdates() async {
+    final prefs = await SharedPreferences.getInstance();
+    final list = prefs.getStringList(autoUpdateResumesKey) ?? [];
+    if (list.isEmpty) return;
+
+    final now = DateTime.now().millisecondsSinceEpoch;
+    const fourHours = 4 * 60 * 60 * 1000;
+
+    for (final resumeId in list) {
+      final lastUpdate = prefs.getInt('hh_last_update_$resumeId') ?? 0;
+      if (now - lastUpdate >= fourHours) {
+        try {
+          await _publishResume(resumeId);
+          await prefs.setInt('hh_last_update_$resumeId', now);
+          debugPrint('Successfully auto-updated resume $resumeId');
+        } catch (e) {
+          debugPrint('Failed to auto-update resume $resumeId: $e');
+        }
+      }
+    }
   }
 }

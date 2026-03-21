@@ -38,7 +38,8 @@ void main() {
     
     if (code.isEmpty) {
       final authUrlJson = await HhTool.instance.executeTool('hh_get_auth_url', {});
-      final authUrl = jsonDecode(authUrlJson)['auth_url'];
+      final authUrlMap = jsonDecode(authUrlJson) as Map<String, dynamic>;
+      final authUrl = authUrlMap['auth_url'] as String;
       
       print('\n=== HH TOOLS CHECKER ===');
       print('1. Get a code here: $authUrl');
@@ -53,18 +54,18 @@ void main() {
 
     print('\n[1/4] Exchanging code for token...');
     final loginResultJson = await tool.executeTool('hh_login_with_code', {'code': code});
-    final loginResult = jsonDecode(loginResultJson);
+    final loginResult = jsonDecode(loginResultJson) as Map<String, dynamic>;
     
     if (loginResult['success'] == true) {
-      final id = loginResult['id'];
+      final id = loginResult['id'] as String;
       final prefs = await SharedPreferences.getInstance();
       final accounts = prefs.getStringList('hh_accounts') ?? [];
       String? accessToken;
       
       for (final accJson in accounts) {
-        final acc = jsonDecode(accJson);
+        final acc = jsonDecode(accJson) as Map<String, dynamic>;
         if (acc['id'] == id) {
-          accessToken = acc['token']['access_token'];
+          accessToken = (acc['token'] as Map<String, dynamic>)['access_token'] as String;
           break;
         }
       }
@@ -77,7 +78,7 @@ void main() {
         
         // 1. Profile
         final profileJson = await tool.executeTool('hh_get_profile', {});
-        final profile = jsonDecode(profileJson);
+        final profile = jsonDecode(profileJson) as Map<String, dynamic>;
         if (profile['success'] == true) {
           print('  ✅ hh_get_profile: OK (User: ${profile['first_name']} ${profile['last_name']})');
         } else {
@@ -90,11 +91,12 @@ void main() {
         // 2.0.1 Suggest Test
         print('  ⌛ Testing hh_get_suggest (areas: Moscow)...');
         final suggestJson = await tool.executeTool('hh_get_suggest', {'type': 'areas', 'text': 'Moscow'});
-        final suggestResult = jsonDecode(suggestJson);
+        final suggestResult = jsonDecode(suggestJson) as Map<String, dynamic>;
         String areaId = '1'; // Default
-        if (suggestResult['items'] != null && suggestResult['items'].isNotEmpty) {
-          areaId = suggestResult['items'][0]['id'];
-          print('    ✅ hh_get_suggest: OK (Found ID: $areaId for ${suggestResult['items'][0]['text']})');
+        final items = suggestResult['items'] as List?;
+        if (items != null && items.isNotEmpty) {
+          areaId = (items[0] as Map<String, dynamic>)['id'] as String;
+          print('    ✅ hh_get_suggest: OK (Found ID: $areaId for ${(items[0] as Map<String, dynamic>)['text']})');
         }
 
         // 2.0.2 Create Test Resume (New Structure)
@@ -118,26 +120,28 @@ void main() {
           'skills': 'Expert in Flutter and Dart.',
           'skill_set': ['Flutter', 'Dart']
         });
-        final createResult = jsonDecode(createJson);
+        final createResult = jsonDecode(createJson) as Map<String, dynamic>;
         String? newResumeId;
         if (createResult.containsKey('id')) {
-          newResumeId = createResult['id'];
+          newResumeId = createResult['id'] as String;
           print('    ✅ hh_create_resume: OK (New ID: $newResumeId, Title: ${createResult['title']})');
         } else {
           print('    ❌ hh_create_resume: FAILED - $createJson');
         }
 
         final resumesJson = await tool.executeTool('hh_get_my_resumes', {});
-        final resumes = jsonDecode(resumesJson);
+        final resumes = jsonDecode(resumesJson) as Map<String, dynamic>;
         if (resumes['success'] == true) {
           print('  ✅ hh_get_my_resumes: OK (Found ${resumes['count']} items)');
           
-          if (resumes['count'] > 0) {
-            final resumeId = resumes['resumes'][0]['id'];
+          final resumesList = resumes['resumes'] as List;
+          if (resumesList.isNotEmpty) {
+            final firstResume = resumesList[0] as Map<String, dynamic>;
+            final resumeId = firstResume['id'] as String;
             
             // 2.1 Resume Details
             final detailsJson = await tool.executeTool('hh_get_resume_details', {'resume_id': resumeId});
-            final details = jsonDecode(detailsJson);
+            final details = jsonDecode(detailsJson) as Map<String, dynamic>;
             if (details.containsKey('id')) {
               print('    ✅ hh_get_resume_details: OK (ID: ${details['id']})');
             } else {
@@ -146,7 +150,7 @@ void main() {
 
             // 2.2 Resume Negotiations
             final negJson = await tool.executeTool('hh_get_resume_negotiations', {'resume_id': resumeId});
-            final neg = jsonDecode(negJson);
+            final neg = jsonDecode(negJson) as Map<String, dynamic>;
             if (neg.containsKey('items') || neg.containsKey('error')) {
               print('    ✅ hh_get_resume_negotiations: OK');
             } else {
@@ -157,10 +161,10 @@ void main() {
             print('  ⌛ Starting hh_get_market_stats (this may take a few seconds)...');
             final statsJson = await tool.executeTool('hh_get_market_stats', {
               'resume_id': resumeId,
-              'text': resumes['resumes'][0]['title'],
+              'text': firstResume['title'] as String,
               'max_vacancies': 10
             });
-            final stats = jsonDecode(statsJson);
+            final stats = jsonDecode(statsJson) as Map<String, dynamic>;
             if (stats.containsKey('atsScore')) {
               print('    ✅ hh_get_market_stats: OK (ATS Score: ${stats['atsScore']})');
             } else {
@@ -171,10 +175,10 @@ void main() {
             print('  ⌛ Starting hh_mass_apply (Limit: 1)...');
             final applyJson = await tool.executeTool('hh_mass_apply', {
               'resume_id': resumeId,
-              'text': resumes['resumes'][0]['title'],
+              'text': firstResume['title'] as String,
               'limit': 1
             });
-            final apply = jsonDecode(applyJson);
+            final apply = jsonDecode(applyJson) as Map<String, dynamic>;
             if (apply.containsKey('attempted')) {
               print('    ✅ hh_mass_apply: OK (Attempted: ${apply['attempted']})');
             } else {
@@ -187,15 +191,15 @@ void main() {
 
         // 3. List Accounts
         final listJson = await tool.executeTool('hh_get_accounts', {});
-        final listAccs = jsonDecode(listJson);
+        final listAccs = jsonDecode(listJson) as Map<String, dynamic>;
         if (listAccs['success'] == true) {
-          print('  ✅ hh_get_accounts: OK (Current ID: ${listAccs['selected_id']}, Count: ${listAccs['accounts'].length})');
+          print('  ✅ hh_get_accounts: OK (Current ID: ${listAccs['selected_id']}, Count: ${(listAccs['accounts'] as List).length})');
         } else {
           print('  ❌ hh_get_accounts: FAILED');
         }
 
         print('\n[4/4] Final status:');
-        if (profile['success'] && resumes['success'] && listAccs['success']) {
+        if (profile['success'] == true && resumes['success'] == true && listAccs['success'] == true) {
           print('🚀 ALL HH TOOLS ARE WORKING CORRECTLY!');
         } else {
           fail('Some tools failed verification.');

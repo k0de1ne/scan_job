@@ -2,7 +2,10 @@ import 'dart:async';
 import 'dart:developer';
 
 import 'package:bloc/bloc.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/widgets.dart';
+import 'package:workmanager/workmanager.dart';
+import 'package:scan_job/tools/hh_tool.dart';
 
 class AppBlocObserver extends BlocObserver {
   @override
@@ -18,6 +21,18 @@ class AppBlocObserver extends BlocObserver {
   }
 }
 
+@pragma('vm:entry-point')
+void callbackDispatcher() {
+  Workmanager().executeTask((task, inputData) async {
+    try {
+      await HhTool.instance.performAutoUpdates();
+    } catch (e) {
+      debugPrint('Workmanager task failed: $e');
+    }
+    return Future.value(true);
+  });
+}
+
 Future<void> bootstrap(FutureOr<Widget> Function() builder) async {
   WidgetsFlutterBinding.ensureInitialized();
 
@@ -26,6 +41,26 @@ Future<void> bootstrap(FutureOr<Widget> Function() builder) async {
   };
 
   Bloc.observer = AppBlocObserver();
+
+  if (!kIsWeb) {
+    if (defaultTargetPlatform == TargetPlatform.android ||
+        defaultTargetPlatform == TargetPlatform.iOS) {
+      try {
+        await Workmanager().initialize(callbackDispatcher);
+        await Workmanager().registerPeriodicTask(
+          'hh-auto-update',
+          'hh-auto-update-task',
+          frequency: const Duration(hours: 4),
+          existingWorkPolicy: ExistingPeriodicWorkPolicy.keep,
+          constraints: Constraints(
+            networkType: NetworkType.connected,
+          ),
+        );
+      } catch (e) {
+        log('Failed to initialize Workmanager: $e');
+      }
+    }
+  }
 
   runApp(await builder());
 }
