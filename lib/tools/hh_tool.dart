@@ -232,19 +232,39 @@ class HhTool {
     final tools = <Map<String, dynamic>>[];
 
     if (isWeb) {
-      tools.add({
-        'type': 'function',
-        'function': {
-          'name': 'hh_get_auth_url',
-          'description':
-              'Get HeadHunter authorization URL. Open in browser, authorize, then use hh_login_with_code.',
-          'parameters': const {
-            'type': 'object',
-            'properties': {},
-            'required': [],
+      tools.addAll([
+        {
+          'type': 'function',
+          'function': {
+            'name': 'hh_get_auth_url',
+            'description':
+                'Get HeadHunter authorization URL. Open in browser, authorize, then use hh_login_with_code.',
+            'parameters': const {
+              'type': 'object',
+              'properties': {},
+              'required': [],
+            },
           },
         },
-      });
+        {
+          'type': 'function',
+          'function': {
+            'name': 'hh_login_with_code',
+            'description':
+                'Complete HeadHunter OAuth login with authorization code (for web only).',
+            'parameters': const {
+              'type': 'object',
+              'properties': {
+                'code': {
+                  'type': 'string',
+                  'description': 'Authorization code from DevTools Network tab',
+                },
+              },
+              'required': ['code'],
+            },
+          },
+        },
+      ]);
     } else {
       tools.add({
         'type': 'function',
@@ -262,24 +282,6 @@ class HhTool {
     }
 
     tools.addAll([
-      {
-        'type': 'function',
-        'function': {
-          'name': 'hh_login_with_code',
-          'description':
-              'Complete HeadHunter OAuth login with authorization code (for web only).',
-          'parameters': const {
-            'type': 'object',
-            'properties': {
-              'code': {
-                'type': 'string',
-                'description': 'Authorization code from DevTools Network tab',
-              },
-            },
-            'required': ['code'],
-          },
-        },
-      },
       {
         'type': 'function',
         'function': {
@@ -425,7 +427,7 @@ class HhTool {
   Future<String> _getProfile() async {
     final id = await getSelectedAccountId();
     if (id == null) {
-      throw Exception('No account logged in. Use hh_login first.');
+      throw Exception('No account logged in. Please log in first.');
     }
     final profile = await _service.getProfile(id);
     if (profile == null) {
@@ -446,7 +448,7 @@ class HhTool {
   Future<String> _getResumes() async {
     final id = await getSelectedAccountId();
     if (id == null) {
-      throw Exception('No account logged in. Use hh_login first.');
+      throw Exception('No account logged in. Please log in first.');
     }
     final resumes = await _service.getResumes(id);
     if (resumes == null) {
