@@ -7,7 +7,7 @@ import 'package:langchain_openai/langchain_openai.dart';
 void main() async {
   final chatModel = ChatOpenAI(
     apiKey: 'not-needed',
-    baseUrl: 'http://192.168.0.17:1234/v1',
+    baseUrl: 'http://localhost:1234/v1',
     defaultOptions: const ChatOpenAIOptions(
       model: 'openai/gpt-oss-20b',
       temperature: 0,

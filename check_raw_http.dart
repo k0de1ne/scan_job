@@ -2,7 +2,7 @@ import 'dart:convert';
 import 'package:http/http.dart' as http;
 
 void main() async {
-  const baseUrl = 'http://192.168.0.17:1234/v1';
+  const baseUrl = 'http://localhost:1234/v1';
   const modelName = 'openai/gpt-oss-20b';
 
   print('--- LM Studio Diagnostic ---');
