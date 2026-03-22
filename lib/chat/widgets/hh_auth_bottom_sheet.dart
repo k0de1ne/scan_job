@@ -12,6 +12,7 @@ class HhAuthBottomSheet extends StatefulWidget {
     return showModalBottomSheet<String>(
       context: context,
       isScrollControlled: true,
+      showDragHandle: true,
       builder: (_) => const HhAuthBottomSheet(),
     );
   }
@@ -110,7 +111,9 @@ class _HhAuthBottomSheetState extends State<HhAuthBottomSheet> {
     return Padding(
       padding: EdgeInsets.only(
         bottom: MediaQuery.of(context).viewInsets.bottom,
-        left: 16, right: 16, top: 16,
+        left: 16,
+        right: 16,
+        top: 0,
       ),
       child: Column(
         mainAxisSize: MainAxisSize.min,
@@ -118,7 +121,10 @@ class _HhAuthBottomSheetState extends State<HhAuthBottomSheet> {
           _buildHeader(),
           const SizedBox(height: 16),
           if (_isLoading)
-            const Center(child: CircularProgressIndicator())
+            const Padding(
+              padding: EdgeInsets.symmetric(vertical: 32),
+              child: Center(child: CircularProgressIndicator()),
+            )
           else
             _buildStepContent(),
           const SizedBox(height: 16),
@@ -130,11 +136,19 @@ class _HhAuthBottomSheetState extends State<HhAuthBottomSheet> {
   Widget _buildHeader() {
     String title;
     switch (_currentStep) {
-      case _AuthStep.phone: title = 'HH Login';
-      case _AuthStep.otp: title = 'Enter SMS Code';
-      case _AuthStep.captcha: title = 'Security Check';
+      case _AuthStep.phone:
+        title = 'HH Login';
+      case _AuthStep.otp:
+        title = 'Enter SMS Code';
+      case _AuthStep.captcha:
+        title = 'Security Check';
     }
-    return Text(title, style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold));
+    return Text(
+      title,
+      style: Theme.of(context).textTheme.titleLarge?.copyWith(
+            fontWeight: FontWeight.bold,
+          ),
+    );
   }
 
   Widget _buildStepContent() {
@@ -153,12 +167,21 @@ class _HhAuthBottomSheetState extends State<HhAuthBottomSheet> {
       children: [
         TextField(
           controller: _phoneController,
-          decoration: const InputDecoration(labelText: 'Phone (7999...)', border: OutlineInputBorder()),
+          decoration: const InputDecoration(
+            labelText: 'Phone (7999...)',
+            hintText: '79001234567',
+          ),
           keyboardType: TextInputType.phone,
           autofocus: true,
         ),
         const SizedBox(height: 16),
-        SizedBox(width: double.infinity, child: ElevatedButton(onPressed: _handlePhoneSubmit, child: const Text('Get Code'))),
+        SizedBox(
+          width: double.infinity,
+          child: ElevatedButton(
+            onPressed: _handlePhoneSubmit,
+            child: const Text('Get Code'),
+          ),
+        ),
       ],
     );
   }
@@ -168,13 +191,24 @@ class _HhAuthBottomSheetState extends State<HhAuthBottomSheet> {
       children: [
         TextField(
           controller: _otpController,
-          decoration: const InputDecoration(labelText: 'SMS Code', border: OutlineInputBorder()),
+          decoration: const InputDecoration(
+            labelText: 'SMS Code',
+          ),
           keyboardType: TextInputType.number,
           autofocus: true,
         ),
         const SizedBox(height: 16),
-        SizedBox(width: double.infinity, child: ElevatedButton(onPressed: _handleOtpSubmit, child: const Text('Confirm'))),
-        TextButton(onPressed: () => setState(() => _currentStep = _AuthStep.phone), child: const Text('Back')),
+        SizedBox(
+          width: double.infinity,
+          child: ElevatedButton(
+            onPressed: _handleOtpSubmit,
+            child: const Text('Confirm'),
+          ),
+        ),
+        TextButton(
+          onPressed: () => setState(() => _currentStep = _AuthStep.phone),
+          child: const Text('Back'),
+        ),
       ],
     );
   }
@@ -182,15 +216,27 @@ class _HhAuthBottomSheetState extends State<HhAuthBottomSheet> {
   Widget _buildCaptchaStep() {
     return Column(
       children: [
-        if (_captchaBase64 != null) Image.memory(base64Decode(_captchaBase64!)),
+        if (_captchaBase64 != null)
+          ClipRRect(
+            borderRadius: BorderRadius.circular(8),
+            child: Image.memory(base64Decode(_captchaBase64!)),
+          ),
         const SizedBox(height: 16),
         TextField(
           controller: _captchaController,
-          decoration: const InputDecoration(labelText: 'Text from image', border: OutlineInputBorder()),
+          decoration: const InputDecoration(
+            labelText: 'Text from image',
+          ),
           autofocus: true,
         ),
         const SizedBox(height: 16),
-        SizedBox(width: double.infinity, child: ElevatedButton(onPressed: _handleCaptchaSubmit, child: const Text('Verify'))),
+        SizedBox(
+          width: double.infinity,
+          child: ElevatedButton(
+            onPressed: _handleCaptchaSubmit,
+            child: const Text('Verify'),
+          ),
+        ),
       ],
     );
   }

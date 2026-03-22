@@ -14,8 +14,19 @@ abstract final class AppTheme {
       alignedDropdown: true,
       navigationRailUseIndicator: true,
       defaultRadius: 8,
+      bottomSheetRadius: 28,
+      bottomSheetElevation: 0,
+      bottomSheetModalElevation: 0,
     ),
   ).copyWith(
+    bottomSheetTheme: const BottomSheetThemeData(
+      showDragHandle: true,
+      backgroundColor: Color(0xFFE9EEF6), // surfaceContainerLow in light
+      surfaceTintColor: Colors.transparent,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(28)),
+      ),
+    ),
     colorScheme: ColorScheme.fromSeed(
       seedColor: const Color(0xFF1A73E8),
       surface: const Color(0xFFF0F4F9),
@@ -75,12 +86,23 @@ abstract final class AppTheme {
       alignedDropdown: true,
       navigationRailUseIndicator: true,
       defaultRadius: 8,
+      bottomSheetRadius: 28,
+      bottomSheetElevation: 0,
+      bottomSheetModalElevation: 0,
     ),
     keyColors: const FlexKeyColors(
       useSecondary: true,
       useTertiary: true,
     ),
   ).copyWith(
+    bottomSheetTheme: const BottomSheetThemeData(
+      showDragHandle: true,
+      backgroundColor: Color(0xFF1E1F20), // surfaceContainerLow in dark
+      surfaceTintColor: Colors.transparent,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(28)),
+      ),
+    ),
     colorScheme: ColorScheme.fromSeed(
       seedColor: const Color(0xFFC4C7C5),
       brightness: Brightness.dark,
