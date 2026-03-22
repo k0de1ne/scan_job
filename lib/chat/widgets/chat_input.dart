@@ -174,23 +174,11 @@ class _ChatInputState extends State<ChatInput> {
                                 icon: Icons.add,
                                 isIconOnly: true,
                               ),
-                              SizedBox(width: context.spacing.xs),
-                              _ActionButton(
-                                onTap: isLoading ? null : () {},
-                                icon: Icons.tune,
-                                isIconOnly: true,
-                              ),
                             ],
                           ),
                           Row(
                             mainAxisSize: MainAxisSize.min,
                             children: [
-                              _ActionButton(
-                                onTap: isLoading ? null : () {},
-                                label: l10n.chatModelQuick,
-                                icon: Icons.expand_more,
-                              ),
-                              SizedBox(width: context.spacing.sm),
                               if (isLoading)
                                 _ActionButton(
                                   onTap: _stopMessage,
