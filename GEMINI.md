@@ -23,30 +23,31 @@ This project is a high-standard boilerplate optimized for **Scan Job** (Career/P
 - **Generation**: After adding strings, ALWAYS run `flutter gen-l10n`.
 - **Imports**: Use `import 'package:scan_job/l10n/l10n.dart';`.
 
-## ARCHITECTURE OVERVIEW
+## 🏗️ SYSTEM ARCHITECTURE & INTEGRATION
 
-### Feature-Driven Design (`lib/feature_name/`)
-- `bloc/` or `cubit/`: State management. Inject repositories via constructor.
-- `view/`: UI split into `page.dart` (Entry point + BlocProvider) and `view.dart` (Layout + BlocBuilder).
-- `widgets/`: Local components only. Global components go to `lib/widgets/` (if created).
-- `models/`: DTOs and domain models.
+### 1. Flutter Core (Frontend)
+- **Feature-Driven Design**: Logic, UI, and Models are grouped within feature folders in `lib/`.
+- **State Management**: Cubit (via `flutter_bloc`) is preferred.
+- **Background Processes**: `Workmanager` handles periodic resume updates every 4 hours on mobile.
 
-### Data Layer (Repositories)
-- **Location**: `lib/repositories/`.
-- **Pattern**: Abstract class (interface) in `chat_repository.dart` + implementation in `chat_repository_impl.dart`.
-- **Flow**: Cubit -> Repository -> Data Source (Dio/Hive/etc).
+### 2. Python Backends (Services)
+- **HH Auth Server (`/server_auth_hh`)**: Uses **Playwright** to automate HeadHunter login. Necessary when standard OAuth is insufficient (e.g., phone/SMS verification automation).
+- **LLM Proxy (`/server_llm_api`)**: FastAPI service that wraps LLM calls. Provides an OpenAI-compatible `/v1/chat/completions` endpoint.
 
-## DEVELOPMENT WORKFLOW
-1. **Define Data**: Update repository interface and implementation.
-2. **Add Strings**: Update ARB files -> `flutter gen-l10n`.
-3. **Logic**: Implement Cubit/State. Use `emit` for state updates.
-4. **UI**: Create View using `Theme.of(context).colorScheme`.
-5. **Routes**: Register in `lib/router/app_router.dart`.
-6. **Test**: Add to `pagesToTest` in `test/app/view/app_test.dart`.
+### 3. Tool Execution Flow (LLM Tools)
+- `HhTool.instance` (in `lib/tools/hh_tool.dart`) is the bridge between LLM and real-world actions.
+- LLM triggers tools via function calling (e.g., `hh_get_my_resumes`, `hh_mass_apply`).
+- Actions are executed locally in the app or via direct API calls to `api.hh.ru`.
 
-## ESSENTIAL COMMANDS
+## 🛡️ SECURITY & CONFIGURATION
+- **Secrets**: Never hardcode `HH_CLIENT_ID` or `HH_CLIENT_SECRET`. Use `--dart-define` or `.env` for backend services.
+- **Cookies**: HH cookies are sensitive. They are stored in `shared_preferences` and should never be logged or exposed.
+- **Local Dev**: Use `10.0.2.2` to access localhost from Android emulators.
+
+## 🚀 ESSENTIAL COMMANDS
 - `flutter gen-l10n` - Update localization.
 - `flutter test` - Run all tests (100% coverage target).
 - `flutter run --target lib/main_development.dart` - Local dev.
+- `pip install -r requirements.txt` - Setup Python backends.
 
 **Remember**: You are building a professional SaaS tool. Keep the code as clean as the UI.
