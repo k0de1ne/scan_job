@@ -13,6 +13,7 @@
 .swiftpm/
 migrate_working_dir/
 references/
+proxy.db
 
 # IntelliJ related
 *.iml
