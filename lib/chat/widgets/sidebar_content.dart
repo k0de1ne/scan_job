@@ -35,7 +35,7 @@ class SidebarContent extends StatelessWidget {
             if (isExpanded) ...[
               const Spacer(),
               _SideButton(
-                icon: Icons.edit_calendar_outlined,
+                icon: Icons.message_outlined,
                 onTap: () {
                   context.read<ChatCubit>().createNewChat();
                   if (onMenuTap == null) {
