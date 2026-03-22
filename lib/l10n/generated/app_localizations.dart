@@ -415,6 +415,30 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'You have used up your free limit. A subscription option for unlimited access will be available soon! In the meantime, you can add your own API key in settings.'**
   String get chatErrorLimitReachedSubtitle;
+
+  /// No description provided for @sidebarAccountsTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Connected Accounts'**
+  String get sidebarAccountsTitle;
+
+  /// No description provided for @sidebarAccountsEmpty.
+  ///
+  /// In en, this message translates to:
+  /// **'No accounts connected'**
+  String get sidebarAccountsEmpty;
+
+  /// No description provided for @sidebarAccountsAdd.
+  ///
+  /// In en, this message translates to:
+  /// **'Add Account'**
+  String get sidebarAccountsAdd;
+
+  /// No description provided for @sidebarAccountId.
+  ///
+  /// In en, this message translates to:
+  /// **'ID: {id}'**
+  String sidebarAccountId(Object id);
 }
 
 class _AppLocalizationsDelegate

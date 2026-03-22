@@ -174,4 +174,18 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get chatErrorLimitReachedSubtitle =>
       'You have used up your free limit. A subscription option for unlimited access will be available soon! In the meantime, you can add your own API key in settings.';
+
+  @override
+  String get sidebarAccountsTitle => 'Connected Accounts';
+
+  @override
+  String get sidebarAccountsEmpty => 'No accounts connected';
+
+  @override
+  String get sidebarAccountsAdd => 'Add Account';
+
+  @override
+  String sidebarAccountId(Object id) {
+    return 'ID: $id';
+  }
 }

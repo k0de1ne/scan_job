@@ -176,4 +176,18 @@ class AppLocalizationsRu extends AppLocalizations {
   @override
   String get chatErrorLimitReachedSubtitle =>
       'Вы израсходовали бесплатный лимит. Скоро появится возможность оформить подписку для безлимитного доступа! А пока вы можете добавить свой API-ключ в настройках.';
+
+  @override
+  String get sidebarAccountsTitle => 'Подключенные аккаунты';
+
+  @override
+  String get sidebarAccountsEmpty => 'Нет подключенных аккаунтов';
+
+  @override
+  String get sidebarAccountsAdd => 'Добавить аккаунт';
+
+  @override
+  String sidebarAccountId(Object id) {
+    return 'ID: $id';
+  }
 }

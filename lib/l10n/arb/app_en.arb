@@ -98,5 +98,9 @@
     "chatErrorNoApiKey": "API Key is missing. Please check settings.",
     "chatErrorGeneric": "Something went wrong. Please try again.",
     "chatErrorLimitReached": "Trial period ended",
-    "chatErrorLimitReachedSubtitle": "You have used up your free limit. A subscription option for unlimited access will be available soon! In the meantime, you can add your own API key in settings."
+    "chatErrorLimitReachedSubtitle": "You have used up your free limit. A subscription option for unlimited access will be available soon! In the meantime, you can add your own API key in settings.",
+    "sidebarAccountsTitle": "Connected Accounts",
+    "sidebarAccountsEmpty": "No accounts connected",
+    "sidebarAccountsAdd": "Add Account",
+    "sidebarAccountId": "ID: {id}"
 }
