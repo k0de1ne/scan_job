@@ -12,8 +12,8 @@ void _updateEnv(String accessToken, String userId) {
     lines = envFile.readAsLinesSync();
   }
 
-  bool tokenUpdated = false;
-  bool userIdUpdated = false;
+  var tokenUpdated = false;
+  var userIdUpdated = false;
 
   for (var i = 0; i < lines.length; i++) {
     if (lines[i].trim().startsWith('HH_ACCESS_TOKEN=')) {
@@ -29,7 +29,7 @@ void _updateEnv(String accessToken, String userId) {
   if (!tokenUpdated) lines.add('HH_ACCESS_TOKEN=$accessToken');
   if (!userIdUpdated) lines.add('HH_USER_ID=$userId');
 
-  envFile.writeAsStringSync(lines.join('\n').trim() + '\n');
+  envFile.writeAsStringSync('${lines.join('\n').trim()}\n');
 }
 
 void main() {
@@ -92,7 +92,7 @@ void main() {
         print('  ⌛ Testing hh_get_suggest (areas: Moscow)...');
         final suggestJson = await tool.executeTool('hh_get_suggest', {'type': 'areas', 'text': 'Moscow'});
         final suggestResult = jsonDecode(suggestJson) as Map<String, dynamic>;
-        String areaId = '1'; // Default
+        var areaId = '1'; // Default
         final items = suggestResult['items'] as List?;
         if (items != null && items.isNotEmpty) {
           areaId = (items[0] as Map<String, dynamic>)['id'] as String;
@@ -208,7 +208,7 @@ void main() {
         fail('Token exchange succeeded but token not found in storage.');
       }
     } else {
-      fail('Login failed: ${loginResultJson}');
+      fail('Login failed: $loginResultJson');
     }
   }, timeout: const Timeout(Duration(minutes: 5)));
 }

@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:scan_job/chat/cubit/chat_cubit.dart';
@@ -19,7 +20,6 @@ class SidebarContent extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final l10n = context.l10n;
-    final colorScheme = Theme.of(context).colorScheme;
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -28,7 +28,7 @@ class SidebarContent extends StatelessWidget {
           children: [
             _SideButton(
               icon: Icons.menu,
-              onTap: onMenuTap ?? () => Navigator.of(context).maybePop(),
+              onTap: onMenuTap ?? () => unawaited(Navigator.of(context).maybePop()),
               isExpanded: isExpanded,
             ),
             if (isExpanded) ...[
@@ -38,10 +38,9 @@ class SidebarContent extends StatelessWidget {
                 onTap: () {
                   context.read<ChatCubit>().createNewChat();
                   if (onMenuTap == null) {
-                    Navigator.of(context).maybePop();
+                    unawaited(Navigator.of(context).maybePop());
                   }
                 },
-                isExpanded: true,
               ),
             ],
           ],
@@ -141,7 +140,6 @@ class _ChatList extends StatelessWidget {
               child: _SideButton(
                 label: session.title,
                 isActive: isActive,
-                isExpanded: true,
                 onTap: () {
                   context.read<ChatCubit>().selectChat(session.id);
                 },

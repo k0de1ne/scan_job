@@ -5,6 +5,8 @@ import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
 
 class HhAuthService {
+
+  HhAuthService({http.Client? client}) : _client = client ?? http.Client();
   static const String _defaultClientId =
       'HIOMIAS39CA9DICTA7JIO64LQKQJF5AGIK74G9ITJKLNEDAOH5FHS5G1JI7FOEGD';
   static const String _defaultClientSecret =
@@ -25,8 +27,6 @@ class HhAuthService {
   static const String callbackUrlScheme = 'hhandroid';
 
   final http.Client _client;
-
-  HhAuthService({http.Client? client}) : _client = client ?? http.Client();
 
   Future<List<Map<String, dynamic>>> getAccounts() async {
     final prefs = await SharedPreferences.getInstance();
@@ -104,7 +104,7 @@ class HhAuthService {
           return id;
         }
       }
-    } on Exception catch (e) {
+    } on Object catch (e) {
       debugPrint('HH Auth: Exception during token exchange: $e');
     }
     return null;
@@ -114,8 +114,8 @@ class HhAuthService {
     try {
       final response = await _client.post(
         Uri.parse('https://hh.ru/oauth/token'),
-        headers: {'User-Agent': userAgent},
-        body: {
+        headers: <String, String>{'User-Agent': userAgent},
+        body: <String, String>{
           'client_id': clientId,
           'client_secret': clientSecret,
           'code': code,
@@ -127,7 +127,7 @@ class HhAuthService {
         final data = jsonDecode(response.body) as Map<String, dynamic>;
         return saveAccountFromTokens(data);
       }
-    } on Exception catch (e) {
+    } on Object catch (e) {
       debugPrint('HH Auth: Exception during login with code: $e');
     }
     return null;
@@ -139,7 +139,7 @@ class HhAuthService {
 
       final meResponse = await _client.get(
         Uri.parse('https://api.hh.ru/me'),
-        headers: {
+        headers: <String, String>{
           'Authorization': 'Bearer $accessToken',
           'User-Agent': userAgent,
         },
@@ -151,7 +151,7 @@ class HhAuthService {
         await _saveAccount(id, tokenData, profile: meData);
         return id;
       }
-    } on Exception catch (e) {
+    } on Object catch (e) {
       debugPrint('HH Auth: Exception during saving account from tokens: $e');
     }
     return null;
@@ -163,18 +163,18 @@ class HhAuthService {
     Map<String, dynamic>? profile,
   }) async {
     final prefs = await SharedPreferences.getInstance();
-    final accountsJson = prefs.getStringList(accountsKey) ?? [];
-    final accountData = {
+    final accountsJson = prefs.getStringList(accountsKey) ?? <String>[];
+    final accountData = <String, dynamic>{
       'id': id,
       'token': tokenData,
-      if (profile != null) ...{
+      if (profile != null) ...<String, dynamic>{
         'first_name': profile['first_name'],
         'last_name': profile['last_name'],
       },
     };
     final newAccount = jsonEncode(accountData);
     final index = accountsJson.indexWhere(
-      (jsonStr) => jsonDecode(jsonStr)['id'] == id,
+      (jsonStr) => (jsonDecode(jsonStr) as Map<String, dynamic>)['id'] == id,
     );
     if (index != -1) {
       accountsJson[index] = newAccount;
@@ -256,15 +256,15 @@ class HhAuthService {
       }
 
       if (response.statusCode >= 200 && response.statusCode < 300) {
-        if (response.body.isEmpty) return {'success': true};
+        if (response.body.isEmpty) return <String, dynamic>{'success': true};
         return jsonDecode(response.body) as Map<String, dynamic>;
       } else {
         debugPrint('HH API Error: ${response.statusCode} - ${response.body}');
-        return {'error': response.body, 'status_code': response.statusCode};
+        return <String, dynamic>{'error': response.body, 'status_code': response.statusCode};
       }
-    } catch (e) {
+    } on Object catch (e) {
       debugPrint('HH API Exception: $e');
-      return {'error': e.toString()};
+      return <String, dynamic>{'error': e.toString()};
     }
   }
 
@@ -288,14 +288,14 @@ class HhAuthService {
 typedef HhLoginProvider = Future<String?> Function();
 
 class HhTool {
+
+  @visibleForTesting
+  HhTool.internal({HhAuthService? service}) : _service = service ?? HhAuthService();
   final HhAuthService _service;
   HhAuthService get authService => _service;
   String? _selectedAccountId;
   bool _initialized = false;
   HhLoginProvider? loginProvider;
-
-  @visibleForTesting
-  HhTool.internal({HhAuthService? service}) : _service = service ?? HhAuthService();
   static HhTool? _instance;
   static HhTool get instance => _instance ??= HhTool.internal();
 
@@ -341,66 +341,66 @@ class HhTool {
     final tools = <Map<String, dynamic>>[];
 
     if (isWeb) {
-      tools.addAll([
-        {
+      tools.addAll(<Map<String, dynamic>>[
+        <String, dynamic>{
           'type': 'function',
-          'function': {
+          'function': <String, dynamic>{
             'name': 'hh_get_auth_url',
             'description':
                 'Get HeadHunter authorization URL. Open in browser, authorize, then use hh_login_with_code.',
-            'parameters': const {
+            'parameters': const <String, dynamic>{
               'type': 'object',
-              'properties': {},
-              'required': [],
+              'properties': <String, dynamic>{},
+              'required': <String>[],
             },
           },
         },
-        {
+        <String, dynamic>{
           'type': 'function',
-          'function': {
+          'function': <String, dynamic>{
             'name': 'hh_login_with_code',
             'description':
                 'Complete HeadHunter OAuth login with authorization code (for web only).',
-            'parameters': const {
+            'parameters': const <String, dynamic>{
               'type': 'object',
-              'properties': {
-                'code': {
+              'properties': <String, dynamic>{
+                'code': <String, dynamic>{
                   'type': 'string',
                   'description': 'Authorization code from DevTools Network tab',
                 },
               },
-              'required': ['code'],
+              'required': <String>['code'],
             },
           },
         },
       ]);
     } else {
-      tools.add({
+      tools.add(<String, dynamic>{
         'type': 'function',
-        'function': {
+        'function': <String, dynamic>{
           'name': 'hh_login',
           'description':
               'Start HeadHunter OAuth login. Automatically completes authorization.',
-          'parameters': const {
+          'parameters': const <String, dynamic>{
             'type': 'object',
-            'properties': {},
-            'required': [],
+            'properties': <String, dynamic>{},
+            'required': <String>[],
           },
         },
       });
     }
 
-    tools.addAll([
-      {
+    tools.addAll(<Map<String, dynamic>>[
+      <String, dynamic>{
         'type': 'function',
-        'function': {
+        'function': <String, dynamic>{
           'name': 'hh_get_profile',
           'description':
               'Get HeadHunter user profile for currently logged in account.',
-          'parameters': const {
+          'parameters': const <String, dynamic>{
             'type': 'object',
-            'properties': {},
-            'required': [],
+            'properties': <String, dynamic>{},
+            'required': <String>[],
           },
         },
       },
@@ -697,7 +697,7 @@ class HhTool {
 
 
   Future<String> _getAuthUrl() async {
-    return jsonEncode({
+    return jsonEncode(<String, dynamic>{
       'auth_url': _service.getAuthUrl(),
       'message':
           'Open URL in browser, login, then press F12 -> Network tab -> find "hhandroid://oauthresponse" request -> copy code parameter -> call hh_login_with_code',
@@ -712,7 +712,7 @@ class HhTool {
       }
       _selectedAccountId = id;
       final profile = await _service.getProfile(id);
-      return jsonEncode({
+      return jsonEncode(<String, dynamic>{
         'success': true,
         'logged_in': true,
         'id': id,
@@ -732,7 +732,7 @@ class HhTool {
     }
     _selectedAccountId = id;
     final profile = await _service.getProfile(id);
-    return jsonEncode({
+    return jsonEncode(<String, dynamic>{
       'success': true,
       'logged_in': true,
       'id': id,
@@ -751,7 +751,7 @@ class HhTool {
     }
     _selectedAccountId = id;
     final profile = await _service.getProfile(id);
-    return jsonEncode({
+    return jsonEncode(<String, dynamic>{
       'success': true,
       'id': id,
       'first_name': profile?['first_name'],
@@ -775,10 +775,10 @@ class HhTool {
     if (phoneData is Map) {
       phoneNumber = phoneData['number']?.toString();
     } else if (phoneData is List && phoneData.isNotEmpty) {
-      phoneNumber = (phoneData[0] as Map)['number']?.toString();
+      phoneNumber = (phoneData[0] as Map<String, dynamic>)['number']?.toString();
     }
 
-    return jsonEncode({
+    return jsonEncode(<String, dynamic>{
       'success': true,
       'id': profile['id']?.toString(),
       'first_name': profile['first_name'],
@@ -801,16 +801,16 @@ class HhTool {
     }
     final items = resumes
         .map(
-          (r) => {
+          (r) => <String, dynamic>{
             'id': r['id'],
             'title': r['title'],
-            'status': r['status']?['name'],
+            'status': (r['status'] as Map<String, dynamic>?)?['name'],
             'updated_at': r['updated_at'],
             'url': r['alternate_url'],
           },
         )
         .toList();
-    return jsonEncode({
+    return jsonEncode(<String, dynamic>{
       'success': true,
       'resumes': items,
       'count': items.length,
@@ -1047,13 +1047,14 @@ class HhTool {
 
   Future<String> _listAccounts() async {
     final accounts = await _service.getAccounts();
-    return jsonEncode({
-      'success': true,
-      'accounts': accounts.map((a) => {
+    final accountsList = accounts.map((a) => <String, dynamic>{
         'id': a['id'],
         'first_name': a['first_name'],
         'last_name': a['last_name'],
-      }).toList(),
+      }).toList();
+    return jsonEncode(<String, dynamic>{
+      'success': true,
+      'accounts': accountsList,
       'selected_id': _selectedAccountId,
     });
   }
@@ -1085,8 +1086,8 @@ class HhTool {
       'last_name': args['last_name'],
       'area': <String, dynamic>{'id': args['area_id']},
       'gender': <String, dynamic>{'id': args['gender'] ?? 'male'},
-      'professional_roles': (args['professional_role_ids'] as List)
-          .map((rid) => <String, dynamic>{'id': rid})
+      'professional_roles': (args['professional_role_ids'] as List<dynamic>)
+          .map((dynamic rid) => <String, dynamic>{'id': rid})
           .toList(),
       'contact': <Map<String, dynamic>>[
         <String, dynamic>{
@@ -1102,7 +1103,7 @@ class HhTool {
           }
       ],
       if (args['experience'] != null)
-        'experience': (args['experience'] as List).map((exp) {
+        'experience': (args['experience'] as List<dynamic>).map((dynamic exp) {
           final expMap = exp as Map<String, dynamic>;
           return <String, dynamic>{
             'start': expMap['start'],
@@ -1114,7 +1115,7 @@ class HhTool {
         }).toList(),
       'skills': args['skills'],
       if (args['skill_set'] != null)
-        'skill_set': (args['skill_set'] as List).map((s) => s.toString()).toList(),
+        'skill_set': (args['skill_set'] as List<dynamic>).map((dynamic s) => s.toString()).toList(),
     };
 
     return _createResume(payload);

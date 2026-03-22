@@ -5,8 +5,8 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/widgets.dart';
 import 'package:hydrated_bloc/hydrated_bloc.dart';
 import 'package:path_provider/path_provider.dart';
-import 'package:workmanager/workmanager.dart';
 import 'package:scan_job/tools/hh_tool.dart';
+import 'package:workmanager/workmanager.dart';
 
 class AppBlocObserver extends BlocObserver {
   @override
@@ -27,7 +27,7 @@ void callbackDispatcher() {
   Workmanager().executeTask((task, inputData) async {
     try {
       await HhTool.instance.performAutoUpdates();
-    } catch (e) {
+    } on Object catch (e) {
       debugPrint('Workmanager task failed: $e');
     }
     return Future.value(true);
@@ -63,7 +63,7 @@ Future<void> bootstrap(FutureOr<Widget> Function() builder) async {
             networkType: NetworkType.connected,
           ),
         );
-      } catch (e) {
+      } on Object catch (e) {
         log('Failed to initialize Workmanager: $e');
       }
     }

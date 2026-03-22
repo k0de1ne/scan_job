@@ -343,7 +343,7 @@ class ChatRepositoryImpl implements ChatRepository {
               ? jsonDecode(toolArgs) as Map<String, dynamic>
               : <String, dynamic>{};
           res = await HhTool.instance.executeTool(toolName, parsedArgs);
-        } catch (e) {
+        } on Object catch (e) {
           res = '{"status": "error", "error": "$e"}';
         }
 

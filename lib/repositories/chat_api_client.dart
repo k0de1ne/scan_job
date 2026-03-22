@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'dart:convert';
+import 'package:flutter/foundation.dart';
 import 'package:http/http.dart' as http;
 import 'package:langchain_tiktoken/langchain_tiktoken.dart';
 import 'package:scan_job/repositories/security_utils.dart';
@@ -56,21 +57,21 @@ class ChatApiClient {
       if (tools != null && tools.isNotEmpty) 'tools': tools,
     };
 
-    print('--- [ChatApiClient] Sending Request ---');
-    print('URL: $uri');
-    print('Headers: $headers');
-    print('Body (shortened): ${jsonEncode({...body, "messages": "..."})}');
-    print('User ID: $userId');
-    print('Signature: $signature');
+    debugPrint('--- [ChatApiClient] Sending Request ---');
+    debugPrint('URL: $uri');
+    debugPrint('Headers: $headers');
+    debugPrint('Body (shortened): ${jsonEncode({...body, "messages": "..."})}');
+    debugPrint('User ID: $userId');
+    debugPrint('Signature: $signature');
 
-    final request = http.Request('POST', uri);
-    request.headers.addAll(headers);
-    request.body = jsonEncode(body);
+    final request = http.Request('POST', uri)
+      ..headers.addAll(headers)
+      ..body = jsonEncode(body);
 
     http.StreamedResponse streamedResponse;
     try {
       streamedResponse = await _client.send(request);
-    } catch (e) {
+    } on Object catch (e) {
       throw Exception('Connection failed: $e');
     }
 
@@ -78,7 +79,7 @@ class ChatApiClient {
       String bodyStr;
       try {
         bodyStr = await streamedResponse.stream.bytesToString();
-      } catch (e) {
+      } on Object catch (e) {
         bodyStr = 'Could not read error body: $e';
       }
       throw Exception('API Error: ${streamedResponse.statusCode} - $bodyStr');
@@ -99,17 +100,22 @@ class ChatApiClient {
     }
     promptTokens = totalPromptTokens;
 
-    var buffer = '';
+    final accumulationBuffer = StringBuffer();
     var accurateCompletionTokens = 0;
 
     try {
       await for (final chunk in streamedResponse.stream.transform(utf8.decoder)) {
-        buffer += chunk;
+        accumulationBuffer.write(chunk);
+        var buffer = accumulationBuffer.toString();
 
       while (buffer.contains('\n')) {
         final newlineIndex = buffer.indexOf('\n');
         final line = buffer.substring(0, newlineIndex).trim();
         buffer = buffer.substring(newlineIndex + 1);
+        
+        // Reset accumulationBuffer with the remaining part
+        accumulationBuffer.clear();
+        accumulationBuffer.write(buffer);
 
         if (line.isEmpty || !line.startsWith('data: ')) continue;
         if (line == 'data: [DONE]') continue;
@@ -179,12 +185,12 @@ class ChatApiClient {
               completionTokens: completionTokens ?? accurateCompletionTokens,
             );
           }
-        } catch (e) {
+        } on Object catch (_) {
           // Ignore malformed
         }
       }
     }
-    } catch (e) {
+    } on Object catch (e) {
       if (e is! Exception) {
         throw Exception('Stream error: $e');
       }

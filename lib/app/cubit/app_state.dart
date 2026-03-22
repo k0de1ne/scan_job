@@ -12,6 +12,18 @@ class AppState extends Equatable {
     this.outputPricePerMillion = 0.0,
   });
 
+  factory AppState.fromJson(Map<String, dynamic> json) {
+    return AppState(
+      themeMode: ThemeMode.values[json['themeMode'] as int? ?? ThemeMode.system.index],
+      llmBaseUrl: json['llmBaseUrl'] as String? ?? 'http://10.0.2.2:8000/v1',
+      llmApiKey: json['llmApiKey'] as String? ?? 'proxy-guest-key',
+      llmModelName: json['llmModelName'] as String? ?? 'gpt-3.5-turbo',
+      deviceId: json['deviceId'] as String? ?? '',
+      inputPricePerMillion: (json['inputPricePerMillion'] as num? ?? 0.0).toDouble(),
+      outputPricePerMillion: (json['outputPricePerMillion'] as num? ?? 0.0).toDouble(),
+    );
+  }
+
   final ThemeMode themeMode;
   final String llmBaseUrl;
   final String llmApiKey;
@@ -63,17 +75,5 @@ class AppState extends Equatable {
       'inputPricePerMillion': inputPricePerMillion,
       'outputPricePerMillion': outputPricePerMillion,
     };
-  }
-
-  factory AppState.fromJson(Map<String, dynamic> json) {
-    return AppState(
-      themeMode: ThemeMode.values[json['themeMode'] as int? ?? ThemeMode.system.index],
-      llmBaseUrl: json['llmBaseUrl'] as String? ?? 'http://10.0.2.2:8000/v1',
-      llmApiKey: json['llmApiKey'] as String? ?? 'proxy-guest-key',
-      llmModelName: json['llmModelName'] as String? ?? 'gpt-3.5-turbo',
-      deviceId: json['deviceId'] as String? ?? '',
-      inputPricePerMillion: (json['inputPricePerMillion'] as num? ?? 0.0).toDouble(),
-      outputPricePerMillion: (json['outputPricePerMillion'] as num? ?? 0.0).toDouble(),
-    );
   }
 }

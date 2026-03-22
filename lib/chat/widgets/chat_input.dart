@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -48,7 +49,7 @@ class _ChatInputState extends State<ChatInput> {
           }
         }
       }
-    } catch (e) {
+    } on Object catch (e) {
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(content: Text('Error picking file: $e')),
@@ -70,7 +71,7 @@ class _ChatInputState extends State<ChatInput> {
   }
 
   void _stopMessage() {
-    context.read<ChatCubit>().stopMessage();
+    unawaited(context.read<ChatCubit>().stopMessage());
   }
 
   @override
@@ -151,7 +152,7 @@ class _ChatInputState extends State<ChatInput> {
                           filled: false,
                         ),
                         onSubmitted: (_) {
-                          _sendMessage();
+                          unawaited(_sendMessage());
                         },
                       ),
                     ),
@@ -169,7 +170,7 @@ class _ChatInputState extends State<ChatInput> {
                             mainAxisSize: MainAxisSize.min,
                             children: [
                               _ActionButton(
-                                onTap: isLoading ? null : _pickFile,
+                                onTap: isLoading ? null : () => unawaited(_pickFile()),
                                 icon: Icons.add,
                                 isIconOnly: true,
                               ),
@@ -201,7 +202,7 @@ class _ChatInputState extends State<ChatInput> {
                                   onTap: (state.pendingAttachments.isEmpty &&
                                           _controller.text.isEmpty)
                                       ? null
-                                      : _sendMessage,
+                                      : () => unawaited(_sendMessage()),
                                   icon: Icons.send,
                                   isIconOnly: true,
                                 ),

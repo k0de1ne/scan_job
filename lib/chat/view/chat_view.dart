@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -5,12 +6,12 @@ import 'package:scan_job/chat/cubit/chat_cubit.dart';
 import 'package:scan_job/chat/cubit/chat_state.dart';
 import 'package:scan_job/chat/widgets/chat_input.dart';
 import 'package:scan_job/chat/widgets/chat_message_bubble.dart';
-import 'package:scan_job/chat/widgets/sidebar.dart';
 import 'package:scan_job/chat/widgets/hh_auth_bottom_sheet.dart';
-import 'package:scan_job/tools/hh_tool.dart';
+import 'package:scan_job/chat/widgets/sidebar.dart';
 import 'package:scan_job/chat/widgets/sidebar_content.dart';
 import 'package:scan_job/l10n/l10n.dart';
 import 'package:scan_job/theme/app_theme.dart';
+import 'package:scan_job/tools/hh_tool.dart';
 import 'package:scan_job/widgets/settings_dialog.dart';
 
 class ChatView extends StatefulWidget {
@@ -48,7 +49,7 @@ class _ChatViewState extends State<ChatView> {
             final error = state.error!;
             String message;
             String? subtitle;
-            bool isLimitError = false;
+            var isLimitError = false;
 
             if (error == 'LIMIT_REACHED') {
               message = l10n.chatErrorLimitReached;
@@ -98,7 +99,7 @@ class _ChatViewState extends State<ChatView> {
                       : colorScheme.onError,
                   onPressed: () {
                     if (isLimitError) {
-                      SettingsDialog.show(context);
+                      unawaited(SettingsDialog.show(context));
                     } else {
                       ScaffoldMessenger.of(context).hideCurrentSnackBar();
                     }

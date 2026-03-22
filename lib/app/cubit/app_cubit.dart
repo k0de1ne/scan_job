@@ -8,14 +8,14 @@ class AppCubit extends HydratedCubit<AppState> {
   }
 
   void _init() {
-    print('--- [AppCubit] Initializing Device ID ---');
+    debugPrint('--- [AppCubit] Initializing Device ID ---');
     if (state.deviceId.isEmpty) {
       final randomId = DateTime.now().microsecondsSinceEpoch.toString();
       final newId = 'dev_$randomId';
-      print('--- [AppCubit] Generated NEW Device ID: $newId ---');
+      debugPrint('--- [AppCubit] Generated NEW Device ID: $newId ---');
       emit(state.copyWith(deviceId: newId));
     } else {
-      print('--- [AppCubit] Existing Device ID found: ${state.deviceId} ---');
+      debugPrint('--- [AppCubit] Existing Device ID found: ${state.deviceId} ---');
     }
   }
 

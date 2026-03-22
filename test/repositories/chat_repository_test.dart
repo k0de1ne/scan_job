@@ -11,7 +11,7 @@ void main() {
 
   setUp(() {
     mockApiClient = MockChatApiClient();
-    repository = ChatRepositoryImpl(apiClient: mockApiClient);
+    repository = ChatRepositoryImpl(apiClient: mockApiClient, deviceId: 'test_user_id');
   });
 
   group('ChatRepositoryImpl (Clean API Client)', () {
@@ -23,10 +23,11 @@ void main() {
 
       when(() => mockApiClient.sendMessageStream(
         messages: any(named: 'messages'),
+        userId: any(named: 'userId'),
         tools: any(named: 'tools'),
       )).thenAnswer((_) => Stream.fromIterable(chunks));
 
-      final stream = repository.sendMessage(text: 'hi', userId: 'test_user_id');
+      final stream = repository.sendMessage(text: 'hi');
       final messages = await stream.toList();
 
       final lastMessage = messages.last;
@@ -65,7 +66,7 @@ void main() {
         return const Stream.empty();
       });
 
-      final stream = repository.sendMessage(text: 'call two tools', userId: 'test_user_id');
+      final stream = repository.sendMessage(text: 'call two tools');
       final messages = await stream.toList();
 
       final lastMessage = messages.last;

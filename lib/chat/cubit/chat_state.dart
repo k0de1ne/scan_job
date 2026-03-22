@@ -15,6 +15,24 @@ class ChatState extends Equatable {
     this.error,
   });
 
+  factory ChatState.fromJson(Map<String, dynamic> json) {
+    final sessions = (json['sessions'] as List<dynamic>)
+        .map((e) => ChatSession.fromJson(e as Map<String, dynamic>))
+        .toList();
+    final activeSessionId = json['activeSessionId'] as String?;
+    final messages = activeSessionId != null
+        ? sessions.firstWhere((s) => s.id == activeSessionId).messages
+        : <ChatMessage>[];
+
+    return ChatState(
+      status: ChatStatus.values[json['status'] as int? ?? ChatStatus.initial.index],
+      sessions: sessions,
+      activeSessionId: activeSessionId,
+      messages: messages,
+      searchQuery: json['searchQuery'] as String? ?? '',
+    );
+  }
+
   final ChatStatus status;
   final List<ChatMessage> messages;
   final List<ChatAttachment> pendingAttachments;
@@ -54,24 +72,6 @@ class ChatState extends Equatable {
         'activeSessionId': activeSessionId,
         'searchQuery': searchQuery,
       };
-
-  factory ChatState.fromJson(Map<String, dynamic> json) {
-    final sessions = (json['sessions'] as List<dynamic>)
-        .map((e) => ChatSession.fromJson(e as Map<String, dynamic>))
-        .toList();
-    final activeSessionId = json['activeSessionId'] as String?;
-    final messages = activeSessionId != null
-        ? sessions.firstWhere((s) => s.id == activeSessionId).messages
-        : <ChatMessage>[];
-
-    return ChatState(
-      status: ChatStatus.values[json['status'] as int? ?? ChatStatus.initial.index],
-      sessions: sessions,
-      activeSessionId: activeSessionId,
-      messages: messages,
-      searchQuery: json['searchQuery'] as String? ?? '',
-    );
-  }
 
   ChatState copyWith({
     ChatStatus? status,

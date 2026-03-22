@@ -33,7 +33,7 @@ class ChatCubit extends HydratedCubit<ChatState> {
         document.dispose();
         return text;
       }
-    } catch (e) {
+    } on Object catch (e) {
       // Log error or handle it
       return 'Error extracting text: $e';
     }
@@ -49,7 +49,6 @@ class ChatCubit extends HydratedCubit<ChatState> {
     final newSession = ChatSession(
       id: newId,
       title: 'New Chat',
-      messages: const [],
       createdAt: DateTime.now(),
     );
 
@@ -79,7 +78,7 @@ class ChatCubit extends HydratedCubit<ChatState> {
   void deleteChat(String id) {
     final updatedSessions =
         state.sessions.where((s) => s.id != id).toList();
-    String? nextActiveId = state.activeSessionId;
+    var nextActiveId = state.activeSessionId;
 
     if (state.activeSessionId == id) {
       nextActiveId = updatedSessions.isNotEmpty ? updatedSessions.first.id : null;
@@ -188,7 +187,7 @@ class ChatCubit extends HydratedCubit<ChatState> {
         },
         cancelOnError: true,
       );
-    } catch (e) {
+    } on Object catch (e) {
       final errorStr = e.toString();
       var uiError = errorStr;
       if (errorStr.contains('Free trial limit reached')) {

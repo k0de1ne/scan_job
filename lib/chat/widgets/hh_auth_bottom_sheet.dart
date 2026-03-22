@@ -44,7 +44,7 @@ class _HhAuthBottomSheetState extends State<HhAuthBottomSheet> {
     try {
       final result = await _authRepository.loginPhone(_phoneController.text.trim());
       await _processAuthResult(result);
-    } catch (e) {
+    } on Object catch (e) {
       _showError(e.toString());
     } finally {
       if (mounted) setState(() => _isLoading = false);
@@ -56,7 +56,7 @@ class _HhAuthBottomSheetState extends State<HhAuthBottomSheet> {
     try {
       final result = await _authRepository.submitCode(_sessionId!, _otpController.text.trim());
       await _processAuthResult(result);
-    } catch (e) {
+    } on Object catch (e) {
       _showError(e.toString());
     } finally {
       if (mounted) setState(() => _isLoading = false);
@@ -68,7 +68,7 @@ class _HhAuthBottomSheetState extends State<HhAuthBottomSheet> {
     try {
       final result = await _authRepository.submitCaptcha(_sessionId!, _captchaController.text.trim());
       await _processAuthResult(result);
-    } catch (e) {
+    } on Object catch (e) {
       _showError(e.toString());
     } finally {
       if (mounted) setState(() => _isLoading = false);
@@ -130,9 +130,9 @@ class _HhAuthBottomSheetState extends State<HhAuthBottomSheet> {
   Widget _buildHeader() {
     String title;
     switch (_currentStep) {
-      case _AuthStep.phone: title = 'HH Login'; break;
-      case _AuthStep.otp: title = 'Enter SMS Code'; break;
-      case _AuthStep.captcha: title = 'Security Check'; break;
+      case _AuthStep.phone: title = 'HH Login';
+      case _AuthStep.otp: title = 'Enter SMS Code';
+      case _AuthStep.captcha: title = 'Security Check';
     }
     return Text(title, style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold));
   }

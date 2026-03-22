@@ -2,13 +2,13 @@ import 'dart:convert';
 import 'package:http/http.dart' as http;
 
 class HhAuthRepository {
-  final String baseUrl;
-  final http.Client _client;
 
   HhAuthRepository({
     this.baseUrl = 'http://localhost:8000',
     http.Client? client,
   }) : _client = client ?? http.Client();
+  final String baseUrl;
+  final http.Client _client;
 
   Future<Map<String, dynamic>> loginPhone(String phone) async {
     final response = await _client.post(
