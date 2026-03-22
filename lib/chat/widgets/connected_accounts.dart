@@ -135,19 +135,12 @@ class _ConnectedAccountsState extends State<ConnectedAccounts> {
                     ),
                     child: Row(
                       children: [
-                        CircleAvatar(
-                          radius: 12,
-                          backgroundColor: isSelected ? colorScheme.primary : colorScheme.surfaceContainerHigh,
-                          child: Text(
-                            (firstName.isNotEmpty ? firstName[0] : '?').toUpperCase(),
-                            style: TextStyle(
-                              fontSize: 10,
-                              color: isSelected ? colorScheme.onPrimary : colorScheme.onSurfaceVariant,
-                              fontWeight: FontWeight.bold,
-                            ),
-                          ),
+                        Icon(
+                          Icons.account_circle_outlined,
+                          size: 20,
+                          color: isSelected ? colorScheme.primary : colorScheme.onSurfaceVariant,
                         ),
-                        const SizedBox(width: 8),
+                        const SizedBox(width: 12),
                         Expanded(
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
