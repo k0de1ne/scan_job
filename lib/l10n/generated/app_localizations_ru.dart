@@ -169,4 +169,11 @@ class AppLocalizationsRu extends AppLocalizations {
   @override
   String get chatErrorGeneric =>
       'Что-то пошло не так. Пожалуйста, попробуйте еще раз.';
+
+  @override
+  String get chatErrorLimitReached => 'Пробный период завершен';
+
+  @override
+  String get chatErrorLimitReachedSubtitle =>
+      'Вы израсходовали бесплатный лимит. Скоро появится возможность оформить подписку для безлимитного доступа! А пока вы можете добавить свой API-ключ в настройках.';
 }

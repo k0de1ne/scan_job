@@ -39,8 +39,14 @@ class _ChatViewState extends State<ChatView> {
           if (state.status == ChatStatus.failure && state.error != null) {
             final error = state.error!;
             String message;
+            String? subtitle;
+            bool isLimitError = false;
 
-            if (error.contains('401') || error.contains('Unauthorized')) {
+            if (error == 'LIMIT_REACHED') {
+              message = l10n.chatErrorLimitReached;
+              subtitle = l10n.chatErrorLimitReachedSubtitle;
+              isLimitError = true;
+            } else if (error.contains('401') || error.contains('Unauthorized')) {
               message = l10n.chatErrorNoApiKey;
             } else if (error.contains('429') ||
                 error.contains('Too Many Requests') ||
@@ -55,14 +61,39 @@ class _ChatViewState extends State<ChatView> {
 
             ScaffoldMessenger.of(context).showSnackBar(
               SnackBar(
-                content: Text(message),
-                backgroundColor: colorScheme.error,
+                content: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      message,
+                      style: const TextStyle(fontWeight: FontWeight.bold),
+                    ),
+                    if (subtitle != null) ...[
+                      const SizedBox(height: 4),
+                      Text(
+                        subtitle,
+                        style: const TextStyle(fontSize: 12),
+                      ),
+                    ],
+                  ],
+                ),
+                backgroundColor:
+                    isLimitError ? colorScheme.secondary : colorScheme.error,
+                duration:
+                    isLimitError ? const Duration(seconds: 10) : const Duration(seconds: 4),
                 behavior: SnackBarBehavior.floating,
                 action: SnackBarAction(
-                  label: 'OK',
-                  textColor: colorScheme.onError,
+                  label: isLimitError ? l10n.chatNavSettings : 'OK',
+                  textColor: isLimitError
+                      ? colorScheme.onSecondary
+                      : colorScheme.onError,
                   onPressed: () {
-                    ScaffoldMessenger.of(context).hideCurrentSnackBar();
+                    if (isLimitError) {
+                      SettingsDialog.show(context);
+                    } else {
+                      ScaffoldMessenger.of(context).hideCurrentSnackBar();
+                    }
                   },
                 ),
               ),

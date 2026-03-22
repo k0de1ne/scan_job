@@ -170,10 +170,16 @@ class ChatCubit extends HydratedCubit<ChatState> {
           lastAiMessage = message;
         },
         onError: (Object error) {
+          final errorStr = error.toString();
+          var uiError = errorStr;
+          if (errorStr.contains('Free trial limit reached')) {
+            uiError = 'LIMIT_REACHED';
+          }
+
           emit(
             state.copyWith(
               status: ChatStatus.failure,
-              error: error.toString,
+              error: () => uiError,
             ),
           );
         },
@@ -183,10 +189,15 @@ class ChatCubit extends HydratedCubit<ChatState> {
         cancelOnError: true,
       );
     } catch (e) {
+      final errorStr = e.toString();
+      var uiError = errorStr;
+      if (errorStr.contains('Free trial limit reached')) {
+        uiError = 'LIMIT_REACHED';
+      }
       emit(
         state.copyWith(
           status: ChatStatus.failure,
-          error: e.toString,
+          error: () => uiError,
         ),
       );
     }

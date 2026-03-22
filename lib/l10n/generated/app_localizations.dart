@@ -403,6 +403,18 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Something went wrong. Please try again.'**
   String get chatErrorGeneric;
+
+  /// No description provided for @chatErrorLimitReached.
+  ///
+  /// In en, this message translates to:
+  /// **'Trial period ended'**
+  String get chatErrorLimitReached;
+
+  /// No description provided for @chatErrorLimitReachedSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'You have used up your free limit. A subscription option for unlimited access will be available soon! In the meantime, you can add your own API key in settings.'**
+  String get chatErrorLimitReachedSubtitle;
 }
 
 class _AppLocalizationsDelegate

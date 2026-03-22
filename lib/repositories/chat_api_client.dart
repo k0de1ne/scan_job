@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:convert';
 import 'package:http/http.dart' as http;
 import 'package:langchain_tiktoken/langchain_tiktoken.dart';
+import 'package:scan_job/repositories/security_utils.dart';
 
 class ChatStreamChunk {
   ChatStreamChunk({
@@ -31,12 +32,15 @@ class ChatApiClient {
 
   Stream<ChatStreamChunk> sendMessageStream({
     required List<Map<String, dynamic>> messages,
+    required String userId,
     List<Map<String, dynamic>>? tools,
   }) async* {
     final uri = Uri.parse('$baseUrl/chat/completions');
+    final signature = SecurityUtils.generateSignature(userId);
 
     final headers = <String, String>{
       'Content-Type': 'application/json',
+      'X-Signature': signature,
     };
     if (apiKey != 'not-needed') {
       headers['Authorization'] = 'Bearer $apiKey';
@@ -48,8 +52,16 @@ class ChatApiClient {
       'stream': true,
       'stream_options': {'include_usage': true},
       'temperature': 0,
+      'user': userId,
       if (tools != null && tools.isNotEmpty) 'tools': tools,
     };
+
+    print('--- [ChatApiClient] Sending Request ---');
+    print('URL: $uri');
+    print('Headers: $headers');
+    print('Body (shortened): ${jsonEncode({...body, "messages": "..."})}');
+    print('User ID: $userId');
+    print('Signature: $signature');
 
     final request = http.Request('POST', uri);
     request.headers.addAll(headers);

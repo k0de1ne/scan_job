@@ -4,9 +4,10 @@ import 'package:flutter/material.dart';
 class AppState extends Equatable {
   const AppState({
     this.themeMode = ThemeMode.system,
-    this.llmBaseUrl = 'http://localhost:1234/v1',
-    this.llmApiKey = 'not-needed',
-    this.llmModelName = 'openai/gpt-oss-20b',
+    this.llmBaseUrl = 'http://10.0.2.2:8000/v1', // URL для Android-эмулятора к нашему серверу
+    this.llmApiKey = 'proxy-guest-key',
+    this.llmModelName = 'gpt-3.5-turbo',
+    this.deviceId = '',
     this.inputPricePerMillion = 0.0,
     this.outputPricePerMillion = 0.0,
   });
@@ -15,6 +16,7 @@ class AppState extends Equatable {
   final String llmBaseUrl;
   final String llmApiKey;
   final String llmModelName;
+  final String deviceId;
   final double inputPricePerMillion;
   final double outputPricePerMillion;
 
@@ -24,6 +26,7 @@ class AppState extends Equatable {
         llmBaseUrl,
         llmApiKey,
         llmModelName,
+        deviceId,
         inputPricePerMillion,
         outputPricePerMillion,
       ];
@@ -33,6 +36,7 @@ class AppState extends Equatable {
     String? llmBaseUrl,
     String? llmApiKey,
     String? llmModelName,
+    String? deviceId,
     double? inputPricePerMillion,
     double? outputPricePerMillion,
   }) {
@@ -41,6 +45,7 @@ class AppState extends Equatable {
       llmBaseUrl: llmBaseUrl ?? this.llmBaseUrl,
       llmApiKey: llmApiKey ?? this.llmApiKey,
       llmModelName: llmModelName ?? this.llmModelName,
+      deviceId: deviceId ?? this.deviceId,
       inputPricePerMillion:
           inputPricePerMillion ?? this.inputPricePerMillion,
       outputPricePerMillion:
@@ -54,6 +59,7 @@ class AppState extends Equatable {
       'llmBaseUrl': llmBaseUrl,
       'llmApiKey': llmApiKey,
       'llmModelName': llmModelName,
+      'deviceId': deviceId,
       'inputPricePerMillion': inputPricePerMillion,
       'outputPricePerMillion': outputPricePerMillion,
     };
@@ -62,9 +68,10 @@ class AppState extends Equatable {
   factory AppState.fromJson(Map<String, dynamic> json) {
     return AppState(
       themeMode: ThemeMode.values[json['themeMode'] as int? ?? ThemeMode.system.index],
-      llmBaseUrl: json['llmBaseUrl'] as String? ?? 'http://localhost:1234/v1',
-      llmApiKey: json['llmApiKey'] as String? ?? 'not-needed',
-      llmModelName: json['llmModelName'] as String? ?? 'openai/gpt-oss-20b',
+      llmBaseUrl: json['llmBaseUrl'] as String? ?? 'http://10.0.2.2:8000/v1',
+      llmApiKey: json['llmApiKey'] as String? ?? 'proxy-guest-key',
+      llmModelName: json['llmModelName'] as String? ?? 'gpt-3.5-turbo',
+      deviceId: json['deviceId'] as String? ?? '',
       inputPricePerMillion: (json['inputPricePerMillion'] as num? ?? 0.0).toDouble(),
       outputPricePerMillion: (json['outputPricePerMillion'] as num? ?? 0.0).toDouble(),
     );

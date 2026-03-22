@@ -24,6 +24,7 @@ class App extends StatelessWidget {
               baseUrl: state.llmBaseUrl,
               apiKey: state.llmApiKey,
               modelName: state.llmModelName,
+              deviceId: state.deviceId,
             ),
             child: const AppView(),
           );
@@ -42,12 +43,14 @@ class AppView extends StatelessWidget {
       listenWhen: (previous, current) =>
           previous.llmBaseUrl != current.llmBaseUrl ||
           previous.llmApiKey != current.llmApiKey ||
-          previous.llmModelName != current.llmModelName,
+          previous.llmModelName != current.llmModelName ||
+          previous.deviceId != current.deviceId,
       listener: (context, state) {
         context.read<ChatRepository>().updateConfig(
           baseUrl: state.llmBaseUrl,
           apiKey: state.llmApiKey,
           modelName: state.llmModelName,
+          deviceId: state.deviceId,
         );
       },
       child: BlocBuilder<AppCubit, AppState>(

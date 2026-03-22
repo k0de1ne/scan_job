@@ -167,4 +167,11 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get chatErrorGeneric => 'Something went wrong. Please try again.';
+
+  @override
+  String get chatErrorLimitReached => 'Trial period ended';
+
+  @override
+  String get chatErrorLimitReachedSubtitle =>
+      'You have used up your free limit. A subscription option for unlimited access will be available soon! In the meantime, you can add your own API key in settings.';
 }

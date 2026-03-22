@@ -3,7 +3,21 @@ import 'package:hydrated_bloc/hydrated_bloc.dart';
 import 'package:scan_job/app/cubit/app_state.dart';
 
 class AppCubit extends HydratedCubit<AppState> {
-  AppCubit() : super(const AppState());
+  AppCubit() : super(const AppState()) {
+    _init();
+  }
+
+  void _init() {
+    print('--- [AppCubit] Initializing Device ID ---');
+    if (state.deviceId.isEmpty) {
+      final randomId = DateTime.now().microsecondsSinceEpoch.toString();
+      final newId = 'dev_$randomId';
+      print('--- [AppCubit] Generated NEW Device ID: $newId ---');
+      emit(state.copyWith(deviceId: newId));
+    } else {
+      print('--- [AppCubit] Existing Device ID found: ${state.deviceId} ---');
+    }
+  }
 
   @override
   AppState? fromJson(Map<String, dynamic> json) => AppState.fromJson(json);

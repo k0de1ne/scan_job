@@ -5,6 +5,7 @@ abstract class ChatRepository {
     String? baseUrl,
     String? apiKey,
     String? modelName,
+    String? deviceId,
   });
 
   Stream<ChatMessage> sendMessage({

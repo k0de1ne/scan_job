@@ -13,6 +13,7 @@ class ChatRepositoryImpl implements ChatRepository {
     String? baseUrl,
     String? apiKey,
     String? modelName,
+    String? deviceId,
     ChatApiClient? apiClient,
   }) {
     if (apiClient != null) {
@@ -23,6 +24,7 @@ class ChatRepositoryImpl implements ChatRepository {
         baseUrl: baseUrl,
         apiKey: apiKey,
         modelName: modelName,
+        deviceId: deviceId,
       );
     }
   }
@@ -31,6 +33,7 @@ class ChatRepositoryImpl implements ChatRepository {
   String? _baseUrl;
   String? _apiKey;
   String? _modelName;
+  String? _deviceId;
 
   bool get isWebPlatform => kIsWeb;
 
@@ -38,10 +41,12 @@ class ChatRepositoryImpl implements ChatRepository {
     String? baseUrl,
     String? apiKey,
     String? modelName,
+    String? deviceId,
   }) {
-    _baseUrl = baseUrl ?? _baseUrl ?? 'http://localhost:1234/v1';
-    _apiKey = apiKey ?? _apiKey ?? 'not-needed';
-    _modelName = modelName ?? _modelName ?? 'openai/gpt-oss-20b';
+    _baseUrl = baseUrl ?? _baseUrl ?? 'http://10.0.2.2:8000/v1';
+    _apiKey = apiKey ?? _apiKey ?? 'proxy-guest-key';
+    _modelName = modelName ?? _modelName ?? 'gpt-3.5-turbo';
+    _deviceId = deviceId ?? _deviceId ?? '';
 
     _apiClient = ChatApiClient(
       baseUrl: _baseUrl!,
@@ -55,11 +60,13 @@ class ChatRepositoryImpl implements ChatRepository {
     String? baseUrl,
     String? apiKey,
     String? modelName,
+    String? deviceId,
   }) {
     _updateConfig(
       baseUrl: baseUrl,
       apiKey: apiKey,
       modelName: modelName,
+      deviceId: deviceId,
     );
   }
 
@@ -155,6 +162,7 @@ class ChatRepositoryImpl implements ChatRepository {
       final tools = getTools();
       final stream = _apiClient.sendMessageStream(
         messages: messages,
+        userId: _deviceId ?? 'unknown_device',
         tools: tools,
       );
 
