@@ -34,6 +34,18 @@ class AppLocalizationsRu extends AppLocalizations {
   String get chatNavSettings => 'Настройки';
 
   @override
+  String get chatSidebarNewChat => 'Новый чат';
+
+  @override
+  String get chatSidebarSearchPlaceholder => 'Поиск чатов...';
+
+  @override
+  String get chatSidebarChatListTitle => 'Ваши чаты';
+
+  @override
+  String get chatSidebarEmptySearch => 'Чаты не найдены';
+
+  @override
   String get settingsTitle => 'Настройки';
 
   @override

@@ -32,6 +32,10 @@
     "@chatNavSettings": {
         "description": "Navigation settings label"
     },
+    "chatSidebarNewChat": "New Chat",
+    "chatSidebarSearchPlaceholder": "Search chats...",
+    "chatSidebarChatListTitle": "Your chats",
+    "chatSidebarEmptySearch": "No chats found",
     "settingsTitle": "Settings",
     "settingsThemeTitle": "Appearance",
     "settingsThemeLight": "Light",

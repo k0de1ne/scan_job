@@ -55,10 +55,20 @@ class ChatApiClient {
     request.headers.addAll(headers);
     request.body = jsonEncode(body);
 
-    final streamedResponse = await _client.send(request);
+    http.StreamedResponse streamedResponse;
+    try {
+      streamedResponse = await _client.send(request);
+    } catch (e) {
+      throw Exception('Connection failed: $e');
+    }
 
     if (streamedResponse.statusCode != 200) {
-      final bodyStr = await streamedResponse.stream.bytesToString();
+      String bodyStr;
+      try {
+        bodyStr = await streamedResponse.stream.bytesToString();
+      } catch (e) {
+        bodyStr = 'Could not read error body: $e';
+      }
       throw Exception('API Error: ${streamedResponse.statusCode} - $bodyStr');
     }
 
@@ -80,8 +90,9 @@ class ChatApiClient {
     var buffer = '';
     var accurateCompletionTokens = 0;
 
-    await for (final chunk in streamedResponse.stream.transform(utf8.decoder)) {
-      buffer += chunk;
+    try {
+      await for (final chunk in streamedResponse.stream.transform(utf8.decoder)) {
+        buffer += chunk;
 
       while (buffer.contains('\n')) {
         final newlineIndex = buffer.indexOf('\n');
@@ -160,6 +171,12 @@ class ChatApiClient {
           // Ignore malformed
         }
       }
+    }
+    } catch (e) {
+      if (e is! Exception) {
+        throw Exception('Stream error: $e');
+      }
+      rethrow;
     }
   }
 }

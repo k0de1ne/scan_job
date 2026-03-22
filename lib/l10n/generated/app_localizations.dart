@@ -146,6 +146,30 @@ abstract class AppLocalizations {
   /// **'Settings'**
   String get chatNavSettings;
 
+  /// No description provided for @chatSidebarNewChat.
+  ///
+  /// In en, this message translates to:
+  /// **'New Chat'**
+  String get chatSidebarNewChat;
+
+  /// No description provided for @chatSidebarSearchPlaceholder.
+  ///
+  /// In en, this message translates to:
+  /// **'Search chats...'**
+  String get chatSidebarSearchPlaceholder;
+
+  /// No description provided for @chatSidebarChatListTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Your chats'**
+  String get chatSidebarChatListTitle;
+
+  /// No description provided for @chatSidebarEmptySearch.
+  ///
+  /// In en, this message translates to:
+  /// **'No chats found'**
+  String get chatSidebarEmptySearch;
+
   /// No description provided for @settingsTitle.
   ///
   /// In en, this message translates to:

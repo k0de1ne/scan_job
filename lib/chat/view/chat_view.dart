@@ -6,6 +6,7 @@ import 'package:scan_job/chat/cubit/chat_state.dart';
 import 'package:scan_job/chat/widgets/chat_input.dart';
 import 'package:scan_job/chat/widgets/chat_message_bubble.dart';
 import 'package:scan_job/chat/widgets/sidebar.dart';
+import 'package:scan_job/chat/widgets/sidebar_content.dart';
 import 'package:scan_job/l10n/l10n.dart';
 import 'package:scan_job/theme/app_theme.dart';
 import 'package:scan_job/widgets/settings_dialog.dart';
@@ -129,7 +130,6 @@ class _DesktopSidebar extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final colorScheme = Theme.of(context).colorScheme;
-    final l10n = context.l10n;
 
     return AnimatedContainer(
       duration: const Duration(milliseconds: 300),
@@ -140,84 +140,9 @@ class _DesktopSidebar extends StatelessWidget {
         horizontal: context.spacing.md,
         vertical: context.spacing.lg,
       ),
-      child: Column(
-        children: [
-          _SideButton(
-            icon: Icons.menu,
-            onTap: onToggle,
-          ),
-          const Spacer(),
-          _SideButton(
-            icon: Icons.settings_outlined,
-            label: isExpanded ? l10n.chatNavSettings : null,
-            onTap: () => SettingsDialog.show(context),
-          ),
-        ],
-      ),
-    );
-  }
-}
-
-class _SideButton extends StatelessWidget {
-  const _SideButton({
-    required this.icon,
-    required this.onTap,
-    this.label,
-  });
-
-  final IconData icon;
-  final String? label;
-  final VoidCallback onTap;
-
-  @override
-  Widget build(BuildContext context) {
-    final colorScheme = Theme.of(context).colorScheme;
-
-    return Material(
-      color: context.appColors.transparent,
-      borderRadius: BorderRadius.circular(context.radius.sm),
-      child: InkWell(
-        onTap: onTap,
-        borderRadius: BorderRadius.circular(context.radius.sm),
-        child: Container(
-          height: 40,
-          padding: EdgeInsets.symmetric(horizontal: context.spacing.sm),
-          child: Row(
-            children: [
-              Icon(icon, color: colorScheme.onSurfaceVariant, size: 24),
-              ClipRect(
-                child: AnimatedOpacity(
-                  duration: const Duration(milliseconds: 200),
-                  opacity: label != null ? 1 : 0,
-                  child: AnimatedContainer(
-                    duration: const Duration(milliseconds: 300),
-                    curve: Curves.easeInOutCubic,
-                    width: label != null ? 180 : 0,
-                    child: label != null
-                        ? Row(
-                            children: [
-                              SizedBox(width: context.spacing.md),
-                              Expanded(
-                                child: Text(
-                                  label!,
-                                  style: TextStyle(
-                                    fontSize: 14,
-                                    fontWeight: FontWeight.w500,
-                                    color: colorScheme.onSurfaceVariant,
-                                  ),
-                                  maxLines: 1,
-                                  overflow: TextOverflow.clip,
-                                ),
-                              ),
-                            ],
-                          )
-                        : const SizedBox.shrink(),
-                  ),
-                ),
-              ),
-            ],
-          ),
-        ),
+      child: SidebarContent(
+        isExpanded: isExpanded,
+        onMenuTap: onToggle,
       ),
     );
   }

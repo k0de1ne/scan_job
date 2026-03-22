@@ -33,6 +33,18 @@ class AppLocalizationsEn extends AppLocalizations {
   String get chatNavSettings => 'Settings';
 
   @override
+  String get chatSidebarNewChat => 'New Chat';
+
+  @override
+  String get chatSidebarSearchPlaceholder => 'Search chats...';
+
+  @override
+  String get chatSidebarChatListTitle => 'Your chats';
+
+  @override
+  String get chatSidebarEmptySearch => 'No chats found';
+
+  @override
   String get settingsTitle => 'Settings';
 
   @override
