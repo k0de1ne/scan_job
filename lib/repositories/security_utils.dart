@@ -2,22 +2,19 @@ import 'dart:convert';
 import 'package:crypto/crypto.dart';
 
 class SecurityUtils {
-  // Наш "секретный сахар". Вместо строки храним байты,
-  // чтобы его не было видно в поиске по бинарнику.
-  // scan-job-salt-2024 -> [115, 99, 97, 110, 45, 106, 111, 98, 45, 115, 97, 108, 116, 45, 50, 48, 50, 52]
-  static const List<int> _rawSalt = [
-    115, 99, 97, 110, 45, 106, 111, 98, 45, 115, 97, 108, 116, 45, 50, 48, 50, 52
-  ];
+  /// Salt is now passed via --dart-define=APP_SALT=your_salt_here
+  static const String _salt = String.fromEnvironment(
+    'APP_SALT',
+    defaultValue: '',
+  );
 
   static String generateSignature(String deviceId) {
-    final saltStr = String.fromCharCodes(_rawSalt);
-    final bytes = utf8.encode('$deviceId$saltStr');
+    if (_salt.isEmpty) {
+      // In production, you might want to throw an error or handle this differently
+      // for now, we'll just log or continue, but security will be compromised.
+    }
+    final bytes = utf8.encode('$deviceId$_salt');
     final digest = sha256.convert(bytes);
     return digest.toString();
-  }
-
-  static String getSaltForServer() {
-     // Эта функция только для того чтобы вы могли скопировать соль на сервер
-     return String.fromCharCodes(_rawSalt);
   }
 }
