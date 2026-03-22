@@ -1,5 +1,8 @@
 # HH Auth Server (Python + Playwright)
-
+$resp = Invoke-RestMethod -Method Post -Uri http://localhost:8000/login/full -ContentType "application/json" -Body (@{phone='89898291878'; password='fedor233'} | ConvertTo-Json)
+$s = $resp.session_id
+[IO.File]::WriteAllBytes("$(Get-Location)\captcha.png", [Convert]::FromBase64String($resp.captcha_image))
+echo "Капча сохранена в файл captcha.png. Откройте его и посмотрите текст."
 Сервер для автоматизации процесса авторизации на hh.ru. Позволяет избежать повторного открытия WebView при входе через телефон.
 
 ## Установка и запуск
