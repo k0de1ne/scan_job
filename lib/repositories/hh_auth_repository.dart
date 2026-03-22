@@ -4,7 +4,10 @@ import 'package:http/http.dart' as http;
 class HhAuthRepository {
 
   HhAuthRepository({
-    this.baseUrl = 'http://localhost:8000',
+    this.baseUrl = const String.fromEnvironment(
+      'HH_AUTH_BASE_URL',
+      defaultValue: 'http://localhost:8000',
+    ),
     http.Client? client,
   }) : _client = client ?? http.Client();
   final String baseUrl;

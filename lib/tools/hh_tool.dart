@@ -7,19 +7,10 @@ import 'package:shared_preferences/shared_preferences.dart';
 class HhAuthService {
 
   HhAuthService({http.Client? client}) : _client = client ?? http.Client();
-  static const String _defaultClientId =
-      'HIOMIAS39CA9DICTA7JIO64LQKQJF5AGIK74G9ITJKLNEDAOH5FHS5G1JI7FOEGD';
-  static const String _defaultClientSecret =
-      'V9M870DE342BGHFRUJ5FTCGCUA1482AN0DI8C5TFI9ULMA89H10N60NOP8I4JMVS';
 
-  String get clientId => const String.fromEnvironment('HH_CLIENT_ID').isNotEmpty
-      ? const String.fromEnvironment('HH_CLIENT_ID')
-      : _defaultClientId;
+  String get clientId => const String.fromEnvironment('HH_CLIENT_ID');
 
-  String get clientSecret =>
-      const String.fromEnvironment('HH_CLIENT_SECRET').isNotEmpty
-          ? const String.fromEnvironment('HH_CLIENT_SECRET')
-          : _defaultClientSecret;
+  String get clientSecret => const String.fromEnvironment('HH_CLIENT_SECRET');
 
   static const String userAgent = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36';
   static const String accountsKey = 'hh_accounts';
