@@ -1,9 +1,15 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:hydrated_bloc/hydrated_bloc.dart';
 import 'package:scan_job/app/cubit/app_state.dart';
 
-class AppCubit extends Cubit<AppState> {
+class AppCubit extends HydratedCubit<AppState> {
   AppCubit() : super(const AppState());
+
+  @override
+  AppState? fromJson(Map<String, dynamic> json) => AppState.fromJson(json);
+
+  @override
+  Map<String, dynamic>? toJson(AppState state) => state.toJson();
 
   void setThemeMode(ThemeMode themeMode) {
     emit(state.copyWith(themeMode: themeMode));

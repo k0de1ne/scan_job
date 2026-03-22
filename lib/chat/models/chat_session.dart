@@ -17,6 +17,22 @@ class ChatSession extends Equatable {
   @override
   List<Object?> get props => [id, title, messages, createdAt];
 
+  Map<String, dynamic> toJson() => {
+        'id': id,
+        'title': title,
+        'messages': messages.map((e) => e.toJson()).toList(),
+        'createdAt': createdAt.toIso8601String(),
+      };
+
+  factory ChatSession.fromJson(Map<String, dynamic> json) => ChatSession(
+        id: json['id'] as String,
+        title: json['title'] as String,
+        messages: (json['messages'] as List<dynamic>)
+            .map((e) => ChatMessage.fromJson(e as Map<String, dynamic>))
+            .toList(),
+        createdAt: DateTime.parse(json['createdAt'] as String),
+      );
+
   ChatSession copyWith({
     String? id,
     String? title,

@@ -1,20 +1,26 @@
 import 'dart:async';
 import 'dart:convert';
 
-import 'package:bloc/bloc.dart';
+import 'package:hydrated_bloc/hydrated_bloc.dart';
 import 'package:scan_job/chat/cubit/chat_state.dart';
 import 'package:scan_job/chat/models/chat_message.dart';
 import 'package:scan_job/chat/models/chat_session.dart';
 import 'package:scan_job/repositories/chat_repository.dart';
 import 'package:syncfusion_flutter_pdf/pdf.dart';
 
-class ChatCubit extends Cubit<ChatState> {
+class ChatCubit extends HydratedCubit<ChatState> {
   ChatCubit({required ChatRepository chatRepository})
     : _chatRepository = chatRepository,
       super(const ChatState());
 
   final ChatRepository _chatRepository;
   StreamSubscription<ChatMessage>? _subscription;
+
+  @override
+  ChatState? fromJson(Map<String, dynamic> json) => ChatState.fromJson(json);
+
+  @override
+  Map<String, dynamic>? toJson(ChatState state) => state.toJson();
 
   Future<String?> _extractText(ChatAttachment attachment) async {
     try {

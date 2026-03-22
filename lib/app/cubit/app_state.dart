@@ -47,4 +47,26 @@ class AppState extends Equatable {
           outputPricePerMillion ?? this.outputPricePerMillion,
     );
   }
+
+  Map<String, dynamic> toJson() {
+    return {
+      'themeMode': themeMode.index,
+      'llmBaseUrl': llmBaseUrl,
+      'llmApiKey': llmApiKey,
+      'llmModelName': llmModelName,
+      'inputPricePerMillion': inputPricePerMillion,
+      'outputPricePerMillion': outputPricePerMillion,
+    };
+  }
+
+  factory AppState.fromJson(Map<String, dynamic> json) {
+    return AppState(
+      themeMode: ThemeMode.values[json['themeMode'] as int? ?? ThemeMode.system.index],
+      llmBaseUrl: json['llmBaseUrl'] as String? ?? 'http://localhost:1234/v1',
+      llmApiKey: json['llmApiKey'] as String? ?? 'not-needed',
+      llmModelName: json['llmModelName'] as String? ?? 'openai/gpt-oss-20b',
+      inputPricePerMillion: (json['inputPricePerMillion'] as num? ?? 0.0).toDouble(),
+      outputPricePerMillion: (json['outputPricePerMillion'] as num? ?? 0.0).toDouble(),
+    );
+  }
 }

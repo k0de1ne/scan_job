@@ -48,6 +48,31 @@ class ChatState extends Equatable {
         error,
       ];
 
+  Map<String, dynamic> toJson() => {
+        'status': status.index,
+        'sessions': sessions.map((e) => e.toJson()).toList(),
+        'activeSessionId': activeSessionId,
+        'searchQuery': searchQuery,
+      };
+
+  factory ChatState.fromJson(Map<String, dynamic> json) {
+    final sessions = (json['sessions'] as List<dynamic>)
+        .map((e) => ChatSession.fromJson(e as Map<String, dynamic>))
+        .toList();
+    final activeSessionId = json['activeSessionId'] as String?;
+    final messages = activeSessionId != null
+        ? sessions.firstWhere((s) => s.id == activeSessionId).messages
+        : <ChatMessage>[];
+
+    return ChatState(
+      status: ChatStatus.values[json['status'] as int? ?? ChatStatus.initial.index],
+      sessions: sessions,
+      activeSessionId: activeSessionId,
+      messages: messages,
+      searchQuery: json['searchQuery'] as String? ?? '',
+    );
+  }
+
   ChatState copyWith({
     ChatStatus? status,
     List<ChatMessage>? messages,
