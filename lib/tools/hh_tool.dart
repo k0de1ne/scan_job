@@ -125,25 +125,34 @@ class HhAuthService {
 
       if (response.statusCode == 200) {
         final data = jsonDecode(response.body) as Map<String, dynamic>;
-        final accessToken = data['access_token'] as String;
-
-        final meResponse = await _client.get(
-          Uri.parse('https://api.hh.ru/me'),
-          headers: {
-            'Authorization': 'Bearer $accessToken',
-            'User-Agent': userAgent,
-          },
-        );
-
-        if (meResponse.statusCode == 200) {
-          final meData = jsonDecode(meResponse.body) as Map<String, dynamic>;
-          final id = meData['id'].toString();
-          await _saveAccount(id, data, profile: meData);
-          return id;
-        }
+        return saveAccountFromTokens(data);
       }
     } on Exception catch (e) {
       debugPrint('HH Auth: Exception during login with code: $e');
+    }
+    return null;
+  }
+
+  Future<String?> saveAccountFromTokens(Map<String, dynamic> tokenData) async {
+    try {
+      final accessToken = tokenData['access_token'] as String;
+
+      final meResponse = await _client.get(
+        Uri.parse('https://api.hh.ru/me'),
+        headers: {
+          'Authorization': 'Bearer $accessToken',
+          'User-Agent': userAgent,
+        },
+      );
+
+      if (meResponse.statusCode == 200) {
+        final meData = jsonDecode(meResponse.body) as Map<String, dynamic>;
+        final id = meData['id'].toString();
+        await _saveAccount(id, tokenData, profile: meData);
+        return id;
+      }
+    } on Exception catch (e) {
+      debugPrint('HH Auth: Exception during saving account from tokens: $e');
     }
     return null;
   }
@@ -276,10 +285,14 @@ class HhAuthService {
   }
 }
 
+typedef HhLoginProvider = Future<String?> Function();
+
 class HhTool {
   final HhAuthService _service;
+  HhAuthService get authService => _service;
   String? _selectedAccountId;
   bool _initialized = false;
+  HhLoginProvider? loginProvider;
 
   @visibleForTesting
   HhTool.internal({HhAuthService? service}) : _service = service ?? HhAuthService();
@@ -692,6 +705,23 @@ class HhTool {
   }
 
   Future<String> _login() async {
+    if (loginProvider != null) {
+      final id = await loginProvider!();
+      if (id == null) {
+        throw Exception('Authorization cancelled or failed');
+      }
+      _selectedAccountId = id;
+      final profile = await _service.getProfile(id);
+      return jsonEncode({
+        'success': true,
+        'logged_in': true,
+        'id': id,
+        'first_name': profile?['first_name'],
+        'last_name': profile?['last_name'],
+        'message': 'Successfully logged in to HeadHunter',
+      });
+    }
+
     final code = await _service.authenticate();
     if (code == null) {
       throw Exception('Authorization cancelled or failed');

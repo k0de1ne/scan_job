@@ -6,6 +6,8 @@ import 'package:scan_job/chat/cubit/chat_state.dart';
 import 'package:scan_job/chat/widgets/chat_input.dart';
 import 'package:scan_job/chat/widgets/chat_message_bubble.dart';
 import 'package:scan_job/chat/widgets/sidebar.dart';
+import 'package:scan_job/chat/widgets/hh_auth_bottom_sheet.dart';
+import 'package:scan_job/tools/hh_tool.dart';
 import 'package:scan_job/chat/widgets/sidebar_content.dart';
 import 'package:scan_job/l10n/l10n.dart';
 import 'package:scan_job/theme/app_theme.dart';
@@ -20,6 +22,12 @@ class ChatView extends StatefulWidget {
 
 class _ChatViewState extends State<ChatView> {
   bool _isSidebarExpanded = false;
+
+  @override
+  void initState() {
+    super.initState();
+    HhTool.instance.loginProvider = () => HhAuthBottomSheet.show(context);
+  }
 
   @override
   Widget build(BuildContext context) {

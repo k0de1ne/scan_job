@@ -26,7 +26,7 @@ void main() {
         tools: any(named: 'tools'),
       )).thenAnswer((_) => Stream.fromIterable(chunks));
 
-      final stream = repository.sendMessage(text: 'hi');
+      final stream = repository.sendMessage(text: 'hi', userId: 'test_user_id');
       final messages = await stream.toList();
 
       final lastMessage = messages.last;
@@ -55,6 +55,7 @@ void main() {
       var callCount = 0;
       when(() => mockApiClient.sendMessageStream(
         messages: any(named: 'messages'),
+        userId: any(named: 'userId'),
         tools: any(named: 'tools'),
       )).thenAnswer((_) {
         if (callCount == 0) {
@@ -64,7 +65,7 @@ void main() {
         return const Stream.empty();
       });
 
-      final stream = repository.sendMessage(text: 'call two tools');
+      final stream = repository.sendMessage(text: 'call two tools', userId: 'test_user_id');
       final messages = await stream.toList();
 
       final lastMessage = messages.last;
