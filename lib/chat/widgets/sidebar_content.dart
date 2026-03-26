@@ -4,6 +4,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:scan_job/chat/cubit/chat_cubit.dart';
 import 'package:scan_job/chat/cubit/chat_state.dart';
 import 'package:scan_job/chat/widgets/connected_accounts.dart';
+import 'package:scan_job/chat/widgets/sync_dialog.dart';
 import 'package:scan_job/l10n/l10n.dart';
 import 'package:scan_job/theme/app_theme.dart';
 import 'package:scan_job/widgets/settings_dialog.dart';
@@ -62,6 +63,18 @@ class SidebarContent extends StatelessWidget {
         SizedBox(height: context.spacing.md),
         const Divider(height: 1),
         SizedBox(height: context.spacing.md),
+        _SideButton(
+          icon: Icons.sync,
+          label: isExpanded ? l10n.chatNavSync : null,
+          onTap: () async {
+            if (onMenuTap == null) {
+              await Navigator.of(context).maybePop();
+            }
+            if (!context.mounted) return;
+            await SyncDialog.show(context);
+          },
+          isExpanded: isExpanded,
+        ),
         _SideButton(
           icon: Icons.settings_outlined,
           label: isExpanded ? l10n.chatNavSettings : null,

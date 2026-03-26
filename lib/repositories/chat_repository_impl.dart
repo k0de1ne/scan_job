@@ -43,7 +43,7 @@ class ChatRepositoryImpl implements ChatRepository {
     String? modelName,
     String? deviceId,
   }) {
-    _baseUrl = baseUrl ?? _baseUrl ?? 'http://10.0.2.2:8000/v1';
+    _baseUrl = baseUrl ?? _baseUrl ?? 'https://144.31.188.34.sslip.io/llm/v1';
     _apiKey = apiKey ?? _apiKey ?? 'proxy-guest-key';
     _modelName = modelName ?? _modelName ?? 'gpt-3.5-turbo';
     _deviceId = deviceId ?? _deviceId ?? '';

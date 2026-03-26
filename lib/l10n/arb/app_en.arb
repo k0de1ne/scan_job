@@ -102,5 +102,28 @@
     "sidebarAccountsTitle": "Connected Accounts",
     "sidebarAccountsEmpty": "No accounts connected",
     "sidebarAccountsAdd": "Add Account",
-    "sidebarAccountId": "ID: {id}"
+    "sidebarAccountId": "ID: {id}",
+    "chatNavSync": "Sync Devices",
+    "syncDialogTitle": "Sync Your Chats",
+    "syncDialogGenerate": "Show QR to Sync",
+    "syncDialogScan": "Scan QR to Sync",
+    "syncDialogStatusInitial": "Sync your chat history between devices.",
+    "syncDialogStatusGenerating": "Room ID: {id}\nScan this with another device to start syncing.",
+    "@syncDialogStatusGenerating": {
+        "placeholders": {
+            "id": { "type": "String" }
+        }
+    },
+    "syncDialogStatusScanning": "Looking for device...",
+    "syncDialogStatusConnecting": "Connecting...",
+    "syncDialogStatusConnected": "Direct P2P connection established!",
+    "syncDialogStatusSuccess": "Sync completed successfully!",
+    "syncDialogStatusFailure": "Sync failed: {error}",
+    "@syncDialogStatusFailure": {
+        "placeholders": {
+            "error": { "type": "String" }
+        }
+    },
+    "syncDialogSend": "Send My Chats",
+    "syncDialogClose": "Close"
 }

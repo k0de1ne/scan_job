@@ -188,4 +188,48 @@ class AppLocalizationsEn extends AppLocalizations {
   String sidebarAccountId(Object id) {
     return 'ID: $id';
   }
+
+  @override
+  String get chatNavSync => 'Sync Devices';
+
+  @override
+  String get syncDialogTitle => 'Sync Your Chats';
+
+  @override
+  String get syncDialogGenerate => 'Show QR to Sync';
+
+  @override
+  String get syncDialogScan => 'Scan QR to Sync';
+
+  @override
+  String get syncDialogStatusInitial =>
+      'Sync your chat history between devices.';
+
+  @override
+  String syncDialogStatusGenerating(String id) {
+    return 'Room ID: $id\nScan this with another device to start syncing.';
+  }
+
+  @override
+  String get syncDialogStatusScanning => 'Looking for device...';
+
+  @override
+  String get syncDialogStatusConnecting => 'Connecting...';
+
+  @override
+  String get syncDialogStatusConnected => 'Direct P2P connection established!';
+
+  @override
+  String get syncDialogStatusSuccess => 'Sync completed successfully!';
+
+  @override
+  String syncDialogStatusFailure(String error) {
+    return 'Sync failed: $error';
+  }
+
+  @override
+  String get syncDialogSend => 'Send My Chats';
+
+  @override
+  String get syncDialogClose => 'Close';
 }

@@ -439,6 +439,84 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'ID: {id}'**
   String sidebarAccountId(Object id);
+
+  /// No description provided for @chatNavSync.
+  ///
+  /// In en, this message translates to:
+  /// **'Sync Devices'**
+  String get chatNavSync;
+
+  /// No description provided for @syncDialogTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Sync Your Chats'**
+  String get syncDialogTitle;
+
+  /// No description provided for @syncDialogGenerate.
+  ///
+  /// In en, this message translates to:
+  /// **'Show QR to Sync'**
+  String get syncDialogGenerate;
+
+  /// No description provided for @syncDialogScan.
+  ///
+  /// In en, this message translates to:
+  /// **'Scan QR to Sync'**
+  String get syncDialogScan;
+
+  /// No description provided for @syncDialogStatusInitial.
+  ///
+  /// In en, this message translates to:
+  /// **'Sync your chat history between devices.'**
+  String get syncDialogStatusInitial;
+
+  /// No description provided for @syncDialogStatusGenerating.
+  ///
+  /// In en, this message translates to:
+  /// **'Room ID: {id}\nScan this with another device to start syncing.'**
+  String syncDialogStatusGenerating(String id);
+
+  /// No description provided for @syncDialogStatusScanning.
+  ///
+  /// In en, this message translates to:
+  /// **'Looking for device...'**
+  String get syncDialogStatusScanning;
+
+  /// No description provided for @syncDialogStatusConnecting.
+  ///
+  /// In en, this message translates to:
+  /// **'Connecting...'**
+  String get syncDialogStatusConnecting;
+
+  /// No description provided for @syncDialogStatusConnected.
+  ///
+  /// In en, this message translates to:
+  /// **'Direct P2P connection established!'**
+  String get syncDialogStatusConnected;
+
+  /// No description provided for @syncDialogStatusSuccess.
+  ///
+  /// In en, this message translates to:
+  /// **'Sync completed successfully!'**
+  String get syncDialogStatusSuccess;
+
+  /// No description provided for @syncDialogStatusFailure.
+  ///
+  /// In en, this message translates to:
+  /// **'Sync failed: {error}'**
+  String syncDialogStatusFailure(String error);
+
+  /// No description provided for @syncDialogSend.
+  ///
+  /// In en, this message translates to:
+  /// **'Send My Chats'**
+  String get syncDialogSend;
+
+  /// No description provided for @syncDialogClose.
+  ///
+  /// In en, this message translates to:
+  /// **'Close'**
+  String get syncDialogClose;
 }
 
 class _AppLocalizationsDelegate

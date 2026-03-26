@@ -5,8 +5,10 @@ class ChatSession extends Equatable {
   const ChatSession({
     required this.id,
     required this.title,
-    required this.createdAt, this.messages = const [],
-  });
+    required this.createdAt,
+    DateTime? updatedAt,
+    this.messages = const [],
+  }) : updatedAt = updatedAt ?? createdAt;
 
   factory ChatSession.fromJson(Map<String, dynamic> json) => ChatSession(
         id: json['id'] as String,
@@ -15,21 +17,26 @@ class ChatSession extends Equatable {
             .map((e) => ChatMessage.fromJson(e as Map<String, dynamic>))
             .toList(),
         createdAt: DateTime.parse(json['createdAt'] as String),
+        updatedAt: json['updatedAt'] != null
+            ? DateTime.parse(json['updatedAt'] as String)
+            : null,
       );
 
   final String id;
   final String title;
   final List<ChatMessage> messages;
   final DateTime createdAt;
+  final DateTime updatedAt;
 
   @override
-  List<Object?> get props => [id, title, messages, createdAt];
+  List<Object?> get props => [id, title, messages, createdAt, updatedAt];
 
   Map<String, dynamic> toJson() => {
         'id': id,
         'title': title,
         'messages': messages.map((e) => e.toJson()).toList(),
         'createdAt': createdAt.toIso8601String(),
+        'updatedAt': updatedAt.toIso8601String(),
       };
 
   ChatSession copyWith({
@@ -37,12 +44,14 @@ class ChatSession extends Equatable {
     String? title,
     List<ChatMessage>? messages,
     DateTime? createdAt,
+    DateTime? updatedAt,
   }) {
     return ChatSession(
       id: id ?? this.id,
       title: title ?? this.title,
       messages: messages ?? this.messages,
       createdAt: createdAt ?? this.createdAt,
+      updatedAt: updatedAt ?? this.updatedAt,
     );
   }
 }

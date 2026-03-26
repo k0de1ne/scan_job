@@ -190,4 +190,48 @@ class AppLocalizationsRu extends AppLocalizations {
   String sidebarAccountId(Object id) {
     return 'ID: $id';
   }
+
+  @override
+  String get chatNavSync => 'Синхронизация';
+
+  @override
+  String get syncDialogTitle => 'Синхронизация чатов';
+
+  @override
+  String get syncDialogGenerate => 'Показать QR для связи';
+
+  @override
+  String get syncDialogScan => 'Сканировать QR';
+
+  @override
+  String get syncDialogStatusInitial =>
+      'Синхронизируйте историю чатов между вашими устройствами напрямую.';
+
+  @override
+  String syncDialogStatusGenerating(String id) {
+    return 'ID комнаты: $id\nОтсканируйте это другим устройством для начала.';
+  }
+
+  @override
+  String get syncDialogStatusScanning => 'Поиск устройства...';
+
+  @override
+  String get syncDialogStatusConnecting => 'Подключение...';
+
+  @override
+  String get syncDialogStatusConnected => 'Прямое P2P соединение установлено!';
+
+  @override
+  String get syncDialogStatusSuccess => 'Синхронизация успешно завершена!';
+
+  @override
+  String syncDialogStatusFailure(String error) {
+    return 'Ошибка: $error';
+  }
+
+  @override
+  String get syncDialogSend => 'Отправить мои чаты';
+
+  @override
+  String get syncDialogClose => 'Закрыть';
 }

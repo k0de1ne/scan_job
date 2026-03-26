@@ -102,5 +102,28 @@
     "sidebarAccountsTitle": "Подключенные аккаунты",
     "sidebarAccountsEmpty": "Нет подключенных аккаунтов",
     "sidebarAccountsAdd": "Добавить аккаунт",
-    "sidebarAccountId": "ID: {id}"
+    "sidebarAccountId": "ID: {id}",
+    "chatNavSync": "Синхронизация",
+    "syncDialogTitle": "Синхронизация чатов",
+    "syncDialogGenerate": "Показать QR для связи",
+    "syncDialogScan": "Сканировать QR",
+    "syncDialogStatusInitial": "Синхронизируйте историю чатов между вашими устройствами напрямую.",
+    "syncDialogStatusGenerating": "ID комнаты: {id}\nОтсканируйте это другим устройством для начала.",
+    "@syncDialogStatusGenerating": {
+        "placeholders": {
+            "id": { "type": "String" }
+        }
+    },
+    "syncDialogStatusScanning": "Поиск устройства...",
+    "syncDialogStatusConnecting": "Подключение...",
+    "syncDialogStatusConnected": "Прямое P2P соединение установлено!",
+    "syncDialogStatusSuccess": "Синхронизация успешно завершена!",
+    "syncDialogStatusFailure": "Ошибка: {error}",
+    "@syncDialogStatusFailure": {
+        "placeholders": {
+            "error": { "type": "String" }
+        }
+    },
+    "syncDialogSend": "Отправить мои чаты",
+    "syncDialogClose": "Закрыть"
 }

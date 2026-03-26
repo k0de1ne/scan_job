@@ -202,6 +202,48 @@ class ChatCubit extends HydratedCubit<ChatState> {
     }
   }
 
+  void mergeSessions(List<ChatSession> remoteSessions) {
+    final localSessions = Map<String, ChatSession>.fromIterable(
+      state.sessions,
+      key: (s) => (s as ChatSession).id,
+      value: (s) => s as ChatSession,
+    );
+
+    var hasChanges = false;
+    for (final remote in remoteSessions) {
+      final local = localSessions[remote.id];
+      if (local == null) {
+        localSessions[remote.id] = remote;
+        hasChanges = true;
+      } else {
+        if (remote.updatedAt.isAfter(local.updatedAt)) {
+          localSessions[remote.id] = remote;
+          hasChanges = true;
+        }
+      }
+    }
+
+    if (hasChanges) {
+      final updatedList = localSessions.values.toList()
+        ..sort((a, b) => b.updatedAt.compareTo(a.updatedAt));
+      
+      String? nextActiveId = state.activeSessionId;
+      List<ChatMessage> nextMessages = state.messages;
+
+      if (nextActiveId != null && localSessions.containsKey(nextActiveId)) {
+        nextMessages = localSessions[nextActiveId]!.messages;
+      }
+
+      emit(
+        state.copyWith(
+          sessions: updatedList,
+          activeSessionId: () => nextActiveId,
+          messages: nextMessages,
+        ),
+      );
+    }
+  }
+
   void _updateSessionMessages(
     String id,
     List<ChatMessage> messages, [
@@ -215,7 +257,11 @@ class ChatCubit extends HydratedCubit<ChatState> {
               ? '${firstMessageText.substring(0, 30)}...'
               : firstMessageText;
         }
-        return s.copyWith(messages: messages, title: title);
+        return s.copyWith(
+          messages: messages,
+          title: title,
+          updatedAt: DateTime.now(),
+        );
       }
       return s;
     }).toList();
